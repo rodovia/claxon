@@ -73,26 +73,30 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <OutDir>$(SolutionDir)Output\$(Configuration)\$(Platform)\</OutDir>
     <IntDir>$(SolutionDir)Output\$(Configuration)\$(Platform)\$(ProjectName)\</IntDir>
-    <IncludePath>$(solutiondir)3rdparty\libconfig\include;$(solutiondir)gamepaths\Source;$(solutiondir)tier0\Source;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
+    <IncludePath>$(projectdir)Source;$(solutiondir)3rdparty\libconfig\include;$(solutiondir)gamepaths\Source;$(solutiondir)tier0\Source;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
     <LibraryPath>$(outdir);$(solutiondir)3rdparty\libconfig\lib\$(configuration);$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86)</LibraryPath>
+    <PublicIncludeDirectories>$(ProjectDir)Source</PublicIncludeDirectories>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>$(SolutionDir)Output\$(Configuration)\$(Platform)\</OutDir>
     <IntDir>$(SolutionDir)Output\$(Configuration)\$(Platform)\$(ProjectName)\</IntDir>
-    <IncludePath>$(solutiondir)3rdparty\libconfig\include;$(solutiondir)gamepaths\Source;$(solutiondir)tier0\Source;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
+    <IncludePath>$(projectdir)Source;$(solutiondir)3rdparty\libconfig\include;$(solutiondir)gamepaths\Source;$(solutiondir)tier0\Source;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
     <LibraryPath>$(outdir);$(solutiondir)3rdparty\libconfig\lib\$(configuration);$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86)</LibraryPath>
+    <PublicIncludeDirectories>$(ProjectDir)Source</PublicIncludeDirectories>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(SolutionDir)Output\$(Configuration)\$(Platform)\</OutDir>
     <IntDir>$(SolutionDir)Output\$(Configuration)\$(Platform)\$(ProjectName)\</IntDir>
-    <IncludePath>$(solutiondir)3rdparty\libconfig\include;$(solutiondir)gamepaths\Source;$(solutiondir)tier0\Source;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
+    <IncludePath>$(projectdir)Source;$(solutiondir)3rdparty\libconfig\include;$(solutiondir)gamepaths\Source;$(solutiondir)tier0\Source;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
     <LibraryPath>$(outdir);$(solutiondir)3rdparty\libconfig\lib\$(configuration);$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)</LibraryPath>
+    <PublicIncludeDirectories>$(ProjectDir)Source</PublicIncludeDirectories>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)Output\$(Configuration)\$(Platform)\</OutDir>
     <IntDir>$(SolutionDir)Output\$(Configuration)\$(Platform)\$(ProjectName)\</IntDir>
-    <IncludePath>$(solutiondir)3rdparty\libconfig\include;$(solutiondir)gamepaths\Source;$(solutiondir)tier0\Source;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
+    <IncludePath>$(projectdir)Source;$(solutiondir)3rdparty\libconfig\include;$(solutiondir)gamepaths\Source;$(solutiondir)tier0\Source;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
     <LibraryPath>$(outdir);$(solutiondir)3rdparty\libconfig\lib\$(configuration);$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)</LibraryPath>
+    <PublicIncludeDirectories>$(ProjectDir)Source</PublicIncludeDirectories>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

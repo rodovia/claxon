@@ -50,7 +50,7 @@ engine::CSkinnedBox::CSkinnedBox(CGraphicalOutput& _Gfx,
 		};
 
 		auto surf = MAKE_SURFACE_MOUNT("resources/textures/cube.png");
-		auto model = engine::CCube::Make<Vertex>();
+		auto model = engine::CCube::MakeSkinned<Vertex>();
 		surf.WriteToFile(L"../../../mod/resources/textures/_test.bmp");
 
 		this->AddStaticBind(std::make_unique<engine::CTexture>(_Gfx, surf));
