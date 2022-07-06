@@ -1,3 +1,4 @@
+/* -*- c++ -*- */
 #pragma once
 
 #include <engine_tier0/BaseBind.h>

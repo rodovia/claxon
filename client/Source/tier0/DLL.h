@@ -1,3 +1,4 @@
+/* -*- c++ -*- */
 #pragma once
 
 #ifdef CLIENT_DLL

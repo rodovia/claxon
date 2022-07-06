@@ -1,3 +1,4 @@
+/* -*- c++ -*- */
 #pragma once
 
 #include <engine_tier1/GraphicalOutput.h>

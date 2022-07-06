@@ -1,3 +1,4 @@
+/* -*- c++ -*- */
 #pragma once
 
 #include <tier0lib/Win32.h>

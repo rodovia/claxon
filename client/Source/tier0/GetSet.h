@@ -1,3 +1,5 @@
+/* -*- c++ -*- */
+
 #pragma once
 
 #define _HL2_BASIC_GETTER(T, I) inline T Get ## I ## ()  { return m_ ## I ## ; }

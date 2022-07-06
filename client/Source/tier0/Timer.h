@@ -1,3 +1,5 @@
+/* -*- c++ -*- */
+
 #pragma once
 
 #include "DLL.h"
@@ -8,23 +10,6 @@
 
 namespace hl2
 {
-
-template<class T>
-concept _DurationCastable = requires {
-	typename std::chrono::duration<T>;
-};
-
-namespace time_types
-{
-
-using nanoseconds = long long;
-using microseconds = long long;
-using milliseconds = long long;
-using seconds = long long;
-using minutes = int;
-using hours = int;
-
-}
 
 typedef std::chrono::time_point<std::chrono::steady_clock> _MonotonicTimePoint;
 
