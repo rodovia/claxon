@@ -3,7 +3,6 @@
 #include <InfoParser.h>
 
 #include <imguihlp.h>
-#include <engine_tier0/Startup.h>
 #include <engine_tier0/_Math.h>
 
 #include <engine_tier0/GDIPlusManager.h>
@@ -24,9 +23,9 @@
 engine::CGDIPlusManager gdi;
 
 hl2::CApplication::CApplication() 
-	: m_Window(800, 600, L"TAIKO NO TATSUJIN", engine::imgui::SetupImGui())
+	: m_Window(800, 600, L"TAIKO NO TATSUJIN", engine::imgui::SetupImGui()),
+	  m_Light(m_Window.Graphics())
 {
-	engine::ParseGameInfo();
 	class Factory
 	{
 	public:
@@ -36,27 +35,11 @@ hl2::CApplication::CApplication()
 		{}
 		std::unique_ptr<engine::CBase_Draw> operator()()
 		{
-			switch (typedist(rng))
-			{
-			case 0:
-				return std::make_unique<engine::CPyramid>(
-					gfx, rng, adist, ddist,
-					odist, rdist
-					);
-			case 1:
-				return std::make_unique<engine::CBox>(
+			return std::make_unique<engine::CBox>(
 					gfx, rng, adist, ddist,
 					odist, rdist, bdist
 					);
-			case 2:
-				return std::make_unique<engine::CSkinnedBox>(
-					gfx, rng, adist, ddist,
-					odist, rdist
-					);
-			default:
-				assert(false && "bad drawable type in factory");
-				return {};
-			}
+			
 		}
 	private:
 		engine::CGraphicalOutput& gfx;
@@ -103,11 +86,14 @@ void hl2::CApplication::FrameLoop()
 	auto dt = m_Timer.Mark() * m_SpeedFactor;
 	m_Window.Graphics().BeginFrameNorm(255, 127, 0);
 	m_Window.Graphics().SetCamera(m_Cam.GetMatrix());
+	m_Light.Bind(m_Window.Graphics());
+
 	for (auto& b : m_Drawables)
 	{
 		b->Update(m_Window.m_Keyboard.IsKeyPressed(VK_SPACE) ? 0.0f : dt.count());
 		b->Draw(m_Window.Graphics());
 	}
+	m_Light.Draw(m_Window.Graphics());
 
 	if (ImGui::Begin("Simulation Options"))
 	{
@@ -117,6 +103,7 @@ void hl2::CApplication::FrameLoop()
 	ImGui::End();
 
 	m_Cam.SpawnControlWindow();
+	m_Light.SpawnControlWindow();
 
 	m_Window.Graphics().EndFrame();
 }

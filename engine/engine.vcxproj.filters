@@ -128,9 +128,6 @@
     <ClInclude Include="Source\engine_tier0\GDIPlusManager.h">
       <Filter>Arquivos de Cabeçalho</Filter>
     </ClInclude>
-    <ClInclude Include="Source\engine_tier0\Startup.h">
-      <Filter>Arquivos de Cabeçalho</Filter>
-    </ClInclude>
     <ClInclude Include="Source\engine_tier0\_Math.h">
       <Filter>Arquivos de Cabeçalho</Filter>
     </ClInclude>

@@ -14,8 +14,8 @@ public:
 	CLightPoint(CGraphicalOutput& _Gfx, float _Radius = 0.5f);
 	void SpawnControlWindow();
 	void Reset() noexcept;
-	void Draw(CGraphicalOutput& _Gfx) const;
-	void Bind(CGraphicalOutput& _Gfx) const;
+	void Draw(CGraphicalOutput& _Gfx) noexcept;
+	void Bind(CGraphicalOutput& _Gfx) const noexcept;
 private:
 	struct CBLightPoint
 	{

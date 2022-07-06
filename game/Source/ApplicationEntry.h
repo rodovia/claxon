@@ -4,6 +4,7 @@
 #include <vector>
 
 #include <engine_tier1/Camera.h>
+#include <engine_tier1/LightPoint.h>
 #include <engine_tier1/dxprim/draw/Box.h>
 #include <engine_tier1/dxprim/draw/BaseDraw.h>
 
@@ -25,6 +26,7 @@ private:
 	hl2::CBasicTimer m_Timer;
 	float m_SpeedFactor = 1.0f;
 	engine::CCamera m_Cam;
+	engine::CLightPoint m_Light;
 	std::vector<std::unique_ptr<engine::CBase_Draw>> m_Drawables;
 	static constexpr size_t s_Drawables = 30;
 };

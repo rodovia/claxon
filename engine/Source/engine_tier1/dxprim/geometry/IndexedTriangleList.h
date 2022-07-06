@@ -33,6 +33,8 @@ public:
 
 	void SetNormalsIndependentFlat()
 	{
+		using namespace DirectX; // DirectX::XMVECTOR::operator- (binary)
+
 		assert(m_Indices.size() % 3 == 0 && m_Indices.size() > 0);
 		for (size_t i = 0; i < m_Indices.size(); i += 3)
 		{
@@ -44,7 +46,8 @@ public:
 			const auto p1 = DirectX::XMLoadFloat3(&v1.pos);
 			const auto p2 = DirectX::XMLoadFloat3(&v2.pos);
 
-			const auto norm = DirectX::XMVector3Normalize(DirectX::XMVector3Cross((p1 - p0), (p2 - p1));
+			const auto norm = DirectX::XMVector3Normalize(
+				DirectX::XMVector3Cross(p1 - p0, p2 - p0));
 
 			DirectX::XMStoreFloat3(&v0.norm, norm);
 			DirectX::XMStoreFloat3(&v1.norm, norm);

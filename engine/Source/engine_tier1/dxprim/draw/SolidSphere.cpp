@@ -2,6 +2,7 @@
 
 #include <engine_tier1/dxprim/geometry/Sphere.h>
 #include <engine_tier1/dxprim/VertexBuffer.h>
+#include <engine_tier1/dxprim/TransformConstBuffer.h>
 #include <engine_tier1/dxprim/InputLayout.h>
 #include <engine_tier1/dxprim/Shaders.h>
 #include <engine_tier1/dxprim/Topology.h>
@@ -43,14 +44,20 @@ engine::CSolidSphere::CSolidSphere(CGraphicalOutput& _Gfx, float _Radius)
 		this->AddStaticBind(std::make_unique<engine::CInputLayout>(_Gfx, ied, pvsbc));
 		this->AddStaticBind(std::make_unique<engine::CPrim_Topology>(_Gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST));
 	}
+	else
+	{
+		this->SetIndexFromStatic();
+	}
+
+	this->AddBind(std::make_unique<engine::CTransformConstantBuffer>(_Gfx, *this));
 }
 
-void engine::CSolidSphere::SetPos(DirectX::XMFLOAT3 _Pos)
+void engine::CSolidSphere::SetPos(DirectX::XMFLOAT3 _Pos) noexcept
 {
 	m_Pos = _Pos;
 }
 
-void engine::CSolidSphere::Update(float _Dt)
+void engine::CSolidSphere::Update(float _Dt) noexcept
 {}
 
 DirectX::XMMATRIX engine::CSolidSphere::GetTransformMatrix() const noexcept

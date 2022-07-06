@@ -11,7 +11,7 @@ struct VSOut
     float4 Pos : SV_Position;
 };
 
-float4 main(float3 _Pos : Position, float3 _Normal : Normal) : SV_POSITION
+VSOut main(float3 _Pos : Position, float3 _Normal : Normal)
 {
     VSOut vso;
     vso.WorldPos = (float3)mul(float4(_Pos, 1.0f), Model);

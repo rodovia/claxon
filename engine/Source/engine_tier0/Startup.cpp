@@ -1,7 +1,18 @@
-#include "Startup.h"
+#include <tier0lib/Win32.h>
 #include <InfoParser.h>
 
-void engine::ParseGameInfo()
+BOOL WINAPI DllMain(
+	HINSTANCE hInstance,
+	DWORD fdwReason,
+	LPVOID lpReserved
+)
 {
-	gamepaths::CInfoParser::FromFile("gameinfo.txt");
+	switch (fdwReason)
+	{
+	case DLL_PROCESS_ATTACH:
+		gamepaths::CInfoParser::FromFile("gameinfo.txt");
+		return TRUE;
+	default:
+		return TRUE;
+	}
 }

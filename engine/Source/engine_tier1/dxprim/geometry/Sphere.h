@@ -100,7 +100,7 @@ public:
 	template<class T>
 	static CIndexedTriangleList<T> Make()
 	{
-		return MakeTessel(12, 24);
+		return MakeTessel<T>(12, 24);
 	}
 };
 

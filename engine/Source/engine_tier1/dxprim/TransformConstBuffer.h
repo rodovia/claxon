@@ -15,7 +15,13 @@ public:
 	CTransformConstantBuffer(CGraphicalOutput& _Gfx, const CBase_Draw& _Parent);
 	void Bind(CGraphicalOutput&) override;
 private:
-	static std::unique_ptr<CConstantVertexBuffer<DirectX::XMMATRIX>> m_VertBuffer;
+	struct Transforms
+	{
+		DirectX::XMMATRIX ModelViewProj;
+		DirectX::XMMATRIX Model;
+	};
+
+	static std::unique_ptr<CConstantVertexBuffer<Transforms>> m_VertBuffer;
 	const CBase_Draw& m_Parent;
 };
 

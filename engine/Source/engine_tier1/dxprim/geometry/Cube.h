@@ -36,7 +36,7 @@ public:
 	}
 
 	template<class T>
-	CIndexedTriangleList<T> MakeSkinned()
+	static CIndexedTriangleList<T> MakeSkinned()
 	{
 		constexpr float side = 1.0f / 2.0f;
 
