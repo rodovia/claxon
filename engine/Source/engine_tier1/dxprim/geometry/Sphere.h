@@ -8,6 +8,8 @@
 namespace engine
 {
 
+#pragma warning(disable : 4267) // 'initizaling': conversion from 'size_t' to 'unsigned short'; possible data loss.
+
 class CSphere
 {
 public:
@@ -104,5 +106,7 @@ public:
 		return MakeTessel<T>(12, 24);
 	}
 };
+
+#pragma warning(pop)
 
 }

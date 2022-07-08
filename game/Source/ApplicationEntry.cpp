@@ -35,11 +35,11 @@ hl2::CApplication::CApplication()
 		{}
 		std::unique_ptr<engine::CBase_Draw> operator()()
 		{
+			const DirectX::XMFLOAT3 mat = { cdist(rng), cdist(rng), cdist(rng) };
 			return std::make_unique<engine::CBox>(
 					gfx, rng, adist, ddist,
-					odist, rdist, bdist
+					odist, rdist, bdist, mat
 					);
-			
 		}
 	private:
 		engine::CGraphicalOutput& gfx;
@@ -49,6 +49,7 @@ hl2::CApplication::CApplication()
 		std::uniform_real_distribution<float> odist{ 0.0f,PI_f * 0.08f };
 		std::uniform_real_distribution<float> rdist{ 6.0f,20.0f };
 		std::uniform_real_distribution<float> bdist{ 0.4f,3.0f };
+		std::uniform_real_distribution<float> cdist{ 0.0f, 1.0f };
 		std::uniform_int_distribution<int> latdist{ 5,20 };
 		std::uniform_int_distribution<int> longdist{ 10,40 };
 		std::uniform_int_distribution<int> typedist{ 0,2 };
@@ -63,9 +64,7 @@ hl2::CApplication::CApplication()
 	
 }
 
-#pragma warning(disable : 4244) // conversion from 'WPARAM' to 'int' - possible data loss.
-
-int hl2::CApplication::Main()
+WPARAM hl2::CApplication::Main()
 {
 	while (true)
 	{
@@ -78,8 +77,6 @@ int hl2::CApplication::Main()
 		this->FrameLoop();
 	}
 }
-
-#pragma warning(pop)
 
 void hl2::CApplication::FrameLoop()
 {

@@ -1,5 +1,5 @@
 #include "Mouse.h"
-#include "tier0/Win32.h"
+#include "tier0lib/Win32.h"
 
 std::pair<int, int> hl2::CMouse::GetCoordinates() const noexcept
 {

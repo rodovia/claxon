@@ -17,7 +17,9 @@ engine::CBox::CBox(CGraphicalOutput& _Gfx,
 					std::uniform_real_distribution<float>& _Ddist,
 					std::uniform_real_distribution<float>& _Odist,
 					std::uniform_real_distribution<float>& _Rdist,
-					std::uniform_real_distribution<float>& _Bdist)
+					std::uniform_real_distribution<float>& _Bdist,
+	                DirectX::XMFLOAT3 _Material
+	)
 	: m_Speed({
 			_Ddist(_Rng), /* dRoll */
 			_Ddist(_Rng), /* dPitch */
@@ -71,6 +73,18 @@ engine::CBox::CBox(CGraphicalOutput& _Gfx,
 		this->SetIndexFromStatic();
 	}
 	this->AddBind(std::make_unique<engine::CTransformConstantBuffer>(_Gfx, *this));
+
+	struct PSMaterialConstant
+	{
+		DirectX::XMFLOAT3 Color;
+		float _unused;
+	} colorc;
+	colorc.Color = _Material;
+	auto ma = std::make_unique<engine::CConstantPixelBuffer<PSMaterialConstant>>(_Gfx, 1u);
+	ma->Update(_Gfx, colorc);
+
+	this->AddBind(std::move(ma));
+
 	DirectX::XMStoreFloat3x3(
 		&m_Matrix,
 		DirectX::XMMatrixScaling(1.0f, 1.0f, _Bdist(_Rng))

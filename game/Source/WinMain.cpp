@@ -7,7 +7,7 @@
 #include <imguihlp.h>
 #include <engine_tier0/Exceptions.h>
 
-#include "tier0/Win32.h"
+#include "tier0lib/Win32.h"
 #include <tier1/Window.hh>
 #include "ApplicationEntry.h"
 
@@ -17,7 +17,7 @@ int WINAPI WinMain(
 	PSTR pCmdLine,
 	int nCmdShow)
 {
-	int retval = 0;
+	WPARAM retval = 0;
 	try
 	{
 		hl2::CApplication app;
@@ -45,5 +45,5 @@ int WINAPI WinMain(
 	{
 		MessageBoxA(nullptr, "Unknown", "Engine Error", MB_OK | MB_ICONERROR);
 	}
-	return retval;
+	return (int)retval;
 }

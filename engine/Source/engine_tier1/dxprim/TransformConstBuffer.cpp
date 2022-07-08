@@ -1,12 +1,12 @@
 #include "TransformConstBuffer.h"
 
 engine::CTransformConstantBuffer::CTransformConstantBuffer(
-			CGraphicalOutput& _Gfx, const CBase_Draw& _Parent)
+			CGraphicalOutput& _Gfx, const CBase_Draw& _Parent, UINT _Slot)
 	: m_Parent(_Parent)
 {
 	if (!m_VertBuffer)
 	{
-		m_VertBuffer = std::make_unique<CConstantVertexBuffer<CTransformConstantBuffer::Transforms>>(_Gfx);
+		m_VertBuffer = std::make_unique<CConstantVertexBuffer<CTransformConstantBuffer::Transforms>>(_Gfx, _Slot);
 	}
 }
 

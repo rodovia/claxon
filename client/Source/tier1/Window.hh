@@ -1,6 +1,6 @@
 #pragma once
 
-#include "tier0/Win32.h"
+#include "tier0lib/Win32.h"
 #include "tier0/DLL.h"
 #include "tier0/Exceptions.h"
 

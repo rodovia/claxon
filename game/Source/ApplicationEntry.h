@@ -18,7 +18,7 @@ class CApplication
 {
 public:
 	CApplication();
-	int Main();
+	WPARAM Main();
 private:
 	void FrameLoop();
 private:

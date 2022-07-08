@@ -1,4 +1,5 @@
 /* -*- c++ -*- */
+
 #pragma once
 
 #include <engine_tier0/DLL.h>
@@ -20,12 +21,15 @@ public:
 private:
 	struct CBLightPoint
 	{
-		DirectX::XMFLOAT3 pos;
-		float padding;
+		alignas(16) DirectX::XMFLOAT3 Position;
+		alignas(16) DirectX::XMFLOAT3 Ambient;
+		alignas(16) DirectX::XMFLOAT3 DiffuseColor;
+		float DiffuseIntensity, AttenuationConst, 
+			AttenuationLinear, AttenuationQuadratic;
 	};
 
-	DirectX::XMFLOAT3 m_Pos = { 0.0f, 0.0f, 0.0f };
-	engine::CSolidSphere m_Mesh;
+	CBLightPoint m_ConstBufferData;
+	mutable engine::CSolidSphere m_Mesh;
 	mutable CConstantPixelBuffer<CBLightPoint> m_Buf;
 };
 

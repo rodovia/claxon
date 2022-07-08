@@ -11,7 +11,8 @@ template<class T>
 class CBasicConstantBuffer : public CBase_Bind
 {
 public:
-	CBasicConstantBuffer(CGraphicalOutput& _Gfx, const T& _Constants)
+	CBasicConstantBuffer(CGraphicalOutput& _Gfx, const T& _Constants, UINT _Slot = 0)
+		: m_Slot(_Slot)
 	{
 		D3D11_BUFFER_DESC bfd;
 		bfd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
@@ -26,7 +27,8 @@ public:
 		GetDevice(_Gfx)->CreateBuffer(&bfd, &csd, &m_ConstBuffer);
 	}
 
-	CBasicConstantBuffer(CGraphicalOutput& _Gfx)
+	CBasicConstantBuffer(CGraphicalOutput& _Gfx, UINT _Slot = 0)
+		: m_Slot(_Slot)
 	{
 		D3D11_BUFFER_DESC bfd;
 		bfd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
@@ -57,6 +59,7 @@ public:
 		m_ConstBuffer->Release();
 	}
 protected:
+	UINT m_Slot;
 	ID3D11Buffer* m_ConstBuffer;
 };
 
@@ -65,11 +68,12 @@ class CConstantVertexBuffer : public CBasicConstantBuffer<T>
 {
 	using CBase_Bind::GetContext;
 	using CBasicConstantBuffer<T>::m_ConstBuffer;
+	using CBasicConstantBuffer<T>::m_Slot;
 public:
 	using CBasicConstantBuffer<T>::CBasicConstantBuffer;
 	void Bind(CGraphicalOutput& _Gfx) override
 	{
-		GetContext(_Gfx)->VSSetConstantBuffers(0u, 1u, &m_ConstBuffer);
+		GetContext(_Gfx)->VSSetConstantBuffers(m_Slot, 1u, &m_ConstBuffer);
 	}
 };
 
@@ -77,12 +81,13 @@ template<class T>
 class CConstantPixelBuffer : public CBasicConstantBuffer<T>
 {
 	using CBasicConstantBuffer<T>::m_ConstBuffer;
+	using CBasicConstantBuffer<T>::m_Slot;
 	using CBase_Bind::GetContext;
 public:
 	using CBasicConstantBuffer<T>::CBasicConstantBuffer;
 	void Bind(CGraphicalOutput& _Gfx) override
 	{
-		GetContext(_Gfx)->PSSetConstantBuffers(0u, 1u, &m_ConstBuffer);
+		GetContext(_Gfx)->PSSetConstantBuffers(m_Slot, 1u, &m_ConstBuffer);
 	}
 };
 

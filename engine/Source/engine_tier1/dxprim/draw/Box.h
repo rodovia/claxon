@@ -17,7 +17,8 @@ public:
 		std::uniform_real_distribution<float>& _Ddist,
 		std::uniform_real_distribution<float>& _Odist,
 		std::uniform_real_distribution<float>& _Rdist,
-		std::uniform_real_distribution<float>& _Bdist);
+		std::uniform_real_distribution<float>& _Bdist,
+		DirectX::XMFLOAT3 _Material);
 	void Update(float _Dt) noexcept override;
 	DirectX::XMMATRIX GetTransformMatrix() const noexcept override;
 private:

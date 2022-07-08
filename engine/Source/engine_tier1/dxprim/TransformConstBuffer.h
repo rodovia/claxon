@@ -13,7 +13,7 @@ namespace engine
 class _ENGINE_DLLEXP CTransformConstantBuffer : public CBase_Bind
 {
 public:
-	CTransformConstantBuffer(CGraphicalOutput& _Gfx, const CBase_Draw& _Parent);
+	CTransformConstantBuffer(CGraphicalOutput& _Gfx, const CBase_Draw& _Parent, UINT _Slot = 0);
 	void Bind(CGraphicalOutput&) override;
 private:
 	struct Transforms
