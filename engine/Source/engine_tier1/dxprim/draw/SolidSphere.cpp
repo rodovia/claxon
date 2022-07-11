@@ -36,8 +36,10 @@ engine::CSolidSphere::CSolidSphere(CGraphicalOutput& _Gfx, float _Radius)
 		this->AddStaticBind(std::make_unique<engine::CPixelShader>(_Gfx, MAKE_SHADER_RESOURCE("Solid_PS.cso")));
 		
 		PSColorConstant cconst;
+		std::unique_ptr<engine::CConstantPixelBuffer<PSColorConstant>> cpb = std::make_unique<engine::CConstantPixelBuffer<PSColorConstant>>(_Gfx, 0u);
+		cpb->Update(_Gfx, cconst);
 
-		this->AddStaticBind(std::make_unique<engine::CConstantPixelBuffer<PSColorConstant>>(_Gfx, cconst));
+		this->AddStaticBind(std::move(cpb));
 		const std::vector<D3D11_INPUT_ELEMENT_DESC>  ied = {
 			_ENGINE_POSITION_IED
 		};

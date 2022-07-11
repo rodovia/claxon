@@ -17,7 +17,7 @@ public:
 	void SpawnControlWindow();
 	void Reset() noexcept;
 	void Draw(CGraphicalOutput& _Gfx) noexcept;
-	void Bind(CGraphicalOutput& _Gfx) const noexcept;
+	void Bind(CGraphicalOutput& _Gfx, DirectX::FXMMATRIX _View) noexcept;
 private:
 	struct CBLightPoint
 	{

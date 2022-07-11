@@ -181,6 +181,7 @@
     <ClCompile Include="Source\engine_tier1\Camera.cpp" />
     <ClCompile Include="Source\engine_tier1\dxprim\draw\BaseDraw.cpp" />
     <ClCompile Include="Source\engine_tier1\dxprim\draw\Box.cpp" />
+    <ClCompile Include="Source\engine_tier1\dxprim\draw\Cylinder.cpp" />
     <ClCompile Include="Source\engine_tier1\dxprim\draw\Melon.cpp" />
     <ClCompile Include="Source\engine_tier1\dxprim\draw\Pyramid.cpp" />
     <ClCompile Include="Source\engine_tier1\dxprim\draw\Sheet.cpp" />
@@ -208,6 +209,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\engine_tier0\BaseBind.h" />
+    <ClInclude Include="Source\engine_tier0\BasePrimitiveObject.h" />
     <ClInclude Include="Source\engine_tier0\DLL.h" />
     <ClInclude Include="Source\engine_tier0\DXGIInfoManager.h" />
     <ClInclude Include="Source\engine_tier0\Exceptions.h" />
@@ -218,6 +220,7 @@
     <ClInclude Include="Source\engine_tier1\dxprim\draw\BaseDraw.h" />
     <ClInclude Include="Source\engine_tier1\dxprim\draw\BaseMiddlewareDraw.h" />
     <ClInclude Include="Source\engine_tier1\dxprim\draw\Box.h" />
+    <ClInclude Include="Source\engine_tier1\dxprim\draw\Cylinder.h" />
     <ClInclude Include="Source\engine_tier1\dxprim\draw\Melon.h" />
     <ClInclude Include="Source\engine_tier1\dxprim\draw\Pyramid.h" />
     <ClInclude Include="Source\engine_tier1\dxprim\draw\Sheet.h" />
@@ -227,6 +230,7 @@
     <ClInclude Include="Source\engine_tier1\dxprim\geometry\Cube.h" />
     <ClInclude Include="Source\engine_tier1\dxprim\geometry\IndexedTriangleList.h" />
     <ClInclude Include="Source\engine_tier1\dxprim\geometry\Plane.h" />
+    <ClInclude Include="Source\engine_tier1\dxprim\geometry\Prism.h" />
     <ClInclude Include="Source\engine_tier1\dxprim\geometry\Sphere.h" />
     <ClInclude Include="Source\engine_tier1\dxprim\IndexBuffer.h" />
     <ClInclude Include="Source\engine_tier1\dxprim\InputLayout.h" />
@@ -306,6 +310,20 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+    </FxCompile>
+    <FxCompile Include="Shader\IndexPhong_PS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(solutiondir)mod\resources\hlsl\%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(solutiondir)mod\resources\hlsl\%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(solutiondir)mod\resources\hlsl\%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(solutiondir)mod\resources\hlsl\%(Filename).cso</ObjectFileOutput>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">4.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">4.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4.0</ShaderModel>
     </FxCompile>
     <FxCompile Include="Shader\Phong_PS.hlsl">
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">4.0</ShaderModel>

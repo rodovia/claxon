@@ -1,6 +1,6 @@
 cbuffer ConstBuffer
 {
-    matrix Model;
+    matrix ModelView;
     matrix ModelViewProj;
 };
 
@@ -14,8 +14,8 @@ struct VSOut
 VSOut main(float3 _Pos : Position, float3 _Normal : Normal)
 {
     VSOut vso;
-    vso.WorldPos = (float3)mul(float4(_Pos, 1.0f), Model);
-    vso.Normal = mul(_Normal, (float3x3) Model);
+    vso.WorldPos = (float3)mul(float4(_Pos, 1.0f), ModelView);
+    vso.Normal = mul(_Normal, (float3x3) ModelView);
     vso.Pos = mul(float4(_Pos, 1.0f), ModelViewProj);
     return vso;
 }

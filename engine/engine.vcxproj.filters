@@ -111,6 +111,9 @@
     <ClCompile Include="Source\imguihlp.cpp">
       <Filter>Arquivos de Origem</Filter>
     </ClCompile>
+    <ClCompile Include="Source\engine_tier1\dxprim\draw\Cylinder.cpp">
+      <Filter>Arquivos de Origem</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\engine_tier0\BaseBind.h">
@@ -239,6 +242,15 @@
     <ClInclude Include="Source\imguihlp.h">
       <Filter>Arquivos de Cabeçalho</Filter>
     </ClInclude>
+    <ClInclude Include="Source\engine_tier0\BasePrimitiveObject.h">
+      <Filter>Arquivos de Cabeçalho</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\engine_tier1\dxprim\geometry\Prism.h">
+      <Filter>Arquivos de Cabeçalho</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\engine_tier1\dxprim\draw\Cylinder.h">
+      <Filter>Arquivos de Cabeçalho</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\Phong_PS.hlsl" />
@@ -251,5 +263,6 @@
     <FxCompile Include="Shader\Solid_VS.hlsl" />
     <FxCompile Include="Shader\Texture_PS.hlsl" />
     <FxCompile Include="Shader\Texture_VS.hlsl" />
+    <FxCompile Include="Shader\IndexPhong_PS.hlsl" />
   </ItemGroup>
 </Project>

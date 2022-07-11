@@ -10,6 +10,7 @@
 #include <engine_tier1/dxprim/draw/SkinnedBox.h>
 #include <engine_tier1/dxprim/draw/Pyramid.h>
 #include <engine_tier1/dxprim/draw/Box.h>
+#include <engine_tier1/dxprim/draw/Cylinder.h>
 #include <engine_tier1/dxprim/draw/Melon.h>
 #include <engine_tier1/dxprim/draw/Sheet.h>
 
@@ -36,10 +37,21 @@ hl2::CApplication::CApplication()
 		std::unique_ptr<engine::CBase_Draw> operator()()
 		{
 			const DirectX::XMFLOAT3 mat = { cdist(rng), cdist(rng), cdist(rng) };
-			return std::make_unique<engine::CBox>(
+			switch (typedist(rng))
+			{
+			case 0:
+				return std::make_unique<engine::CBox>(
 					gfx, rng, adist, ddist,
 					odist, rdist, bdist, mat
 					);
+			case 1:
+				return std::make_unique<engine::CCylinder>(
+					gfx, rng, adist, ddist,
+					odist, rdist, bdist,
+					vert
+				);
+			}
+			
 		}
 	private:
 		engine::CGraphicalOutput& gfx;
@@ -52,7 +64,8 @@ hl2::CApplication::CApplication()
 		std::uniform_real_distribution<float> cdist{ 0.0f, 1.0f };
 		std::uniform_int_distribution<int> latdist{ 5,20 };
 		std::uniform_int_distribution<int> longdist{ 10,40 };
-		std::uniform_int_distribution<int> typedist{ 0,2 };
+		std::uniform_int_distribution<int> typedist{ 0,1 };
+		std::uniform_int_distribution<int> vert{ 3,30 };
 	};
 
 	Factory f(m_Window.Graphics());
@@ -70,9 +83,7 @@ WPARAM hl2::CApplication::Main()
 	{
 		if (const auto ecode = hl2::CWindow::ProcessMessage())
 		{
-
 			return *ecode;
-
 		}
 		this->FrameLoop();
 	}
@@ -83,7 +94,7 @@ void hl2::CApplication::FrameLoop()
 	auto dt = m_Timer.Mark() * m_SpeedFactor;
 	m_Window.Graphics().BeginFrameNorm(255, 127, 0);
 	m_Window.Graphics().SetCamera(m_Cam.GetMatrix());
-	m_Light.Bind(m_Window.Graphics());
+	m_Light.Bind(m_Window.Graphics(), m_Cam.GetMatrix());
 
 	for (auto& b : m_Drawables)
 	{

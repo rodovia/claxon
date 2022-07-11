@@ -9,22 +9,23 @@ cbuffer CLight : register(b0)
     float AttQuad;
 };
 
-cbuffer CObject : register(b1)
+cbuffer CObject : register(b10)
 {
-    float3 MaterialColor;
+    float3 MaterialColors[6];
+    float _unused_1;
     float SpecularIntensity;
     float SpecularPower;
 };
 
-float3 CalculateSpecularIntensity(float3 _VecToLight, float _Att, float3 _WorldPos: Position, float3 _Normal : Normal)
+float3 CalculateSpecularIntensity(float3 _VecToLight, float _Att, float3 _WorldPos : Position, float3 _Normal : Normal)
 {
     const float3 w = _Normal * dot(_VecToLight, _Normal);
     const float3 r = w * 2.0f - _VecToLight;
-    return _Att * (DiffColor * DiffIntensity) * SpecularIntensity * 
+    return _Att * (DiffColor * DiffIntensity) * SpecularIntensity *
             pow(max(0.0f, dot(normalize(-r), normalize(_WorldPos))), SpecularPower);
 }
 
-float4 main(float3 _WorldPos: Position, float3 _Norm: Normal): SV_TARGET
+float4 main(float3 _WorldPos : Position, float3 _Norm : Normal, uint _Tid : SV_PrimitiveID) : SV_TARGET
 {
     // fragment to light vector data
     const float3 vtol = LightPos - _WorldPos;
@@ -34,6 +35,5 @@ float4 main(float3 _WorldPos: Position, float3 _Norm: Normal): SV_TARGET
     // diffuse attenuation
     const float att = 1.0f / AttConst + AttLin * distToL + AttQuad * pow(distToL, 2);
     const float3 diff = DiffColor * DiffIntensity * att * max(0.0f, dot(dirToL, _Norm));
-    
-    return float4(saturate((diff + Ambient + CalculateSpecularIntensity(vtol, att, _WorldPos, _Norm)) * MaterialColor), 1.0f);
+    return float4(saturate((diff + Ambient + CalculateSpecularIntensity(vtol, att, _WorldPos, _Norm)) * MaterialColors[_Tid % 8]), 1.0f);
 }

@@ -20,23 +20,7 @@ engine::CBox::CBox(CGraphicalOutput& _Gfx,
 					std::uniform_real_distribution<float>& _Bdist,
 	                DirectX::XMFLOAT3 _Material
 	)
-	: m_Speed({
-			_Ddist(_Rng), /* dRoll */
-			_Ddist(_Rng), /* dPitch */
-			_Ddist(_Rng), /* dYaw */
-			_Odist(_Rng), /* dTheta */
-			_Odist(_Rng), /* dPhi */
-			_Odist(_Rng), /* dChi */
-	}), 
-	  m_Positional({
-			0.0f,		  /* Roll */
-			0.0f,		  /* Pitch */
-			0.0f,		  /* Yaw */
-			_Adist(_Rng), /* Theta */
-			_Adist(_Rng), /* Phi */
-			_Adist(_Rng), /* Chi */
-	}),
-	  m_R(_Rdist(_Rng))
+	: CBase_PrimObject(_Gfx, _Rng, _Adist, _Ddist, _Odist, _Rdist, _Bdist)
 {
 	if (!this->IsStaticInit())
 	{
@@ -58,11 +42,11 @@ engine::CBox::CBox(CGraphicalOutput& _Gfx,
 		this->AddStaticBind(std::move(pvs));
 		this->AddStaticBind(std::make_unique<engine::CPixelShader>(_Gfx, MAKE_SHADER_RESOURCE("Phong_PS.cso")));
 		this->AddStaticIndexBuffer(std::make_unique<engine::CIndexBuffer>(_Gfx, model.m_Indices));
-
+		
 		const std::vector<D3D11_INPUT_ELEMENT_DESC> ied =
 		{
-			{ "Position", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-			{ "Normal", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 }
+			_ENGINE_POSITION_IED,
+			{ "Normal", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 }
 		};
 
 		this->AddStaticBind(std::make_unique<engine::CInputLayout>(_Gfx, ied, pvsbc));
@@ -76,8 +60,10 @@ engine::CBox::CBox(CGraphicalOutput& _Gfx,
 
 	struct PSMaterialConstant
 	{
-		DirectX::XMFLOAT3 Color;
-		float _unused;
+		alignas(16) DirectX::XMFLOAT3 Color;
+		float SpecularIntensity = 0.6f;
+		float SpecularPower = 30.0f;
+		float _unused[2];
 	} colorc;
 	colorc.Color = _Material;
 	auto ma = std::make_unique<engine::CConstantPixelBuffer<PSMaterialConstant>>(_Gfx, 1u);
@@ -91,20 +77,7 @@ engine::CBox::CBox(CGraphicalOutput& _Gfx,
 	);
 }
 
-void engine::CBox::Update(float _Dt) noexcept
-{
-	m_Positional.Roll += m_Speed.dRoll * _Dt;
-	m_Positional.Pitch += m_Speed.dPitch * _Dt;
-	m_Positional.Yaw += m_Speed.dYaw * _Dt;
-	m_Positional.Theta += m_Speed.dTheta * _Dt;
-	m_Positional.Phi += m_Speed.dPhi * _Dt;
-	m_Positional.Chi += m_Speed.dChi * _Dt;
-}
-
 DirectX::XMMATRIX engine::CBox::GetTransformMatrix() const noexcept
 {
-	return DirectX::XMLoadFloat3x3(&m_Matrix) *
-		DirectX::XMMatrixRotationRollPitchYaw(m_Positional.Pitch, m_Positional.Yaw, m_Positional.Roll) *
-		DirectX::XMMatrixTranslation(m_R, 0.0f, 0.0f) *
-		DirectX::XMMatrixRotationRollPitchYaw(m_Positional.Theta, m_Positional.Phi, m_Positional.Chi);
+	return DirectX::XMLoadFloat3x3(&m_Matrix) * CBase_PrimObject::GetTransformMatrix();
 }

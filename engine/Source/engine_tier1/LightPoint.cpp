@@ -39,7 +39,7 @@ void engine::CLightPoint::Reset() noexcept
 {
 	m_ConstBufferData = { 
 		{ 0.0f, 0.0f, 0.0f },
-		{ 0.05f, 0.5f, 0.05f },
+		{ 0.5f, 0.5f, 0.5f },
 		{ 1.0f, 1.0f, 1.0f },
 		1.0f,
 		1.0f,
@@ -54,8 +54,11 @@ void engine::CLightPoint::Draw(CGraphicalOutput& _Gfx) noexcept
 	m_Mesh.Draw(_Gfx);
 }
 
-void engine::CLightPoint::Bind(CGraphicalOutput& _Gfx) const noexcept
+void engine::CLightPoint::Bind(CGraphicalOutput& _Gfx, DirectX::FXMMATRIX _View) noexcept
 {
-	m_Buf.Update(_Gfx, m_ConstBufferData);
+	auto dataCopy = m_ConstBufferData;
+	const auto pos = DirectX::XMLoadFloat3(&m_ConstBufferData.Position);
+	DirectX::XMStoreFloat3(&dataCopy.Position, DirectX::XMVector3Transform(pos, _View));
+	m_Buf.Update(_Gfx, dataCopy);
 	m_Buf.Bind(_Gfx);
 }

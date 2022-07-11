@@ -12,11 +12,11 @@ engine::CTransformConstantBuffer::CTransformConstantBuffer(
 
 void engine::CTransformConstantBuffer::Bind(CGraphicalOutput& _Gfx)
 {
-	const auto model = m_Parent.GetTransformMatrix();
+	const auto modelView = m_Parent.GetTransformMatrix();
 	Transforms tf{
-		DirectX::XMMatrixTranspose(model),
+		DirectX::XMMatrixTranspose(modelView),
 		DirectX::XMMatrixTranspose(
-			model *
+			modelView *
 			_Gfx.GetCamera() *
 			_Gfx.GetProjection()
 		)
