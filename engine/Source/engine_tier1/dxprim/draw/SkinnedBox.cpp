@@ -15,61 +15,55 @@
 #include <engine_tier1/dxprim/VertexBuffer.h>
 
 engine::CSkinnedBox::CSkinnedBox(CGraphicalOutput& _Gfx,
-				std::mt19937& _Rng,
-				std::uniform_real_distribution<float>& _Adist,
-				std::uniform_real_distribution<float>& _Ddist,
-				std::uniform_real_distribution<float>& _Odist,
-				std::uniform_real_distribution<float>& _Rdist)
-	: m_Speed({
-		_Ddist(_Rng),	/* dRoll */
-		_Ddist(_Rng),	/* dPitch */
-		_Ddist(_Rng),	/* dYaw */
-		_Odist(_Rng),	/* dTheta */
-		_Odist(_Rng),	/* dPhi */
-		_Odist(_Rng),	/* dChi */
-	}),
-	m_Positional({
-		0.0f,			/* Roll */
-		0.0f,			/* Pitch */
-		0.0f,			/* Yaw */
-		_Adist(_Rng), /* Theta */
-		_Adist(_Rng), /* Phi */
-		_Adist(_Rng), /* Chi */
-	}),
-	m_R(_Rdist(_Rng))
+	std::mt19937& _Rng,
+	std::uniform_real_distribution<float>& _Adist,
+	std::uniform_real_distribution<float>& _Ddist,
+	std::uniform_real_distribution<float>& _Odist,
+	std::uniform_real_distribution<float>& _Rdist,
+	std::uniform_real_distribution<float>& _Bdist
+	)	: CBase_PrimObject(_Gfx, _Rng, _Adist, _Ddist, _Odist, _Rdist, _Bdist)
 {
 	if (!this->IsStaticInit())
 	{
 		struct Vertex
 		{
 			DirectX::XMFLOAT3 pos;
-			struct
-			{
-				float u, v;
-			} tex;
+			DirectX::XMFLOAT3 norm;
+			DirectX::XMFLOAT2 tc;
 		};
 
 		auto surf = MAKE_SURFACE_MOUNT("resources/textures/cube.png");
-		auto model = engine::CCube::MakeSkinned<Vertex>();
-		surf.WriteToFile(L"../../../mod/resources/textures/_test.bmp");
+		auto model = engine::CCube::MakeIndependentTextured<Vertex>();
+		model.SetNormalsIndependentFlat();
 
 		this->AddStaticBind(std::make_unique<engine::CTexture>(_Gfx, surf));
 		this->AddStaticBind(std::make_unique<engine::CVertexBuffer>(_Gfx, model.m_Vertices));
 		this->AddStaticBind(std::make_unique<engine::CSampler>(_Gfx));
-		this->AddStaticBind(std::make_unique<engine::CPixelShader>(_Gfx, _GETPATH("resources/hlsl/Texture_PS.cso")));
+		this->AddStaticBind(std::make_unique<engine::CPixelShader>(_Gfx, MAKE_SHADER_RESOURCE("TexturePhong_PS.cso")));
 
-		auto pvs = std::make_unique<engine::CVertexShader>(_Gfx, _GETPATH("resources/hlsl/Texture_VS.cso"));
+		auto pvs = std::make_unique<engine::CVertexShader>(_Gfx, MAKE_SHADER_RESOURCE("TexturePhong_VS.cso"));
 		auto pvsbc = pvs->GetBytecode();
 		this->AddStaticBind(std::move(pvs));
 
 		this->AddStaticIndexBuffer(std::make_unique<engine::CIndexBuffer>(_Gfx, model.m_Indices));
 		const std::vector<D3D11_INPUT_ELEMENT_DESC> ied =
 		{
-			{ "Position", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+			_ENGINE_POSITION_IED,
+			{ "Normal",0,DXGI_FORMAT_R32G32B32_FLOAT,0,12,D3D11_INPUT_PER_VERTEX_DATA,0 },
 			{ "TexCoord", 0, DXGI_FORMAT_R32G32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 }
 		};
 		this->AddStaticBind(std::make_unique<engine::CInputLayout>(_Gfx, ied, pvsbc));
 		this->AddStaticBind(std::make_unique<engine::CPrim_Topology>(_Gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST));
+
+		struct PSMaterialConstant
+		{
+			float SpecularIntensity = 0.6f;
+			float SpecularPower = 30.0f;
+			float _unused[2];
+		} colorc;
+		auto m = std::make_unique<engine::CConstantPixelBuffer<PSMaterialConstant>>(_Gfx, 10u);
+		m->Update(_Gfx, colorc);
+		this->AddStaticBind(std::move(m));
 	}
 	else
 	{
@@ -77,21 +71,4 @@ engine::CSkinnedBox::CSkinnedBox(CGraphicalOutput& _Gfx,
 	}
 
 	this->AddBind(std::make_unique<engine::CTransformConstantBuffer>(_Gfx, *this));
-}
-
-void engine::CSkinnedBox::Update(float _Dt) noexcept
-{
-	m_Positional.Roll += m_Speed.dRoll * _Dt;
-	m_Positional.Pitch += m_Speed.dPitch * _Dt;
-	m_Positional.Yaw += m_Speed.dYaw * _Dt;
-	m_Positional.Theta += m_Speed.dTheta * _Dt;
-	m_Positional.Phi += m_Speed.dPhi * _Dt;
-	m_Positional.Chi += m_Speed.dChi * _Dt;
-}
-
-DirectX::XMMATRIX engine::CSkinnedBox::GetTransformMatrix() const noexcept
-{
-	return DirectX::XMMatrixRotationRollPitchYaw(m_Positional.Pitch, m_Positional.Yaw, m_Positional.Roll) *
-		DirectX::XMMatrixTranslation(m_R, 0.0f, 0.0f) *
-		DirectX::XMMatrixRotationRollPitchYaw(m_Positional.Theta, m_Positional.Phi, m_Positional.Chi);
 }

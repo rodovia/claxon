@@ -126,6 +126,39 @@ public:
 			}
 		};
 	}
+
+	template<class V>
+	static CIndexedTriangleList<V> MakeIndependentTextured()
+	{
+		auto itl = MakeIndependent<V>();
+
+		itl.m_Vertices[0].tc = { 0.0f,0.0f };
+		itl.m_Vertices[1].tc = { 1.0f,0.0f };
+		itl.m_Vertices[2].tc = { 0.0f,1.0f };
+		itl.m_Vertices[3].tc = { 1.0f,1.0f };
+		itl.m_Vertices[4].tc = { 0.0f,0.0f };
+		itl.m_Vertices[5].tc = { 1.0f,0.0f };
+		itl.m_Vertices[6].tc = { 0.0f,1.0f };
+		itl.m_Vertices[7].tc = { 1.0f,1.0f };
+		itl.m_Vertices[8].tc = { 0.0f,0.0f };
+		itl.m_Vertices[9].tc = { 1.0f,0.0f };
+		itl.m_Vertices[10].tc = { 0.0f,1.0f };
+		itl.m_Vertices[11].tc = { 1.0f,1.0f };
+		itl.m_Vertices[12].tc = { 0.0f,0.0f };
+		itl.m_Vertices[13].tc = { 1.0f,0.0f };
+		itl.m_Vertices[14].tc = { 0.0f,1.0f };
+		itl.m_Vertices[15].tc = { 1.0f,1.0f };
+		itl.m_Vertices[16].tc = { 0.0f,0.0f };
+		itl.m_Vertices[17].tc = { 1.0f,0.0f };
+		itl.m_Vertices[18].tc = { 0.0f,1.0f };
+		itl.m_Vertices[19].tc = { 1.0f,1.0f };
+		itl.m_Vertices[20].tc = { 0.0f,0.0f };
+		itl.m_Vertices[21].tc = { 1.0f,0.0f };
+		itl.m_Vertices[22].tc = { 0.0f,1.0f };
+		itl.m_Vertices[23].tc = { 1.0f,1.0f };
+
+		return itl;
+	}
 };
 
 }

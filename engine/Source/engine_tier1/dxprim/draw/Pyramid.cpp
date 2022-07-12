@@ -1,8 +1,11 @@
 #include "Pyramid.h"
 
+#include <array>
+
 #include <engine_tier1/Surface.h>
 #include <engine_tier1/dxprim/VertexBuffer.h>
 #include <engine_tier1/dxprim/InputLayout.h>
+#include <engine_tier1/dxprim/ConstantBuffer.h>
 #include <engine_tier1/dxprim/TransformConstBuffer.h>
 #include <engine_tier1/dxprim/Topology.h>
 #include <engine_tier1/dxprim/Shaders.h>
@@ -12,81 +15,66 @@ engine::CPyramid::CPyramid(CGraphicalOutput& _Gfx, std::mt19937& _Rng,
 	std::uniform_real_distribution<float>& _Adist,
 	std::uniform_real_distribution<float>& _Ddist,
 	std::uniform_real_distribution<float>& _Odist,
-	std::uniform_real_distribution<float>& _Rdist)
-	: m_Speed({
-		_Ddist(_Rng), /* dRoll */
-		_Ddist(_Rng), /* dPitch */
-		_Ddist(_Rng), /* dYaw */
-		_Odist(_Rng), /* dTheta */
-		_Odist(_Rng), /* dPhi */
-		_Odist(_Rng), /* dChi */
-	}),
-	m_Positional({
-		0.0f,		  /* Roll */
-		0.0f,		  /* Pitch */
-		0.0f,		  /* Yaw */
-		_Adist(_Rng), /* Theta */
-		_Adist(_Rng), /* Phi */
-		_Adist(_Rng), /* Chi */
-	}),
-	m_R(_Rdist(_Rng))
+	std::uniform_real_distribution<float>& _Rdist,
+	std::uniform_real_distribution<float>& _Bdist,
+	std::uniform_int_distribution<int>& _Tdist)
+	: CBase_PrimObject(_Gfx, _Rng, _Adist, _Ddist, _Odist, _Rdist, _Bdist)
 {
 	if (!this->IsStaticInit())
 	{
-		struct Vertex
-		{
-			DirectX::XMFLOAT3 pos;
-			struct
-			{
-				unsigned char r, g, b, a;
-			} color;
-		};
-
-		auto model = CCone::MakeTesselated<Vertex>(4);
-		model.m_Vertices[0].color = { 255, 255, 0 };
-		model.m_Vertices[1].color = { 255, 255, 0 };
-		model.m_Vertices[2].color = { 255, 255, 0 };
-		model.m_Vertices[3].color = { 255, 255, 0 };
-		model.m_Vertices[4].color = { 255, 255, 80 };
-		model.m_Vertices[5].color = { 255, 10, 0 };
-
-		model.Transform(DirectX::XMMatrixScaling(1.0f, 1.0f, 0.7f));
-		this->AddStaticBind(std::make_unique<engine::CVertexBuffer>(_Gfx, model.m_Vertices));
-
-		auto pvs = std::make_unique<engine::CVertexShader>(_Gfx, MAKE_SHADER_RESOURCE("ColorBlend_VS.cso"));
+		auto pvs = std::make_unique<engine::CVertexShader>(_Gfx, MAKE_SHADER_RESOURCE("BlendPhong_VS.cso"));
 		auto pvsbc = pvs->GetBytecode();
 		this->AddStaticBind(std::move(pvs));
 
-		this->AddStaticIndexBuffer(std::make_unique<engine::CIndexBuffer>(_Gfx, model.m_Indices));
+		this->AddStaticBind(std::make_unique<engine::CPixelShader>(_Gfx, MAKE_SHADER_RESOURCE("BlendPhong_PS.cso")));
 		const std::vector<D3D11_INPUT_ELEMENT_DESC> ied =
 		{
-			{ "Position",0,DXGI_FORMAT_R32G32B32_FLOAT,0,0,D3D11_INPUT_PER_VERTEX_DATA,0 },
-			{ "Color",0,DXGI_FORMAT_R8G8B8A8_UNORM,0,12,D3D11_INPUT_PER_VERTEX_DATA,0 },
+			_ENGINE_POSITION_IED,
+			{ "Color",0,DXGI_FORMAT_R32G32B32_FLOAT,0,12,D3D11_INPUT_PER_VERTEX_DATA,0 },
+			{ "Normal",0,DXGI_FORMAT_R8G8B8A8_UNORM,0,24,D3D11_INPUT_PER_VERTEX_DATA,0 }
 		};
 		this->AddStaticBind(std::make_unique<engine::CInputLayout>(_Gfx, ied, pvsbc));
 		this->AddStaticBind(std::make_unique<engine::CPrim_Topology>(_Gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST));
+
+		struct PSMaterialConstant
+		{
+			float SpecularIntensity = 0.6f;
+			float SpecularPower = 30.0f;
+			float Padding[2];
+		} colorc;
+		auto m = std::make_unique<engine::CConstantPixelBuffer<PSMaterialConstant>>(_Gfx, 10u);
+		m->Update(_Gfx, colorc);
+		this->AddStaticBind(std::move(m));
+
 	}
-	else
+
+	struct Vertex
 	{
-		this->SetIndexFromStatic();
+		DirectX::XMFLOAT3 pos;
+		DirectX::XMFLOAT3 norm;
+		std::array<char, 4> color;
+		char _unused;
+	};
+
+	int tessel = _Tdist(_Rng);
+	engine::CIndexedTriangleList<Vertex> model = CCone::MakeTesselatedIndependentFaces<Vertex>(tessel);
+
+	for (auto& i : model.m_Vertices)
+	{
+		i.color = { (char)10, (char)10, (char)255 };
 	}
+	for (int i = 0; i < tessel; i++)
+	{
+		model.m_Vertices[i * 3].color = { (char)255, (char)10, (char)10 };
+	}
+
+	model.m_Vertices.front().color = { (char)255, (char)20, (char)20 };
+
+	model.Transform(DirectX::XMMatrixScaling(1.0f, 1.0f, 0.7f));
+	model.SetNormalsIndependentFlat();
+	this->AddBind(std::make_unique<engine::CVertexBuffer>(_Gfx, model.m_Vertices));
+	this->AddIndexBuffer(std::make_unique<engine::CIndexBuffer>(_Gfx, model.m_Indices));
+
 
 	this->AddBind(std::make_unique<engine::CTransformConstantBuffer>(_Gfx, *this));
-}
-
-void engine::CPyramid::Update(float _Dt) noexcept
-{
-	m_Positional.Roll += m_Speed.dRoll * _Dt;
-	m_Positional.Pitch += m_Speed.dPitch * _Dt;
-	m_Positional.Yaw += m_Speed.dYaw * _Dt;
-	m_Positional.Theta += m_Speed.dTheta * _Dt;
-	m_Positional.Phi += m_Speed.dPhi * _Dt;
-	m_Positional.Chi += m_Speed.dChi * _Dt;
-}
-
-DirectX::XMMATRIX engine::CPyramid::GetTransformMatrix() const noexcept
-{
-	return DirectX::XMMatrixRotationRollPitchYaw(m_Positional.Pitch, m_Positional.Yaw, m_Positional.Roll) *
-		DirectX::XMMatrixTranslation(m_R, 0.0f, 0.0f) *
-		DirectX::XMMatrixRotationRollPitchYaw(m_Positional.Theta, m_Positional.Phi, m_Positional.Chi);
 }

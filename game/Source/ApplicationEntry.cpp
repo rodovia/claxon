@@ -13,6 +13,8 @@
 #include <engine_tier1/dxprim/draw/Cylinder.h>
 #include <engine_tier1/dxprim/draw/Melon.h>
 #include <engine_tier1/dxprim/draw/Sheet.h>
+#include <engine_tier1/dxprim/draw/ModelTest.h>
+
 
 #include <tier0/Timer.h>
 #include <resource.h>
@@ -49,7 +51,24 @@ hl2::CApplication::CApplication()
 					gfx, rng, adist, ddist,
 					odist, rdist, bdist,
 					vert
-				);
+					);
+			case 2:
+				return std::make_unique<engine::CPyramid>(
+					gfx, rng, adist, ddist,
+					odist, rdist, bdist,
+					vert
+					);
+			case 3:
+				return std::make_unique<engine::CSkinnedBox>(
+					gfx, rng, adist, ddist,
+					odist, rdist, bdist
+					);
+			case 4:
+				return std::make_unique<engine::CModelTest>(
+					gfx, rng, adist, ddist,
+					odist, rdist, bdist, mat,
+					1.0f
+					);
 			}
 			
 		}
@@ -64,7 +83,7 @@ hl2::CApplication::CApplication()
 		std::uniform_real_distribution<float> cdist{ 0.0f, 1.0f };
 		std::uniform_int_distribution<int> latdist{ 5,20 };
 		std::uniform_int_distribution<int> longdist{ 10,40 };
-		std::uniform_int_distribution<int> typedist{ 0,1 };
+		std::uniform_int_distribution<int> typedist{ 0,4 };
 		std::uniform_int_distribution<int> vert{ 3,30 };
 	};
 
@@ -92,7 +111,7 @@ WPARAM hl2::CApplication::Main()
 void hl2::CApplication::FrameLoop()
 {
 	auto dt = m_Timer.Mark() * m_SpeedFactor;
-	m_Window.Graphics().BeginFrameNorm(255, 127, 0);
+	m_Window.Graphics().BeginFrameNorm(10, 10, 0);
 	m_Window.Graphics().SetCamera(m_Cam.GetMatrix());
 	m_Light.Bind(m_Window.Graphics(), m_Cam.GetMatrix());
 
