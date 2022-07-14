@@ -18,7 +18,7 @@ public:
 				ID3DBlob* _BlobBytecode);
 	void Bind(CGraphicalOutput&) override;
 private:
-	ComPtr<ID3D11InputLayout> m_InLayout;
+	CUtl_ComPtr<ID3D11InputLayout> m_InLayout;
 };
 
 }

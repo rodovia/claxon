@@ -260,6 +260,9 @@
     <ClInclude Include="Source\engine_tier1\VertexLayout.h">
       <Filter>Arquivos de Cabeçalho</Filter>
     </ClInclude>
+    <ClInclude Include="Source\engine_tier0\ComPtr.h">
+      <Filter>Arquivos de Cabeçalho</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\Phong_PS.hlsl" />

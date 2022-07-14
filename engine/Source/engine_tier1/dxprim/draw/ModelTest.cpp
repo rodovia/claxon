@@ -12,7 +12,11 @@
 #include <engine_tier1/dxprim/Shaders.h>
 #include <engine_tier1/dxprim/InputLayout.h>
 
+#include <engine_tier1/VertexLayout.h>
+
 #include <DirectXMath.h>
+
+using namespace engine::layout;
 
 engine::CModelTest::CModelTest(CGraphicalOutput& _Gfx, std::mt19937& _Rng,
 	std::uniform_real_distribution<float>& _Adist,
@@ -26,25 +30,24 @@ engine::CModelTest::CModelTest(CGraphicalOutput& _Gfx, std::mt19937& _Rng,
 {
 	if (!this->IsStaticInit())
 	{
-		struct Vertex
-		{
-			DirectX::XMFLOAT3 pos;
-			DirectX::XMFLOAT3 norm;
-		};
+		layout::CVertexBuffer vbuf(std::move(
+			engine::layout::CVertexLayout()
+			.Append(layout::Position3D)
+			.Append(layout::Normal)
+		));
 
 		Assimp::Importer imp;
 		const aiScene* model = imp.ReadFile(tier0::ConvertToMultiByteString(_GETPATH("resources/model/Prop_Tree_Palm_1.obj")), 
 			aiProcess_Triangulate |
 			aiProcess_JoinIdenticalVertices);
 		aiMesh* mesh = model->mMeshes[0];
-		std::vector<Vertex> vertices;
-		vertices.reserve(mesh->mNumVertices);
+;
 		for (UINT i = 0; i < mesh->mNumVertices; i++)
 		{
-			vertices.push_back({
-				{ mesh->mVertices[i].x * _Scale, mesh->mVertices[i].y * _Scale, mesh->mVertices[i].z * _Scale },
+			vbuf.EmplaceBack(
+				DirectX::XMFLOAT3{ mesh->mVertices[i].x * _Scale, mesh->mVertices[i].y * _Scale, mesh->mVertices[i].z * _Scale },
 				*reinterpret_cast<DirectX::XMFLOAT3*>(&mesh->mNormals[i])
-			});
+			);
 		}
 
 		std::vector<unsigned short> indices;
@@ -58,7 +61,7 @@ engine::CModelTest::CModelTest(CGraphicalOutput& _Gfx, std::mt19937& _Rng,
 			indices.push_back(fac.mIndices[2]);
 		}
 
-		this->AddStaticBind(std::make_unique<engine::CVertexBuffer>(_Gfx, vertices));
+		this->AddStaticBind(std::make_unique<engine::CVertexBuffer>(_Gfx, vbuf));
 		this->AddStaticIndexBuffer(std::make_unique<engine::CIndexBuffer>(_Gfx, indices));
 
 		std::unique_ptr<engine::CVertexShader> pvs = std::make_unique<engine::CVertexShader>(_Gfx, MAKE_SHADER_RESOURCE("Phong_VS.cso"));
@@ -66,13 +69,7 @@ engine::CModelTest::CModelTest(CGraphicalOutput& _Gfx, std::mt19937& _Rng,
 		this->AddStaticBind(std::move(pvs));
 
 		this->AddStaticBind(std::make_unique<engine::CPixelShader>(_Gfx, MAKE_SHADER_RESOURCE("Phong_PS.cso")));
-
-		const std::vector<D3D11_INPUT_ELEMENT_DESC> ied =
-		{
-			_ENGINE_POSITION_IED,
-			{ "Normal", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 }
-		};
-		this->AddStaticBind(std::make_unique<engine::CInputLayout>(_Gfx, ied, pvsbc));
+		this->AddStaticBind(std::make_unique<engine::CInputLayout>(_Gfx, vbuf.Layout().D3DLayout(), pvsbc));
 
 		struct PSMaterialConstant
 		{

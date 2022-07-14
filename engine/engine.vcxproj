@@ -215,6 +215,7 @@
   <ItemGroup>
     <ClInclude Include="Source\engine_tier0\BaseBind.h" />
     <ClInclude Include="Source\engine_tier0\BasePrimitiveObject.h" />
+    <ClInclude Include="Source\engine_tier0\ComPtr.h" />
     <ClInclude Include="Source\engine_tier0\DLL.h" />
     <ClInclude Include="Source\engine_tier0\DXGIInfoManager.h" />
     <ClInclude Include="Source\engine_tier0\Exceptions.h" />
@@ -250,6 +251,7 @@
     <ClInclude Include="Source\engine_tier1\GraphicalOutput.h" />
     <ClInclude Include="Source\engine_tier1\LightPoint.h" />
     <ClInclude Include="Source\engine_tier1\Surface.h" />
+    <ClInclude Include="Source\engine_tier1\VertexLayout.h" />
     <ClInclude Include="Source\imguihlp.h" />
     <ClInclude Include="Source\imgui\imconfig.h" />
     <ClInclude Include="Source\imgui\imgui.h" />

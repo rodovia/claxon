@@ -1,8 +1,6 @@
 #include "Texture.h"
 #include <engine_tier1/Surface.h>
 
-using Microsoft::WRL::ComPtr;
-
 engine::CTexture::CTexture(engine::CGraphicalOutput& _Gfx,
 							const engine::CSurface& _Surfc)
 {
@@ -22,7 +20,7 @@ engine::CTexture::CTexture(engine::CGraphicalOutput& _Gfx,
 	D3D11_SUBRESOURCE_DATA sd = {};
 	sd.pSysMem = _Surfc.GetBufferPointer();
 	sd.SysMemPitch = _Surfc.GetWidth() * sizeof(engine::CColor);
-	ComPtr<ID3D11Texture2D> tex;
+	CUtl_ComPtr<ID3D11Texture2D> tex;
 	GetDevice(_Gfx)->CreateTexture2D(
 		&desc, &sd, &tex
 	);

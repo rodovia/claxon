@@ -17,7 +17,7 @@ public:
 	UINT GetCount() const noexcept;
 private:
 	UINT m_IndicesCount;
-	ComPtr<ID3D11Buffer> m_IndexBuffer;
+	CUtl_ComPtr<ID3D11Buffer> m_IndexBuffer;
 };
 
 }

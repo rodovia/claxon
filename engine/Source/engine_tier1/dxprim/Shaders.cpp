@@ -14,7 +14,7 @@ ID3DBlob* engine::CVertexShader::GetBytecode() const noexcept
 
 void engine::CVertexShader::Bind(engine::CGraphicalOutput& _Gfx)
 {
-	ComPtr<ID3D11VertexShader> shader;
+	CUtl_ComPtr<ID3D11VertexShader> shader;
 	GetDevice(_Gfx)->CreateVertexShader(m_Blob->GetBufferPointer(), 
 										m_Blob->GetBufferSize(), 
 										nullptr, &shader);
@@ -34,7 +34,7 @@ ID3DBlob* engine::CPixelShader::GetBytecode() const noexcept
 
 void engine::CPixelShader::Bind(engine::CGraphicalOutput& _Gfx)
 {
-	ComPtr<ID3D11PixelShader> shader;
+	CUtl_ComPtr<ID3D11PixelShader> shader;
 	GetDevice(_Gfx)->CreatePixelShader(m_Blob->GetBufferPointer(),
 		m_Blob->GetBufferSize(),
 		nullptr, &shader);

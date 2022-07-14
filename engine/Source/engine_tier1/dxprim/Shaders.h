@@ -17,7 +17,7 @@ public:
 	void Bind(CGraphicalOutput&) override;
 	ID3DBlob* GetBytecode() const noexcept;
 private:
-	ComPtr<ID3DBlob> m_Blob;
+	CUtl_ComPtr<ID3DBlob> m_Blob;
 };
 
 class _ENGINE_DLLEXP CPixelShader : public CBase_Bind
@@ -27,7 +27,7 @@ public:
 	void Bind(CGraphicalOutput&) override;
 	ID3DBlob* GetBytecode() const noexcept;
 private:
-	ComPtr<ID3DBlob> m_Blob;
+	CUtl_ComPtr<ID3DBlob> m_Blob;
 };
 
 }

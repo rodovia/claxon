@@ -9,9 +9,10 @@
 
 #include <d3d11.h>
 #include <DirectXMath.h>
-#include <wrl.h>
+#include <engine_tier0/ComPtr.h>
 
-using Microsoft::WRL::ComPtr;
+template<class T>
+using ComPtr [[deprecated]] = engine::CUtl_ComPtr<T>;
 
 namespace engine
 {
@@ -43,11 +44,11 @@ private:
 	bool m_HasImGui = true;
 	bool m_PendingEndFrameCall = false;
 
-	ComPtr<ID3D11Device> m_Device;
-	ComPtr<ID3D11DeviceContext> m_Context;
-	ComPtr<IDXGISwapChain> m_Swap;
-	ComPtr<ID3D11RenderTargetView> m_Target;
-	ComPtr<ID3D11DepthStencilView> m_DepthStencil;	
+	CUtl_ComPtr<ID3D11Device> m_Device;
+	CUtl_ComPtr<ID3D11DeviceContext> m_Context;
+	CUtl_ComPtr<IDXGISwapChain> m_Swap;
+	CUtl_ComPtr<ID3D11RenderTargetView> m_Target;
+	CUtl_ComPtr<ID3D11DepthStencilView> m_DepthStencil;
 	DirectX::XMMATRIX m_Projection;
 	DirectX::XMMATRIX m_Camera;
 	D3D_FEATURE_LEVEL m_FeatLevel;

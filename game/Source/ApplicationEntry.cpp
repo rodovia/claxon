@@ -15,6 +15,7 @@
 #include <engine_tier1/dxprim/draw/Sheet.h>
 #include <engine_tier1/dxprim/draw/ModelTest.h>
 
+#include <engine_tier1/VertexLayout.h>
 
 #include <tier0/Timer.h>
 #include <resource.h>

@@ -2,7 +2,7 @@
 #pragma once
 
 #include <engine_tier0/BaseBind.h>
-#include <wrl.h>
+#include <engine_tier0/ComPtr.h>
 
 namespace engine
 {
@@ -13,7 +13,7 @@ public:
 	CSampler(CGraphicalOutput& _Gfx);
 	void Bind(CGraphicalOutput& _Gfx) noexcept override;
 protected:
-	Microsoft::WRL::ComPtr<ID3D11SamplerState> m_Sampler;
+	CUtl_ComPtr<ID3D11SamplerState> m_Sampler;
 };
 
 }
