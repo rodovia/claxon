@@ -4,7 +4,7 @@
 void engine::CBase_Draw::Draw(engine::CGraphicalOutput& _Gfx) const
 {
 	for (const std::shared_ptr<CBase_Bind>& b : m_Binds)
-	{
+	{	
 		b->Bind(_Gfx);
 	}
 

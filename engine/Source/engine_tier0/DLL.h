@@ -7,4 +7,3 @@
 #endif
 
 #define _ENGINE_CBUFFER_ALIGN __declspec(align(16))
-

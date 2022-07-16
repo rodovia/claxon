@@ -38,6 +38,7 @@
     <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
+    <EnableASAN>false</EnableASAN>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
@@ -51,6 +52,7 @@
     <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
+    <EnableASAN>false</EnableASAN>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -202,6 +204,7 @@
     <ClCompile Include="Source\engine_tier1\dxprim\VertexBuffer.cpp" />
     <ClCompile Include="Source\engine_tier1\GraphicalOutput.cpp" />
     <ClCompile Include="Source\engine_tier1\LightPoint.cpp" />
+    <ClCompile Include="Source\engine_tier1\Model.cpp" />
     <ClCompile Include="Source\engine_tier1\Surface.cpp" />
     <ClCompile Include="Source\imguihlp.cpp" />
     <ClCompile Include="Source\imgui\imgui.cpp" />
@@ -250,6 +253,7 @@
     <ClInclude Include="Source\engine_tier1\dxprim\Viewport.h" />
     <ClInclude Include="Source\engine_tier1\GraphicalOutput.h" />
     <ClInclude Include="Source\engine_tier1\LightPoint.h" />
+    <ClInclude Include="Source\engine_tier1\Model.h" />
     <ClInclude Include="Source\engine_tier1\Surface.h" />
     <ClInclude Include="Source\engine_tier1\VertexLayout.h" />
     <ClInclude Include="Source\imguihlp.h" />

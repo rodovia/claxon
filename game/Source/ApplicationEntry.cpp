@@ -30,71 +30,8 @@ hl2::CApplication::CApplication()
 	: m_Window(800, 600, L"TAIKO NO TATSUJIN", engine::imgui::SetupImGui()),
 	  m_Light(m_Window.Graphics())
 {
-	class Factory
-	{
-	public:
-		Factory(engine::CGraphicalOutput& gfx)
-			:
-			gfx(gfx)
-		{}
-		std::unique_ptr<engine::CBase_Draw> operator()()
-		{
-			const DirectX::XMFLOAT3 mat = { cdist(rng), cdist(rng), cdist(rng) };
-			switch (typedist(rng))
-			{
-			case 0:
-				return std::make_unique<engine::CBox>(
-					gfx, rng, adist, ddist,
-					odist, rdist, bdist, mat
-					);
-			case 1:
-				return std::make_unique<engine::CCylinder>(
-					gfx, rng, adist, ddist,
-					odist, rdist, bdist,
-					vert
-					);
-			case 2:
-				return std::make_unique<engine::CPyramid>(
-					gfx, rng, adist, ddist,
-					odist, rdist, bdist,
-					vert
-					);
-			case 3:
-				return std::make_unique<engine::CSkinnedBox>(
-					gfx, rng, adist, ddist,
-					odist, rdist, bdist
-					);
-			case 4:
-				return std::make_unique<engine::CModelTest>(
-					gfx, rng, adist, ddist,
-					odist, rdist, bdist, mat,
-					1.0f
-					);
-			}
-			
-		}
-	private:
-		engine::CGraphicalOutput& gfx;
-		std::mt19937 rng{ std::random_device{}() };
-		std::uniform_real_distribution<float> adist{ 0.0f,PI_f * 2.0f };
-		std::uniform_real_distribution<float> ddist{ 0.0f,PI_f * 0.5f };
-		std::uniform_real_distribution<float> odist{ 0.0f,PI_f * 0.08f };
-		std::uniform_real_distribution<float> rdist{ 6.0f,20.0f };
-		std::uniform_real_distribution<float> bdist{ 0.4f,3.0f };
-		std::uniform_real_distribution<float> cdist{ 0.0f, 1.0f };
-		std::uniform_int_distribution<int> latdist{ 5,20 };
-		std::uniform_int_distribution<int> longdist{ 10,40 };
-		std::uniform_int_distribution<int> typedist{ 0,4 };
-		std::uniform_int_distribution<int> vert{ 3,30 };
-	};
-
-	Factory f(m_Window.Graphics());
-	m_Drawables.reserve(s_Drawables);
-	std::generate_n(std::back_inserter(m_Drawables),s_Drawables, f);
-
 	gamepaths::CInfoParser::FromFile("gameinfo.txt");
 	m_Window.Graphics().SetProjection(DirectX::XMMatrixPerspectiveLH(1.0f, 3.0f / 4.0f, 0.5f, 40.0f));
-	
 }
 
 WPARAM hl2::CApplication::Main()
@@ -111,27 +48,37 @@ WPARAM hl2::CApplication::Main()
 
 void hl2::CApplication::FrameLoop()
 {
-	auto dt = m_Timer.Mark() * m_SpeedFactor;
-	m_Window.Graphics().BeginFrameNorm(10, 10, 0);
+	m_Window.Graphics().BeginFrameNorm(200, 200, 200);
 	m_Window.Graphics().SetCamera(m_Cam.GetMatrix());
 	m_Light.Bind(m_Window.Graphics(), m_Cam.GetMatrix());
 
-	for (auto& b : m_Drawables)
-	{
-		b->Update(m_Window.m_Keyboard.IsKeyPressed(VK_SPACE) ? 0.0f : dt.count());
-		b->Draw(m_Window.Graphics());
-	}
+	m_Nano.Draw(m_Window.Graphics(), DirectX::XMMatrixRotationRollPitchYaw(m_Pos.Pitch, m_Pos.Yaw, m_Pos.Roll) *
+		DirectX::XMMatrixTranslation(m_Pos.X, m_Pos.Y, m_Pos.Z));
 	m_Light.Draw(m_Window.Graphics());
 
-	if (ImGui::Begin("Simulation Options"))
-	{
-		ImGui::SliderFloat("Speed factor", &m_SpeedFactor, 0.0f, 4.0f);
-		ImGui::Text("Application avg: %.3f ms/frame (%.1f FPS)", ImGui::GetIO().Framerate / 1000, ImGui::GetIO().Framerate);
-	}
-	ImGui::End();
-
-	m_Cam.SpawnControlWindow();
 	m_Light.SpawnControlWindow();
+	m_Cam.SpawnControlWindow();
+	this->SpawnModelWindow();
 
 	m_Window.Graphics().EndFrame();
+}
+
+void hl2::CApplication::SpawnModelWindow()
+{
+	if (ImGui::Begin("Model"))
+	{
+		using namespace std::string_literals;
+
+		ImGui::Text("Orientation");
+		ImGui::SliderAngle("Pitch", &m_Pos.Pitch, -180.0f, 180.0f);
+		ImGui::SliderAngle("Yaw", &m_Pos.Yaw, -180.0f, 180.0f);
+		ImGui::SliderAngle("Roll", &m_Pos.Roll, -180.0f, 180.0f);
+
+		ImGui::Text("Position");
+		ImGui::SliderFloat("X", &m_Pos.X, -20.0f, 20.0f);
+		ImGui::SliderFloat("Y", &m_Pos.Y, -20.0f, 20.0f);
+		ImGui::SliderFloat("Z", &m_Pos.Z, -20.0f, 20.0f);
+	}
+
+	ImGui::End();
 }

@@ -9,7 +9,7 @@ cbuffer CLight : register(b0)
     float AttQuad;
 };
 
-cbuffer CObject : register(b1)
+cbuffer CObject : register(b10)
 {
     float3 MaterialColor;
     float SpecularIntensity;

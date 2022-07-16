@@ -27,7 +27,8 @@ protected:
 	void AddIndexBuffer(std::shared_ptr<engine::CIndexBuffer> _Buffer) noexcept;
 public:
 	virtual DirectX::XMMATRIX GetTransformMatrix() const noexcept = 0;
-	virtual void Update(float _Dt) noexcept = 0;
+	virtual void Update(float _Dt) noexcept
+	{};
 	virtual ~CBase_Draw() = default;
 private:
 	virtual const std::vector<std::shared_ptr<CBase_Bind>>& GetStaticBinds() const noexcept = 0;
