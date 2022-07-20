@@ -10,7 +10,7 @@
 namespace engine
 {
 
-class _ENGINE_DLLEXP  CVertexShader : public CBase_Bind
+class  CVertexShader : public CBase_Bind
 {
 public:
 	CVertexShader(CGraphicalOutput& _Gfx, std::wstring _Filename);
@@ -20,7 +20,7 @@ private:
 	CUtl_ComPtr<ID3DBlob> m_Blob;
 };
 
-class _ENGINE_DLLEXP CPixelShader : public CBase_Bind
+class CPixelShader : public CBase_Bind
 {
 public:
 	CPixelShader(CGraphicalOutput& _Gfx, std::wstring _Filename);

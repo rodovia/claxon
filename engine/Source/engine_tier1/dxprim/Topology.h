@@ -7,7 +7,7 @@
 namespace engine
 {
 
-class _ENGINE_DLLEXP CPrim_Topology : public CBase_Bind
+class CPrim_Topology : public CBase_Bind
 {
 public:
 	CPrim_Topology(CGraphicalOutput& _Gfx, D3D11_PRIMITIVE_TOPOLOGY _Type);

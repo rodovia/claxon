@@ -22,6 +22,82 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 
+#include <unordered_map>
+
+#pragma region CModelDiagWindow
+
+namespace engine
+{
+
+// The Model diagnostic window.
+class CModelDiagWindow
+{
+public:
+	void Show(const char* _Name, const engine::CNode& _Root);
+	DirectX::XMMATRIX GetTransformMatrix() const noexcept;
+	CNode* SelectedNode() const noexcept;
+private:
+	struct TransformParams {
+		float Roll = 0.0f;
+		float Pitch = 0.0f;
+		float Yaw = 0.0f;
+		float X = 0.0f;
+		float Y = 0.0f;
+		float Z = 0.0f;
+	} m_Pos;
+	engine::CNode* m_SelectedNode;
+
+	std::optional<int> m_SelectedNodeIndex;
+	std::unordered_map<int, TransformParams> m_Transforms;
+};
+
+void CModelDiagWindow::Show(const char* _Name, const engine::CNode& _Root)
+{
+	std::string fmt = std::format("Ferramenta de diagnostico de modelos - {}", _Name ? _Name : "Modelo");
+	int cnix = 0;
+	if (ImGui::Begin(fmt.c_str()))
+	{
+		ImGui::Columns(2, nullptr);
+		_Root.RenderTree(cnix, m_SelectedNodeIndex, m_SelectedNode);
+
+		ImGui::NextColumn();
+		if (m_SelectedNode != nullptr)
+		{
+			TransformParams& transform = m_Transforms[*m_SelectedNodeIndex];
+			ImGui::Text("Orientation");
+			ImGui::SliderAngle("Pitch", &transform.Pitch, -180.0f, 180.0f);
+			ImGui::SliderAngle("Yaw", &transform.Yaw, -180.0f, 180.0f);
+			ImGui::SliderAngle("Roll", &transform.Roll, -180.0f, 180.0f);
+
+			ImGui::Text("Position");
+			ImGui::SliderFloat("X", &transform.X, -20.0f, 20.0f);
+			ImGui::SliderFloat("Y", &transform.Y, -20.0f, 20.0f);
+			ImGui::SliderFloat("Z", &transform.Z, -20.0f, 20.0f);
+		}
+
+	}
+
+	ImGui::End();
+}
+
+DirectX::XMMATRIX CModelDiagWindow::GetTransformMatrix() const noexcept
+{
+	const auto& transform = m_Transforms.at(*m_SelectedNodeIndex);
+	return DirectX::XMMatrixRotationRollPitchYaw(transform.Pitch, transform.Yaw, transform.Roll) *
+		DirectX::XMMatrixTranslation(transform.X, transform.Y, transform.Z);
+}
+
+engine::CNode* CModelDiagWindow::SelectedNode() const noexcept
+{
+	return m_SelectedNode;
+}
+
+}
+
+#pragma endregion CModelDiagWindow
+
+#pragma region CMesh
+
 engine::CMesh::CMesh(engine::CGraphicalOutput& _Gfx, std::vector<std::unique_ptr<engine::CBase_Bind>> _BindPtrs)
 {
 	if (!this->IsStaticInit())
@@ -56,17 +132,31 @@ DirectX::XMMATRIX engine::CMesh::GetTransformMatrix() const noexcept
 	return DirectX::XMLoadFloat4x4(&m_Transform);
 }
 
-// CMesh ^^^^^ // CNode vvvvv
+#pragma endregion CMesh
 
-engine::CNode::CNode(std::vector<engine::CMesh*> _MeshPtrs, const DirectX::XMMATRIX& _Transform) noexcept
+#pragma region CNode
+
+engine::CNode::CNode(const std::string& _Name, std::vector<engine::CMesh*> _MeshPtrs, 
+	const DirectX::XMMATRIX& _Transform
+) noexcept
 	:
-	m_MeshPtrs(std::move(_MeshPtrs))
+	m_MeshPtrs(std::move(_MeshPtrs)),
+	m_Name(_Name)
 {
-	DirectX::XMStoreFloat4x4(&m_Transform, _Transform);
+	DirectX::XMStoreFloat4x4(&m_BaseTransform, _Transform);
+	DirectX::XMStoreFloat4x4(&m_ApplTransform, DirectX::XMMatrixIdentity());
 }
+
+void engine::CNode::SetAppliedTransform(DirectX::FXMMATRIX _Transform) noexcept
+{
+	DirectX::XMStoreFloat4x4(&m_ApplTransform, _Transform);
+}
+
 void engine::CNode::Draw(CGraphicalOutput& _Gfx, DirectX::FXMMATRIX _AccumTransform) noexcept
 {
-	const auto built = DirectX::XMLoadFloat4x4(&m_Transform) * _AccumTransform;
+	const auto built = DirectX::XMLoadFloat4x4(&m_BaseTransform) *
+		DirectX::XMLoadFloat4x4(&m_ApplTransform) *
+		_AccumTransform;
 	for (const auto pm : m_MeshPtrs)
 	{
 		pm->Draw(_Gfx, built);
@@ -82,9 +172,37 @@ void engine::CNode::AddChild(std::unique_ptr<CNode> _Child) noexcept
 	m_NodePtrs.push_back(std::move(_Child));
 }
 
-// engine::CNode ^^^^^ // engine::CModel vvvvv
+void engine::CNode::RenderTree(int& _NodeIndex, std::optional<int>& _SelectedNodeIndex, engine::CNode*& _SelectedNode) const noexcept
+{
+	const int cnix = _NodeIndex;
+	_NodeIndex++;
+
+	const int flags = ImGuiTreeNodeFlags_OpenOnArrow | 
+		((cnix == _SelectedNodeIndex.value_or(-1)) ? ImGuiTreeNodeFlags_Selected : 0) |
+		((m_NodePtrs.empty()) ? ImGuiTreeNodeFlags_Leaf : 0);
+
+	if (ImGui::TreeNodeEx((void*)(intptr_t) cnix, flags, m_Name.c_str()))
+	{
+		if (ImGui::IsItemClicked())
+		{
+			_SelectedNodeIndex = cnix;
+			_SelectedNode = const_cast<engine::CNode*>(this);
+		}
+
+		for (const auto& child : m_NodePtrs)
+		{
+			child->RenderTree(_NodeIndex, _SelectedNodeIndex, _SelectedNode);
+		}
+		ImGui::TreePop();
+	}
+}
+
+#pragma endregion CNode
+
+#pragma region CModel
 
 engine::CModel::CModel(CGraphicalOutput& _Gfx, const std::wstring _Filename)
+	: m_ModelWindow(std::make_unique<CModelDiagWindow>())
 {
 	Assimp::Importer imp;
 	const auto scene = imp.ReadFile(tier0::ConvertToMultiByteString(_Filename),
@@ -100,9 +218,18 @@ engine::CModel::CModel(CGraphicalOutput& _Gfx, const std::wstring _Filename)
 	m_Root = ParseNode(*scene->mRootNode);
 }
 
-void engine::CModel::Draw(CGraphicalOutput& _Gfx, DirectX::FXMMATRIX _Transform) const
+void engine::CModel::ShowDiagWindow(const char* _Name)
 {
-	m_Root->Draw(_Gfx, _Transform);
+	m_ModelWindow->Show(_Name, *m_Root);
+}
+
+void engine::CModel::Draw(CGraphicalOutput& _Gfx) const
+{
+	if (auto node = m_ModelWindow->SelectedNode())
+	{
+		node->SetAppliedTransform(m_ModelWindow->GetTransformMatrix());
+	}
+	m_Root->Draw(_Gfx, DirectX::XMMatrixIdentity());
 }
 
 std::unique_ptr<engine::CMesh> engine::CModel::ParseMesh(CGraphicalOutput& _Gfx, const aiMesh& _Mesh)
@@ -175,7 +302,7 @@ std::unique_ptr<engine::CNode> engine::CModel::ParseNode(const aiNode& _Node)
 		curMeshPtrs.push_back(m_MeshPtrs.at(meshIdx).get());
 	}
 
-	auto node = std::make_unique<CNode>(std::move(curMeshPtrs), transform);
+	auto node = std::make_unique<CNode>(_Node.mName.C_Str(), std::move(curMeshPtrs), transform);
 	for (size_t i = 0; i < _Node.mNumChildren; i++)
 	{
 		node->AddChild(this->ParseNode(*_Node.mChildren[i]));
@@ -183,3 +310,8 @@ std::unique_ptr<engine::CNode> engine::CModel::ParseNode(const aiNode& _Node)
 
 	return node;
 }
+
+engine::CModel::~CModel() noexcept
+{}
+
+#pragma endregion CModel

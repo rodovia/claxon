@@ -10,7 +10,7 @@
 namespace engine
 {
 
-class _ENGINE_DLLEXP CInputLayout : public CBase_Bind
+class CInputLayout : public CBase_Bind
 {
 public:
 	CInputLayout(engine::CGraphicalOutput& _Gfx,

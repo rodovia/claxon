@@ -9,7 +9,7 @@ namespace engine
 
 class CSurface;
 
-class _ENGINE_DLLEXP CTexture : public CBase_Bind
+class CTexture : public CBase_Bind
 {
 public:
 	CTexture(CGraphicalOutput& _Gfx, const CSurface& _Surfc);

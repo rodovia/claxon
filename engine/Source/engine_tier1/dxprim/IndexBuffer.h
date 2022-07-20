@@ -8,7 +8,7 @@
 namespace engine
 {
 
-class _ENGINE_DLLEXP CIndexBuffer : public CBase_Bind
+class CIndexBuffer : public CBase_Bind
 {
 public:
 	CIndexBuffer(CGraphicalOutput& _Gfx, std::vector<unsigned short> _Indices);

@@ -11,7 +11,7 @@
 namespace engine
 {
 
-class _ENGINE_DLLEXP CVertexBuffer : public CBase_Bind
+class CVertexBuffer : public CBase_Bind
 {
 public:
 	template<class V>

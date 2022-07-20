@@ -54,34 +54,14 @@ void hl2::CApplication::FrameLoop()
 	m_Window.Graphics().SetCamera(m_Cam.GetMatrix());
 	m_Light.Bind(m_Window.Graphics(), m_Cam.GetMatrix());
 
-	m_Nano.Draw(m_Window.Graphics(), DirectX::XMMatrixRotationRollPitchYaw(m_Pos.Pitch, m_Pos.Yaw, m_Pos.Roll) *
-		DirectX::XMMatrixTranslation(m_Pos.X, m_Pos.Y, m_Pos.Z));
+	m_Nano.Draw(m_Window.Graphics());
 	m_Light.Draw(m_Window.Graphics());
 
 	m_Light.SpawnControlWindow();
 	m_Cam.SpawnControlWindow();
-	this->SpawnModelWindow();
+	m_Nano.ShowDiagWindow("nanosuit.obj");
 	engine::CConsole::SpawnWindow();
 
 	m_Window.Graphics().EndFrame();
 }
 
-void hl2::CApplication::SpawnModelWindow()
-{
-	if (ImGui::Begin("Model"))
-	{
-		using namespace std::string_literals;
-
-		ImGui::Text("Orientation");
-		ImGui::SliderAngle("Pitch", &m_Pos.Pitch, -180.0f, 180.0f);
-		ImGui::SliderAngle("Yaw", &m_Pos.Yaw, -180.0f, 180.0f);
-		ImGui::SliderAngle("Roll", &m_Pos.Roll, -180.0f, 180.0f);
-
-		ImGui::Text("Position");
-		ImGui::SliderFloat("X", &m_Pos.X, -20.0f, 20.0f);
-		ImGui::SliderFloat("Y", &m_Pos.Y, -20.0f, 20.0f);
-		ImGui::SliderFloat("Z", &m_Pos.Z, -20.0f, 20.0f);
-	}
-
-	ImGui::End();
-}

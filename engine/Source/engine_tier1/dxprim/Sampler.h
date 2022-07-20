@@ -7,7 +7,7 @@
 namespace engine
 {
 
-class _ENGINE_DLLEXP CSampler : public CBase_Bind
+class CSampler : public CBase_Bind
 {
 public:
 	CSampler(CGraphicalOutput& _Gfx);
