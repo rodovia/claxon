@@ -206,6 +206,8 @@
     <ClCompile Include="Source\engine_tier1\LightPoint.cpp" />
     <ClCompile Include="Source\engine_tier1\Model.cpp" />
     <ClCompile Include="Source\engine_tier1\Surface.cpp" />
+    <ClCompile Include="Source\engine_tier1\vertex_layout.cpp" />
+    <ClCompile Include="Source\engine_ui\console.cpp" />
     <ClCompile Include="Source\imguihlp.cpp" />
     <ClCompile Include="Source\imgui\imgui.cpp" />
     <ClCompile Include="Source\imgui\imgui_demo.cpp" />
@@ -256,6 +258,7 @@
     <ClInclude Include="Source\engine_tier1\Model.h" />
     <ClInclude Include="Source\engine_tier1\Surface.h" />
     <ClInclude Include="Source\engine_tier1\VertexLayout.h" />
+    <ClInclude Include="Source\engine_ui\Console.h" />
     <ClInclude Include="Source\imguihlp.h" />
     <ClInclude Include="Source\imgui\imconfig.h" />
     <ClInclude Include="Source\imgui\imgui.h" />

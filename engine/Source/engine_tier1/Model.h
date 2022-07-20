@@ -42,13 +42,13 @@ public:
 	* tier0::ConvertToMultiByteString explicitly everytime I use _GETPATH. 
 	*/
 	CModel(CGraphicalOutput& _Gfx, std::wstring _Filename);
-	void Draw(CGraphicalOutput& _Gfx, DirectX::XMMATRIX _Transform) const;
+	void Draw(CGraphicalOutput& _Gfx, DirectX::FXMMATRIX _Transform) const;
 private:
 	static std::unique_ptr<CMesh> ParseMesh(CGraphicalOutput& _Gfx, const aiMesh& _Mesh);
 	std::unique_ptr<CNode> ParseNode(const aiNode& _Node);
 
 	std::unique_ptr<CNode> m_Root;
-	std::vector<std::shared_ptr<CMesh>> m_MeshPtrs;
+	std::vector<std::unique_ptr<CMesh>> m_MeshPtrs;
 };
 
 }

@@ -74,7 +74,7 @@
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)Output\$(Configuration)\$(Platform)\</OutDir>
     <IntDir>$(SolutionDir)Output\$(Configuration)\$(Platform)\$(ProjectName)</IntDir>
-    <TargetName>claxon</TargetName>
+    <TargetName>hl2</TargetName>
     <IncludePath>$(SolutionDir)3rdparty\libconfig\include\libconfig;$(solutiondir)gamepaths\Source;$(SolutionDir)3rdparty\libconfig\include;$(SolutionDir)tier0\Source;$(ProjectDir)Resources;$(SolutionDir)client\Source;$(SolutionDir)engine\Source;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
     <LibraryPath>$(solutiondir)3rdparty\assimp\lib\$(Configuration);$(solutiondir)3rdparty\libconfig\lib\$(configuration);$(OutDir);$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86)</LibraryPath>
     <CopyCppRuntimeToOutputDir>false</CopyCppRuntimeToOutputDir>
@@ -94,7 +94,7 @@
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)Output\$(Configuration)\$(Platform)\</OutDir>
     <IntDir>$(SolutionDir)Output\$(Configuration)\$(Platform)\$(ProjectName)</IntDir>
-    <TargetName>claxon</TargetName>
+    <TargetName>hl2</TargetName>
     <IncludePath>$(SolutionDir)3rdparty\libconfig\include\libconfig;$(solutiondir)gamepaths\Source;$(SolutionDir)3rdparty\libconfig\include;$(SolutionDir)tier0\Source;$(ProjectDir)Resources;$(SolutionDir)client\Source;$(SolutionDir)engine\Source;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
     <LibraryPath>$(solutiondir)3rdparty\assimp\lib\$(Configuration);$(solutiondir)3rdparty\libconfig\lib\$(configuration);$(OutDir);$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)</LibraryPath>
     <CopyCppRuntimeToOutputDir>false</CopyCppRuntimeToOutputDir>

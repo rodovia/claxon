@@ -7,12 +7,7 @@
 
 #include <engine_tier0/GDIPlusManager.h>
 #include <engine_tier1/Surface.h>
-#include <engine_tier1/dxprim/draw/SkinnedBox.h>
-#include <engine_tier1/dxprim/draw/Pyramid.h>
-#include <engine_tier1/dxprim/draw/Box.h>
-#include <engine_tier1/dxprim/draw/Cylinder.h>
-#include <engine_tier1/dxprim/draw/Melon.h>
-#include <engine_tier1/dxprim/draw/Sheet.h>
+#include <engine_ui/Console.h>
 #include <engine_tier1/dxprim/draw/ModelTest.h>
 
 #include <engine_tier1/VertexLayout.h>
@@ -25,6 +20,13 @@
 #define MAKEICON(I, R, X, Y) static_cast<HICON>(LoadImage((I), MAKEINTRESOURCE(R), IMAGE_ICON, (X), (Y), 0))
 
 engine::CGDIPlusManager gdi;
+
+engine::CConCmd debug_break("debug_break", []
+(std::vector<std::string> _Ignored)
+	{
+		engine::CConsole::Instance().EmitMessage("Check your debugger...");
+		__debugbreak();
+	});
 
 hl2::CApplication::CApplication() 
 	: m_Window(800, 600, L"TAIKO NO TATSUJIN", engine::imgui::SetupImGui()),
@@ -59,6 +61,7 @@ void hl2::CApplication::FrameLoop()
 	m_Light.SpawnControlWindow();
 	m_Cam.SpawnControlWindow();
 	this->SpawnModelWindow();
+	engine::CConsole::SpawnWindow();
 
 	m_Window.Graphics().EndFrame();
 }

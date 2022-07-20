@@ -3,6 +3,9 @@
 #include <vector>
 #include <DirectXMath.h>
 #include <type_traits>
+#include <format>
+#include <cstdio>
+
 #include "GraphicalOutput.h"
 
 #define _ENGINE_MAP_SPECIALIZ(T, SyT, St, S) \
@@ -49,7 +52,7 @@ _ENGINE_MAP_SPECIALIZ(Float3Color, DirectX::XMFLOAT3, R32G32B32_FLOAT, Color);
 _ENGINE_MAP_SPECIALIZ(Float4Color, DirectX::XMFLOAT4, R32G32B32A32_FLOAT, Color);
 _ENGINE_MAP_SPECIALIZ(BGRAColor, BGRAElement, R8G8B8A8_UNORM, Color);
 
-class CElement
+class _ENGINE_DLLEXP CElement
 {
 public:
 	CElement(ElementType _Type, size_t _Offset)
@@ -57,75 +60,19 @@ public:
 		  m_Offset(_Offset)
 	{};
 
-	size_t OffsetAfter() const noexcept
-	{
-		return m_Offset + this->Size();
-	}
-
-	size_t Offset() const noexcept
-	{
-		return m_Offset;
-	}
-
-	size_t Size() const noexcept
-	{
-		return this->SizeOf(m_Type);
-	}
-
-	static constexpr size_t SizeOf(ElementType _Type) noexcept
-	{
-		switch (_Type)
-		{
-		case Position2D:
-		case Texture2D:
-			return sizeof(Map<Texture2D>::SystemType);
-		case Normal:
-		case Float3Color:
-		case Float4Color:
-		case Position3D:
-			return sizeof(Map<Position3D>::SystemType);
-		case BGRAColor:
-			return sizeof(unsigned int);
-		}
-
-		assert("Invalid element type" && false);
-		return 0u;
-	}
-
-	ElementType Type() const noexcept
-	{
-		return m_Type;
-	}
-
-	D3D11_INPUT_ELEMENT_DESC D3DDescriptor() const noexcept
-	{
-		switch (m_Type)
-		{
-		case Position2D:
-			return GenerateDescriptor<Position2D>(m_Offset);
-		case Position3D:
-			return GenerateDescriptor<Position3D>(m_Offset);
-		case Texture2D:
-			return GenerateDescriptor<Texture2D>(m_Offset);
-		case Normal:
-			return GenerateDescriptor<Normal>(m_Offset);
-		case Float3Color:
-			return GenerateDescriptor<Float3Color>(m_Offset);
-		case Float4Color:
-			return GenerateDescriptor<Float4Color>(m_Offset);
-		case BGRAColor:
-			return GenerateDescriptor<BGRAColor>(m_Offset);
-		}
-
-		assert("GetD3DDescriptor: Invalid type" && false);
-		return { "_INVALID", 0, DXGI_FORMAT_UNKNOWN, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 };
-	}
+	size_t OffsetAfter() const noexcept;
+	size_t Offset() const noexcept;
+	size_t Size() const noexcept;
+	static constexpr size_t SizeOf(ElementType _Type) noexcept;
+	ElementType Type() const noexcept;
+	D3D11_INPUT_ELEMENT_DESC D3DDescriptor() const noexcept;
 private:
 	template<ElementType _Ty_Type>
 	static constexpr D3D11_INPUT_ELEMENT_DESC GenerateDescriptor(size_t _Offset)
 	{
 		using _Mt = Map<_Ty_Type>;
-		return { _Mt::Semantic, 0, _Mt::DxgiFormat, 0, (UINT)_Offset, D3D11_INPUT_PER_VERTEX_DATA, 0 };
+		D3D11_INPUT_ELEMENT_DESC desc = { _Mt::Semantic, 0, _Mt::DxgiFormat, 0, (UINT)_Offset, D3D11_INPUT_PER_VERTEX_DATA, 0 };
+		return desc;
 	}
 
 	ElementType m_Type;
@@ -150,38 +97,11 @@ public:
 		return m_Elements.front();
 	}
 
-	const CElement& QueryByIndex(size_t _Index) const noexcept
-	{
-		return m_Elements[_Index];
-	}
-
-	CVertexLayout& Append(ElementType _Type) noexcept
-	{
-		m_Elements.emplace_back(_Type, this->Size());
-		return *this;
-	}
-
-	size_t Size() const noexcept
-	{
-		return m_Elements.empty() ? 0u : m_Elements.back().OffsetAfter();
-	}
-
-	size_t ElementCount() const noexcept
-	{
-		return m_Elements.size();
-	}
-
-	std::vector<D3D11_INPUT_ELEMENT_DESC> D3DLayout() const noexcept
-	{
-		std::vector<D3D11_INPUT_ELEMENT_DESC> desc;
-		desc.reserve(this->ElementCount());
-		for (const auto& e : m_Elements)
-		{
-			desc.push_back(e.D3DDescriptor());
-		}
-
-		return desc;
-	}
+	const CElement& QueryByIndex(size_t _Index) const noexcept;
+	CVertexLayout& Append(ElementType _Type) noexcept;
+	size_t Size() const noexcept;
+	size_t ElementCount() const noexcept;
+	std::vector<D3D11_INPUT_ELEMENT_DESC> D3DLayout() const noexcept;
 private:
 	std::vector<CElement> m_Elements;
 };
@@ -283,25 +203,10 @@ public:
 		: m_Layout(std::move(_Layout))
 	{}
 
-	const CVertexLayout& Layout() const noexcept
-	{
-		return m_Layout;
-	}
-
-	const BYTE* Data() const noexcept
-	{
-		return m_Buffer.data();
-	}
-
-	VERTEXSIZE Size() const noexcept
-	{
-		return m_Buffer.size() / m_Layout.Size();
-	}
-
-	size_t SizeBytes()
-	{
-		return m_Buffer.size();
-	}
+	const CVertexLayout& Layout() const noexcept;
+	const BYTE* Data() const noexcept;
+	VERTEXSIZE Size() const noexcept;
+	size_t SizeBytes() const noexcept;
 
 	template<class ..._Ty_Params>
 	void EmplaceBack(_Ty_Params&&... _Params) noexcept
@@ -311,38 +216,14 @@ public:
 		this->Back().SetAttribByIndex(0u, std::forward<_Ty_Params>(_Params)...);
 	}
 
-	CVertex Back() noexcept
-	{
-		assert(m_Buffer.size() != 0u);
-		return CVertex{ m_Buffer.data() + m_Buffer.size() - m_Layout.Size(), m_Layout };
-	}
+	CVertex Back() noexcept;
+	CConstVertex Back() const noexcept;
 
-	CConstVertex Back() const noexcept
-	{
-		return const_cast<CVertexBuffer*>(this)->Back();
-	}
+	CVertex Front() noexcept;
+	CConstVertex Front() const noexcept;
 
-	CVertex Front() noexcept
-	{
-		assert(m_Buffer.size() != 0u);
-		return CVertex{m_Buffer.data(), m_Layout };
-	}
-
-	CConstVertex Front() const noexcept
-	{
-		return const_cast<CVertexBuffer*>(this)->Front();
-	}
-
-	CVertex operator[](size_t _Index) noexcept
-	{
-		assert(_Index < this->Size());
-		return CVertex{ m_Buffer.data() + m_Layout.Size() * _Index, m_Layout };
-	}
-
-	CConstVertex operator[](size_t _Index) const noexcept
-	{
-		return const_cast<CVertexBuffer&>(*this)[_Index];
-	}
+	CVertex operator[](size_t _Index) noexcept;
+	CConstVertex operator[](size_t _Index) const noexcept;
 private:
 	std::vector<BYTE> m_Buffer;
 	CVertexLayout m_Layout;

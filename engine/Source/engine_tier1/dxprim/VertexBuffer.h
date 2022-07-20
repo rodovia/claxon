@@ -4,6 +4,7 @@
 #include <vector>
 #include <engine_tier0/DLL.h>
 #include <engine_tier1/GraphicalOutput.h>
+#include <engine_tier0/Exceptions.h>
 
 #include <engine_tier1/VertexLayout.h>
 
@@ -37,11 +38,12 @@ public:
 		bd.Usage = D3D11_USAGE_DEFAULT;
 		bd.CPUAccessFlags = 0u;
 		bd.MiscFlags = 0u;
-		bd.ByteWidth = UINT(_Buffer.Size());
+		bd.ByteWidth = UINT(_Buffer.SizeBytes());
 		bd.StructureByteStride = m_Stride;
 		D3D11_SUBRESOURCE_DATA sd = {};
 		sd.pSysMem = _Buffer.Data();
-		GetDevice(_Gfx)->CreateBuffer(&bd, &sd, &m_VertexBuffer);
+		HRESULT hr;
+		_ENGINE_MAYTHROW_GRAPHICS(GetDevice(_Gfx)->CreateBuffer(&bd, &sd, &m_VertexBuffer));
 	}
 
 
