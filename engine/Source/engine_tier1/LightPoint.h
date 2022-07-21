@@ -1,5 +1,3 @@
-/* -*- c++ -*- */
-
 #pragma once
 
 #include <engine_tier0/DLL.h>

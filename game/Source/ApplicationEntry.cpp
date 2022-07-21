@@ -28,7 +28,7 @@ engine::CConCmd debug_break("debug_break", []
 	});
 
 hl2::CApplication::CApplication() 
-	: m_Window(1280, 720, L"TAIKO NO TATSUJIN", engine::imgui::SetupImGui()),
+	: m_Window(800, 600, L"TAIKO NO TATSUJIN", engine::imgui::SetupImGui()),
 	  m_Light(m_Window.Graphics())
 {
 	gamepaths::CInfoParser::FromFile("gameinfo.txt");

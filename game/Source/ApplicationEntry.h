@@ -6,7 +6,6 @@
 #include <engine_tier1/Surface.h>
 #include <engine_tier1/Camera.h>
 #include <engine_tier1/LightPoint.h>
-#include <engine_tier1/dxprim/draw/Box.h>
 #include <engine_tier1/dxprim/draw/BaseDraw.h>
 #include <engine_tier1/Model.h>
 
@@ -26,7 +25,7 @@ private:
 private:
 	hl2::CWindow m_Window;
 	engine::CCamera m_Cam;
-	engine::CModel m_Nano { m_Window.Graphics(), _GETPATH("resources/model/nanosuit.obj") };
+	engine::CModel m_Nano { m_Window.Graphics(), _GETPATH("resources/model/nano.gltf") };
 	engine::CLightPoint m_Light;
 };
 

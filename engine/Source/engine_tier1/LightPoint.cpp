@@ -1,4 +1,5 @@
 #include "LightPoint.h"
+#include <engine_tier1/Surface.h>
 
 engine::CLightPoint::CLightPoint(engine::CGraphicalOutput& _Gfx, float _Radius)
 	: m_Mesh(_Gfx, _Radius),

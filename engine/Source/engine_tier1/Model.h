@@ -48,7 +48,7 @@ public:
 	* I want to make my life easier by not having to call
 	* tier0::ConvertToMultiByteString explicitly everytime I use _GETPATH. 
 	*/
-	CModel(CGraphicalOutput& _Gfx, std::wstring _Filename);
+	CModel(CGraphicalOutput& _Gfx, std::wstring _Filename, bool _ProjectReflections = true);
 	void Draw(CGraphicalOutput& _Gfx) const;
 	void ShowDiagWindow(const char* _Name);
 	~CModel() noexcept;
@@ -57,6 +57,7 @@ private:
 	std::unique_ptr<CNode> ParseNode(const aiNode& _Node);
 
 	std::unique_ptr<CNode> m_Root;
+	bool m_ProjectReflections;
 	std::vector<std::unique_ptr<CMesh>> m_MeshPtrs;
 	std::unique_ptr<class CModelDiagWindow> m_ModelWindow;
 };

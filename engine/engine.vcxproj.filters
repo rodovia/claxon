@@ -36,24 +36,6 @@
     <ClCompile Include="Source\engine_tier1\dxprim\draw\BaseDraw.cpp">
       <Filter>Arquivos de Origem</Filter>
     </ClCompile>
-    <ClCompile Include="Source\engine_tier1\dxprim\draw\Box.cpp">
-      <Filter>Arquivos de Origem</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\engine_tier1\dxprim\draw\Melon.cpp">
-      <Filter>Arquivos de Origem</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\engine_tier1\dxprim\draw\Pyramid.cpp">
-      <Filter>Arquivos de Origem</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\engine_tier1\dxprim\draw\Sheet.cpp">
-      <Filter>Arquivos de Origem</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\engine_tier1\dxprim\draw\SkinnedBox.cpp">
-      <Filter>Arquivos de Origem</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\engine_tier1\dxprim\draw\SolidSphere.cpp">
-      <Filter>Arquivos de Origem</Filter>
-    </ClCompile>
     <ClCompile Include="Source\engine_tier1\dxprim\IndexBuffer.cpp">
       <Filter>Arquivos de Origem</Filter>
     </ClCompile>
@@ -111,12 +93,6 @@
     <ClCompile Include="Source\imguihlp.cpp">
       <Filter>Arquivos de Origem</Filter>
     </ClCompile>
-    <ClCompile Include="Source\engine_tier1\dxprim\draw\Cylinder.cpp">
-      <Filter>Arquivos de Origem</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\engine_tier1\dxprim\draw\ModelTest.cpp">
-      <Filter>Arquivos de Origem</Filter>
-    </ClCompile>
     <ClCompile Include="Source\engine_tier1\Model.cpp">
       <Filter>Arquivos de Origem</Filter>
     </ClCompile>
@@ -124,6 +100,9 @@
       <Filter>Arquivos de Origem</Filter>
     </ClCompile>
     <ClCompile Include="Source\engine_tier1\vertex_layout.cpp">
+      <Filter>Arquivos de Origem</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\engine_tier1\dxprim\draw\SolidSphere.cpp">
       <Filter>Arquivos de Origem</Filter>
     </ClCompile>
   </ItemGroup>
@@ -156,39 +135,6 @@
       <Filter>Arquivos de Cabeçalho</Filter>
     </ClInclude>
     <ClInclude Include="Source\engine_tier1\dxprim\draw\BaseMiddlewareDraw.h">
-      <Filter>Arquivos de Cabeçalho</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\engine_tier1\dxprim\draw\Box.h">
-      <Filter>Arquivos de Cabeçalho</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\engine_tier1\dxprim\draw\Melon.h">
-      <Filter>Arquivos de Cabeçalho</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\engine_tier1\dxprim\draw\Pyramid.h">
-      <Filter>Arquivos de Cabeçalho</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\engine_tier1\dxprim\draw\Sheet.h">
-      <Filter>Arquivos de Cabeçalho</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\engine_tier1\dxprim\draw\SkinnedBox.h">
-      <Filter>Arquivos de Cabeçalho</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\engine_tier1\dxprim\draw\SolidSphere.h">
-      <Filter>Arquivos de Cabeçalho</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\engine_tier1\dxprim\geometry\Cone.h">
-      <Filter>Arquivos de Cabeçalho</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\engine_tier1\dxprim\geometry\Cube.h">
-      <Filter>Arquivos de Cabeçalho</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\engine_tier1\dxprim\geometry\IndexedTriangleList.h">
-      <Filter>Arquivos de Cabeçalho</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\engine_tier1\dxprim\geometry\Plane.h">
-      <Filter>Arquivos de Cabeçalho</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\engine_tier1\dxprim\geometry\Sphere.h">
       <Filter>Arquivos de Cabeçalho</Filter>
     </ClInclude>
     <ClInclude Include="Source\engine_tier1\dxprim\IndexBuffer.h">
@@ -257,15 +203,6 @@
     <ClInclude Include="Source\engine_tier0\BasePrimitiveObject.h">
       <Filter>Arquivos de Cabeçalho</Filter>
     </ClInclude>
-    <ClInclude Include="Source\engine_tier1\dxprim\geometry\Prism.h">
-      <Filter>Arquivos de Cabeçalho</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\engine_tier1\dxprim\draw\Cylinder.h">
-      <Filter>Arquivos de Cabeçalho</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\engine_tier1\dxprim\draw\ModelTest.h">
-      <Filter>Arquivos de Cabeçalho</Filter>
-    </ClInclude>
     <ClInclude Include="Source\engine_tier1\VertexLayout.h">
       <Filter>Arquivos de Cabeçalho</Filter>
     </ClInclude>
@@ -276,6 +213,15 @@
       <Filter>Arquivos de Cabeçalho</Filter>
     </ClInclude>
     <ClInclude Include="Source\engine_ui\Console.h">
+      <Filter>Arquivos de Cabeçalho</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\engine_tier1\dxprim\geometry\Sphere.h">
+      <Filter>Arquivos de Cabeçalho</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\engine_tier1\dxprim\geometry\IndexedTriangleList.h">
+      <Filter>Arquivos de Cabeçalho</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\engine_tier1\dxprim\draw\SolidSphere.h">
       <Filter>Arquivos de Cabeçalho</Filter>
     </ClInclude>
   </ItemGroup>

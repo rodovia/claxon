@@ -23,7 +23,7 @@ engine::CGraphicalOutput::CGraphicalOutput(HWND hWnd, ImGuiContext* _Ctx)
 	}
 
 	RECT wr;
-	GetWindowRect(hWnd, &wr);
+	GetClientRect(hWnd, &wr);
 	int width = wr.right;
 	int height = wr.bottom;
 

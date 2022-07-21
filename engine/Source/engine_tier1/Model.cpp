@@ -205,8 +205,9 @@ void engine::CNode::RenderTree(int& _NodeIndex, std::optional<int>& _SelectedNod
 
 #pragma region CModel
 
-engine::CModel::CModel(CGraphicalOutput& _Gfx, const std::wstring _Filename)
-	: m_ModelWindow(std::make_unique<CModelDiagWindow>())
+engine::CModel::CModel(CGraphicalOutput& _Gfx, const std::wstring _Filename, bool _ProjectReflections)
+	: m_ModelWindow(std::make_unique<CModelDiagWindow>()),
+	m_ProjectReflections(_ProjectReflections)
 {
 	Assimp::Importer imp;
 	const auto scene = imp.ReadFile(tier0::ConvertToMultiByteString(_Filename),
@@ -276,6 +277,8 @@ std::unique_ptr<engine::CMesh> engine::CModel::ParseMesh(CGraphicalOutput& _Gfx,
 	bindablePtrs.push_back(std::make_unique<engine::CVertexBuffer>(_Gfx, vbuf));
 
 	bindablePtrs.push_back(std::make_unique<engine::CIndexBuffer>(_Gfx, indices));
+
+	// std::wstring vsfile = m_ProjectReflections ? MAKE_SHADER_RESOURCE("P")
 
 	auto pvs = std::make_unique<engine::CVertexShader>(_Gfx, MAKE_SHADER_RESOURCE("Phong_VS.cso"));
 	auto pvsbc = pvs->GetBytecode();
