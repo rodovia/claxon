@@ -8,7 +8,6 @@
 #include <engine_tier0/GDIPlusManager.h>
 #include <engine_tier1/Surface.h>
 #include <engine_ui/Console.h>
-#include <engine_tier1/dxprim/draw/ModelTest.h>
 
 #include <engine_tier1/VertexLayout.h>
 
@@ -29,7 +28,7 @@ engine::CConCmd debug_break("debug_break", []
 	});
 
 hl2::CApplication::CApplication() 
-	: m_Window(800, 600, L"TAIKO NO TATSUJIN", engine::imgui::SetupImGui()),
+	: m_Window(1280, 720, L"TAIKO NO TATSUJIN", engine::imgui::SetupImGui()),
 	  m_Light(m_Window.Graphics())
 {
 	gamepaths::CInfoParser::FromFile("gameinfo.txt");

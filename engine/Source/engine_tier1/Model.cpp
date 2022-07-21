@@ -15,6 +15,7 @@
 #include "dxprim/VertexBuffer.h"
 #include "dxprim/Topology.h"
 #include "dxprim/TransformConstBuffer.h"
+#include <engine_tier0/Exceptions.h>
 
 #include <tier0lib/String0.h>
 
@@ -154,8 +155,9 @@ void engine::CNode::SetAppliedTransform(DirectX::FXMMATRIX _Transform) noexcept
 
 void engine::CNode::Draw(CGraphicalOutput& _Gfx, DirectX::FXMMATRIX _AccumTransform) noexcept
 {
-	const auto built = DirectX::XMLoadFloat4x4(&m_BaseTransform) *
+	const auto built =
 		DirectX::XMLoadFloat4x4(&m_ApplTransform) *
+		DirectX::XMLoadFloat4x4(&m_BaseTransform) *
 		_AccumTransform;
 	for (const auto pm : m_MeshPtrs)
 	{
@@ -181,14 +183,16 @@ void engine::CNode::RenderTree(int& _NodeIndex, std::optional<int>& _SelectedNod
 		((cnix == _SelectedNodeIndex.value_or(-1)) ? ImGuiTreeNodeFlags_Selected : 0) |
 		((m_NodePtrs.empty()) ? ImGuiTreeNodeFlags_Leaf : 0);
 
-	if (ImGui::TreeNodeEx((void*)(intptr_t) cnix, flags, m_Name.c_str()))
-	{
-		if (ImGui::IsItemClicked())
-		{
-			_SelectedNodeIndex = cnix;
-			_SelectedNode = const_cast<engine::CNode*>(this);
-		}
+	const bool expnd = ImGui::TreeNodeEx((void*)(intptr_t)cnix, flags, m_Name.c_str());
 
+	if (ImGui::IsItemClicked())
+	{
+		_SelectedNodeIndex = cnix;
+		_SelectedNode = const_cast<engine::CNode*>(this);
+	}
+
+	if (expnd)
+	{
 		for (const auto& child : m_NodePtrs)
 		{
 			child->RenderTree(_NodeIndex, _SelectedNodeIndex, _SelectedNode);
@@ -207,8 +211,15 @@ engine::CModel::CModel(CGraphicalOutput& _Gfx, const std::wstring _Filename)
 	Assimp::Importer imp;
 	const auto scene = imp.ReadFile(tier0::ConvertToMultiByteString(_Filename),
 		aiProcess_Triangulate |
-		aiProcess_JoinIdenticalVertices
+		aiProcess_JoinIdenticalVertices |
+		aiProcess_ConvertToLeftHanded |
+		aiProcess_GenNormals
 	);
+
+	if (scene == nullptr)
+	{
+		throw _CModelException(imp.GetErrorString());
+	}
 
 	for (size_t i = 0; i < scene->mNumMeshes; i++)
 	{

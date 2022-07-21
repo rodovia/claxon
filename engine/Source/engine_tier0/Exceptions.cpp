@@ -119,6 +119,31 @@ const char* engine::CDeviceRemovedException::what() const noexcept
 	return cpy.c_str();
 }
 
+// engine::CDeviceRemovedException ^^^^^ // engine::CModelException vvvv
+
+engine::CModelException::CModelException(int _Line, const char* _File, std::string _Note) noexcept
+	: CBaseException(_Line, _File),
+	m_Note(_Note)
+{}
+
+const char* engine::CModelException::GetType() const noexcept
+{
+	return "Model Error!";
+}
+
+const char* engine::CModelException::what() const noexcept
+{
+	std::ostringstream oss;
+	oss << GetType() << "\n" << GetOriginString() << "\nMessage: " << m_Note;
+	m_WhatBuffer = oss.str();
+	return m_WhatBuffer.c_str();
+}
+
+const std::string& engine::CModelException::GetNote() const noexcept
+{
+	return m_Note;
+}
+
 // Extracts the Win32 error code from the HRESULT
 static DWORD CvtResultToWin32Error(HRESULT Hr)
 {

@@ -12,6 +12,8 @@
 #define _ENGINE_CREATE_FROMLASTERROR engine::CFromHResultException(__LINE__, __FILE__, GetLastError())
 #define _ENGINE_CREATE_DEVC(E) engine::CDeviceRemovedException( (E) );
 
+#define _CModelException(M) engine::CModelException(__LINE__, __FILE__, (M))
+
 namespace engine
 {
 
@@ -32,9 +34,9 @@ public:
 	CBaseException() = default;
 	CBaseException(int line, const char* file);
 	const char* what() const noexcept override;
-	virtual const char* GetType() const noexcept;
 	int GetLine() const noexcept;
 	const std::string& GetFile() const noexcept;
+	virtual const char* GetType() const noexcept;
 	virtual std::string GetOriginString() const noexcept;
 protected:
 	int m_Line;
@@ -71,6 +73,17 @@ public:
 	const char* what() const noexcept override;
 private:
 	HRESULT m_Result;
+};
+
+class _ENGINE_DLLEXP CModelException : public CBaseException
+{
+public:
+	CModelException(int _Line, const char* _File, std::string _Note) noexcept;
+	const char* what() const noexcept override;
+	const char* GetType() const noexcept override;
+	const std::string& GetNote() const noexcept;
+private:
+	std::string m_Note;
 };
 
 }

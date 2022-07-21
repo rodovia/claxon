@@ -22,11 +22,16 @@ engine::CGraphicalOutput::CGraphicalOutput(HWND hWnd, ImGuiContext* _Ctx)
 		engine::imgui::SetAllocProcs();
 	}
 
+	RECT wr;
+	GetWindowRect(hWnd, &wr);
+	int width = wr.right;
+	int height = wr.bottom;
+
 	DXGI_SWAP_CHAIN_DESC sd;
 	ZeroMemory(&sd, sizeof(DXGI_SWAP_CHAIN_DESC));
 
-	sd.BufferDesc.Width = 0;
-	sd.BufferDesc.Height = 0;
+	sd.BufferDesc.Width = width;
+	sd.BufferDesc.Height = height;
 	sd.BufferDesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
 	sd.BufferDesc.RefreshRate.Numerator = 0;
 	sd.BufferDesc.RefreshRate.Denominator = 0;
@@ -92,8 +97,8 @@ engine::CGraphicalOutput::CGraphicalOutput(HWND hWnd, ImGuiContext* _Ctx)
 	D3D11_TEXTURE2D_DESC descdepth;
 	ZeroMemory(&descdepth, sizeof(D3D11_TEXTURE2D_DESC));
 	// TODO: trocar as resoluções hardcoded
-	descdepth.Width = 800u;
-	descdepth.Height = 600u;
+	descdepth.Width = width;
+	descdepth.Height = height;
 	descdepth.MipLevels = 1u;
 	descdepth.ArraySize = 1u;
 	descdepth.Format = DXGI_FORMAT_D32_FLOAT;
@@ -114,8 +119,8 @@ engine::CGraphicalOutput::CGraphicalOutput(HWND hWnd, ImGuiContext* _Ctx)
 
 	D3D11_VIEWPORT vp;
 	// TODO: trocar as resoluções hardcoded
-	vp.Width = 800;
-	vp.Height = 600;
+	vp.Width = (float)width;
+	vp.Height = (float)height;
 	vp.MinDepth = 0.0f;
 	vp.MaxDepth = 1.0f;
 	vp.TopLeftX = 0.0f;
