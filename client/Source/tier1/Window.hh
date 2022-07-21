@@ -66,10 +66,18 @@ public:
 	engine::CGraphicalOutput& Graphics();
 
 	static std::optional<WPARAM> ProcessMessage();
+	void ToggleCursorDisplay(bool _AlsoConfine = true);
+	bool CursorEnabled() const noexcept;
 public:
 	hl2::CKeyboard m_Keyboard;
 	hl2::CMouse m_Mouse;
 private:
+	void HideCursor();
+	void ShowCursor();
+
+	void ConfineCursor();
+	void FreeCursor();
+
 	static LRESULT CALLBACK HandleMessageSetup(HWND, UINT, WPARAM, LPARAM);
 	static LRESULT CALLBACK HandleMessageThunk(HWND, UINT, WPARAM, LPARAM);
 	LRESULT CALLBACK HandleMessage(HWND, UINT, WPARAM, LPARAM);
@@ -78,6 +86,8 @@ private:
 	int m_Height;
 	HWND m_hWnd;
 	bool m_IsSubwindow;
+	bool m_CursorEnabl;
+	std::vector<char> m_RawInputBuffer;
 	std::unique_ptr<engine::CGraphicalOutput> m_Gfx;
 };
 

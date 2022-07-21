@@ -1,7 +1,7 @@
-/* -*- c++ -*- */
 #pragma once
 
 #include <queue>
+#include <optional>
 
 #include "tier0/GetSet.h"
 #include "tier0/DLL.h"
@@ -9,7 +9,10 @@
 namespace hl2
 {
 
-class CWindow;
+struct RawMiceDelta
+{
+	int X, Y;
+};
 
 class DLLEXP CMouse
 {
@@ -68,8 +71,12 @@ public:
 	CMouse& operator=(const CMouse&) = delete;
 
 	std::pair<int, int> GetCoordinates() const noexcept;
+	std::optional<RawMiceDelta> ReadRawDelta() noexcept;
 	int GetX() const noexcept;
 	int GetY() const noexcept;
+
+	bool RawEnabled() const noexcept;
+	void ToggleRawCapture() noexcept;
 
 	bool LeftPressed() const noexcept;
 	bool RightPressed() const noexcept;
@@ -94,16 +101,28 @@ private:
 	void OnWheelUp(int _Ignored, int _Y) noexcept;
 	void OnWheelDown(int _Ignored, int _Y) noexcept;
 	void OnWheelDelta(int _X, int _Y, int _Delta) noexcept;
+
+	void OnRawDelta(int _X, int _Y);
 	// ^^^^^ Routines called by hl2::CWindow ^^^^^
 
-	void TrimBuffer() noexcept;
+	template<class _Ty>
+	void TrimBuffer(std::queue<_Ty> _Queue) noexcept
+	{
+		while (m_Buffer.size() > BUFFER_SIZE)
+		{
+			m_Buffer.pop();
+		}
+	}
+	
 private:
 	static constexpr unsigned int BUFFER_SIZE = 16u;
 	int m_X, m_Y;
 	bool m_LeftPressed = false, m_RightPressed = false,
 		m_IsInWindow = false;
 	std::queue<Event> m_Buffer;
+	std::queue<RawMiceDelta> m_RawBuffer;
 	int m_DeltaCarry;
+	bool m_CaptureRaw = true;
 };
 
 using CMouseEvent = CMouse::Event;

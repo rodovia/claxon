@@ -22,11 +22,14 @@ public:
 	WPARAM Main();
 private:
 	void FrameLoop();
+	void ShowRawMouseWindow();
 private:
 	hl2::CWindow m_Window;
 	engine::CCamera m_Cam;
 	engine::CModel m_Nano { m_Window.Graphics(), _GETPATH("resources/model/nano.gltf") };
 	engine::CLightPoint m_Light;
+
+	int m_X = 0, m_Y = 0;
 };
 
 }

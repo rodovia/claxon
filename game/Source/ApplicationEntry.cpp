@@ -49,6 +49,11 @@ WPARAM hl2::CApplication::Main()
 
 void hl2::CApplication::FrameLoop()
 {
+	if (m_Window.m_Keyboard.IsKeyPressed(0x5A))
+	{
+		m_Window.ToggleCursorDisplay();
+	}
+
 	m_Window.Graphics().BeginFrameNorm(200, 200, 200);
 	m_Window.Graphics().SetCamera(m_Cam.GetMatrix());
 	m_Light.Bind(m_Window.Graphics(), m_Cam.GetMatrix());
@@ -60,7 +65,22 @@ void hl2::CApplication::FrameLoop()
 	m_Cam.SpawnControlWindow();
 	m_Nano.ShowDiagWindow("nanosuit.obj");
 	engine::CConsole::SpawnWindow();
+	this->ShowRawMouseWindow();
 
 	m_Window.Graphics().EndFrame();
 }
 
+void hl2::CApplication::ShowRawMouseWindow()
+{
+	while (const auto d = m_Window.m_Mouse.ReadRawDelta())
+	{
+		m_X += d->X;
+		m_Y += d->Y;
+	}
+
+	if (ImGui::Begin("Entrada nao-processada do rato"))
+	{
+		ImGui::Text("Talimo: (%d, %d)", m_X, m_Y);
+	}
+	ImGui::End();
+}

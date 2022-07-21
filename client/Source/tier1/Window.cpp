@@ -72,6 +72,8 @@ static std::string StringDxFeatLevel(D3D_FEATURE_LEVEL _FeatLevel)
 		return "10_1";
 	case D3D_FEATURE_LEVEL_11_0:
 		return "11_0";
+
+	// WHAT IF claxon starts supporting Direct3D 12? Would be unnecessary, and funny..
 	case D3D_FEATURE_LEVEL_12_0:
 		return "12_0";
 	case D3D_FEATURE_LEVEL_12_1:
@@ -121,6 +123,16 @@ hl2::CWindow::CWindow(int width, int height, const wchar_t* name, ImGuiContext* 
 	std::string tit = std::format("{} - Direct3D 11 ({})", ti, 
 						StringDxFeatLevel(m_Gfx->GetFeatureLevel()));
 	this->SetTitle(tier0::ConvertToWideString(tit));
+
+	RAWINPUTDEVICE rid;
+	rid.usUsagePage = 0x01;
+	rid.usUsage = 0x02; // mouse usage
+	rid.dwFlags = 0;
+	rid.hwndTarget = nullptr;
+	if (RegisterRawInputDevices(&rid, 1, sizeof(rid)) == FALSE)
+	{
+		throw CREATE_WINDOWEXC(GetLastError());
+	}
 }
 
 void hl2::CWindow::SetIcon(HICON icon, HICON iconSm)
@@ -215,6 +227,23 @@ LRESULT hl2::CWindow::HandleMessage(HWND hWnd, UINT msg, WPARAM wParam,
 		m_Keyboard.ClearState();
 		break;
 
+	case WM_ACTIVATE:
+	{
+		if (!m_CursorEnabl)
+		{
+			if (wParam & WA_ACTIVE)
+			{
+				this->HideCursor();
+				this->ConfineCursor();
+			}
+			else
+			{
+				this->ShowCursor();
+				this->FreeCursor();
+			}
+		}
+	}
+
 	// vvvv KEYBOARD MESSAGES vvvv
 	case WM_KEYDOWN:
 	case WM_SYSKEYDOWN: // Listen for ALT
@@ -265,6 +294,13 @@ LRESULT hl2::CWindow::HandleMessage(HWND hWnd, UINT msg, WPARAM wParam,
 	}
 	case WM_LBUTTONDOWN:
 	{
+		SetForegroundWindow(m_hWnd);
+		if (!m_CursorEnabl)
+		{
+			this->HideCursor();
+			this->ConfineCursor();
+		}
+
 		POINTS pt = MAKEPOINTS(lParam);
 		m_Mouse.OnLeftPressed(pt.x, pt.y);
 		break;
@@ -294,6 +330,43 @@ LRESULT hl2::CWindow::HandleMessage(HWND hWnd, UINT msg, WPARAM wParam,
 		m_Mouse.OnWheelDelta(pt.x, pt.y, delta);
 		break;
 	}
+
+	// RAW MOUSE MESSAGES vvvvv
+	case WM_INPUT:
+	{
+		if (!m_Mouse.RawEnabled())
+		{
+			break;
+		}
+
+		UINT size;
+		if (GetRawInputData(
+			reinterpret_cast<HRAWINPUT>(lParam),
+			RID_INPUT,
+			nullptr,
+			&size,
+			sizeof(RAWINPUTHEADER)) == -1)
+		{
+			break;
+		}
+		m_RawInputBuffer.resize(size);
+		if (GetRawInputData(
+			reinterpret_cast<HRAWINPUT>(lParam),
+			RID_INPUT,
+			m_RawInputBuffer.data(),
+			&size,
+			sizeof(RAWINPUTHEADER)) != size)
+		{
+			break;
+		}
+		const RAWINPUT& ri = reinterpret_cast<const RAWINPUT&>(*m_RawInputBuffer.data());
+		if (ri.header.dwType == RIM_TYPEMOUSE &&
+			(ri.data.mouse.lLastX != 0 || ri.data.mouse.lLastY != 0))
+		{
+			m_Mouse.OnRawDelta(ri.data.mouse.lLastX, ri.data.mouse.lLastY);
+		}
+		break;
+	}
 	}
 
 	return DefWindowProc(hWnd, msg, wParam, lParam);
@@ -305,6 +378,52 @@ void hl2::CWindow::SetTitle(std::wstring _NewTitle)
 	{
 		throw CREATE_WINDOWEXC(GetLastError());
 	}
+}
+
+void hl2::CWindow::ToggleCursorDisplay(bool _AlsoConfine)
+{
+	m_CursorEnabl = !m_CursorEnabl;
+	if (m_CursorEnabl)
+	{
+		this->ShowCursor();
+		this->FreeCursor();
+	}
+	else
+	{
+		this->HideCursor();
+		if (_AlsoConfine)
+			this->ConfineCursor();
+	}
+}
+
+bool hl2::CWindow::CursorEnabled() const noexcept
+{
+	return m_CursorEnabl;
+}
+
+void hl2::CWindow::HideCursor()
+{
+	while (::ShowCursor(FALSE) >= 0);
+	ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_NoMouse;
+}
+
+void hl2::CWindow::ShowCursor()
+{
+	while (::ShowCursor(TRUE) < 0);
+	ImGui::GetIO().ConfigFlags &= ~ImGuiConfigFlags_NoMouse;
+}
+
+void hl2::CWindow::ConfineCursor()
+{
+	RECT wr;
+	GetClientRect(m_hWnd, &wr);
+	MapWindowPoints(m_hWnd, nullptr, reinterpret_cast<POINT*>(&wr), 2);
+	ClipCursor(&wr);
+}
+
+void hl2::CWindow::FreeCursor()
+{
+	ClipCursor(nullptr);
 }
 
 // hl2::CWindowException vvvvv
