@@ -47,8 +47,6 @@ private:
 		float Z = 0.0f;
 	} m_Pos;
 	engine::CNode* m_SelectedNode;
-
-	std::optional<int> m_SelectedNodeIndex;
 	std::unordered_map<int, TransformParams> m_Transforms;
 };
 
@@ -59,12 +57,12 @@ void CModelDiagWindow::Show(const char* _Name, const engine::CNode& _Root)
 	if (ImGui::Begin(fmt.c_str()))
 	{
 		ImGui::Columns(2, nullptr);
-		_Root.RenderTree(cnix, m_SelectedNodeIndex, m_SelectedNode);
+		_Root.RenderTree(m_SelectedNode);
 
 		ImGui::NextColumn();
 		if (m_SelectedNode != nullptr)
 		{
-			TransformParams& transform = m_Transforms[*m_SelectedNodeIndex];
+			TransformParams& transform = m_Transforms[m_SelectedNode->GetId()];
 			ImGui::Text("Orientation");
 			ImGui::SliderAngle("Pitch", &transform.Pitch, -180.0f, 180.0f);
 			ImGui::SliderAngle("Yaw", &transform.Yaw, -180.0f, 180.0f);
@@ -83,7 +81,8 @@ void CModelDiagWindow::Show(const char* _Name, const engine::CNode& _Root)
 
 DirectX::XMMATRIX CModelDiagWindow::GetTransformMatrix() const noexcept
 {
-	const auto& transform = m_Transforms.at(*m_SelectedNodeIndex);
+	assert(m_SelectedNode != nullptr);
+	const auto& transform = m_Transforms.at(m_SelectedNode->GetId());
 	return DirectX::XMMatrixRotationRollPitchYaw(transform.Pitch, transform.Yaw, transform.Roll) *
 		DirectX::XMMatrixTranslation(transform.X, transform.Y, transform.Z);
 }
@@ -137,15 +136,21 @@ DirectX::XMMATRIX engine::CMesh::GetTransformMatrix() const noexcept
 
 #pragma region CNode
 
-engine::CNode::CNode(const std::string& _Name, std::vector<engine::CMesh*> _MeshPtrs, 
+engine::CNode::CNode(int _Id, const std::string& _Name, std::vector<engine::CMesh*> _MeshPtrs, 
 	const DirectX::XMMATRIX& _Transform
 ) noexcept
 	:
+	m_Id(_Id),
 	m_MeshPtrs(std::move(_MeshPtrs)),
 	m_Name(_Name)
 {
 	DirectX::XMStoreFloat4x4(&m_BaseTransform, _Transform);
 	DirectX::XMStoreFloat4x4(&m_ApplTransform, DirectX::XMMatrixIdentity());
+}
+
+int engine::CNode::GetId() const noexcept
+{
+	return m_Id;
 }
 
 void engine::CNode::SetAppliedTransform(DirectX::FXMMATRIX _Transform) noexcept
@@ -174,20 +179,17 @@ void engine::CNode::AddChild(std::unique_ptr<CNode> _Child) noexcept
 	m_NodePtrs.push_back(std::move(_Child));
 }
 
-void engine::CNode::RenderTree(int& _NodeIndex, std::optional<int>& _SelectedNodeIndex, engine::CNode*& _SelectedNode) const noexcept
+void engine::CNode::RenderTree(engine::CNode*& _SelectedNode) const noexcept
 {
-	const int cnix = _NodeIndex;
-	_NodeIndex++;
-
+	const int selecDiscrim = (_SelectedNode == nullptr) ? -1 : _SelectedNode->GetId();
 	const int flags = ImGuiTreeNodeFlags_OpenOnArrow | 
-		((cnix == _SelectedNodeIndex.value_or(-1)) ? ImGuiTreeNodeFlags_Selected : 0) |
+		((m_Id == selecDiscrim) ? ImGuiTreeNodeFlags_Selected : 0) |
 		((m_NodePtrs.empty()) ? ImGuiTreeNodeFlags_Leaf : 0);
 
-	const bool expnd = ImGui::TreeNodeEx((void*)(intptr_t)cnix, flags, m_Name.c_str());
+	const bool expnd = ImGui::TreeNodeEx((void*)(intptr_t)m_Id, flags, m_Name.c_str());
 
 	if (ImGui::IsItemClicked())
 	{
-		_SelectedNodeIndex = cnix;
 		_SelectedNode = const_cast<engine::CNode*>(this);
 	}
 
@@ -195,7 +197,7 @@ void engine::CNode::RenderTree(int& _NodeIndex, std::optional<int>& _SelectedNod
 	{
 		for (const auto& child : m_NodePtrs)
 		{
-			child->RenderTree(_NodeIndex, _SelectedNodeIndex, _SelectedNode);
+			child->RenderTree(_SelectedNode);
 		}
 		ImGui::TreePop();
 	}
@@ -227,7 +229,8 @@ engine::CModel::CModel(CGraphicalOutput& _Gfx, const std::wstring _Filename, boo
 		m_MeshPtrs.push_back(this->ParseMesh(_Gfx, *scene->mMeshes[i]));
 	}
 
-	m_Root = ParseNode(*scene->mRootNode);
+	int discrim = 0;
+	m_Root = ParseNode(discrim, *scene->mRootNode);
 }
 
 void engine::CModel::ShowDiagWindow(const char* _Name)
@@ -302,7 +305,7 @@ std::unique_ptr<engine::CMesh> engine::CModel::ParseMesh(CGraphicalOutput& _Gfx,
 	return std::make_unique<CMesh>(_Gfx, std::move(bindablePtrs));
 }
 
-std::unique_ptr<engine::CNode> engine::CModel::ParseNode(const aiNode& _Node)
+std::unique_ptr<engine::CNode> engine::CModel::ParseNode(int& _Id, const aiNode& _Node)
 {
 	const auto transform = DirectX::XMMatrixTranspose(DirectX::XMLoadFloat4x4(
 		reinterpret_cast<const DirectX::XMFLOAT4X4*>(&_Node.mTransformation)
@@ -316,10 +319,10 @@ std::unique_ptr<engine::CNode> engine::CModel::ParseNode(const aiNode& _Node)
 		curMeshPtrs.push_back(m_MeshPtrs.at(meshIdx).get());
 	}
 
-	auto node = std::make_unique<CNode>(_Node.mName.C_Str(), std::move(curMeshPtrs), transform);
+	auto node = std::make_unique<CNode>(_Id++, _Node.mName.C_Str(), std::move(curMeshPtrs), transform);
 	for (size_t i = 0; i < _Node.mNumChildren; i++)
 	{
-		node->AddChild(this->ParseNode(*_Node.mChildren[i]));
+		node->AddChild(this->ParseNode(_Id, *_Node.mChildren[i]));
 	}
 
 	return node;

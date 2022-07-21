@@ -257,6 +257,7 @@ LRESULT hl2::CWindow::HandleMessage(HWND hWnd, UINT msg, WPARAM wParam,
 			m_Keyboard.OnKeyPressed(static_cast<uint8_t>(wParam));
 			break;
 		}
+		break;
 	case WM_KEYUP:
 	case WM_SYSKEYUP:
 		m_Keyboard.OnKeyReleased(static_cast<uint8_t>(wParam));

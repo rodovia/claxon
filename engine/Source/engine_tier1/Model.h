@@ -26,13 +26,15 @@ class CNode
 	friend class CModel;
 	friend class CModelDiagWindow;
 public:
-	CNode(const std::string& _Name, std::vector<CMesh*> _Meshptrs, const DirectX::XMMATRIX& _Transform) noexcept;
+	CNode(int _Id, const std::string& _Name, std::vector<CMesh*> _Meshptrs, const DirectX::XMMATRIX& _Transform) noexcept;
 	void Draw(CGraphicalOutput& _Gfx, DirectX::FXMMATRIX _AccumTransform) noexcept;
 	void SetAppliedTransform(DirectX::FXMMATRIX _Transform) noexcept;
+	int GetId() const noexcept;
 private:
-	void RenderTree(int& _NodeIndex, std::optional<int>& _SelectedNodeIndex, CNode*& _Node) const noexcept;
+	void RenderTree(CNode*& _Node) const noexcept;
 	void AddChild(std::unique_ptr<CNode> _Child) noexcept;
 private:
+	int m_Id;
 	std::string m_Name;
 	std::vector<CMesh*> m_MeshPtrs;
 	std::vector<std::shared_ptr<CNode>> m_NodePtrs;
@@ -54,7 +56,7 @@ public:
 	~CModel() noexcept;
 private:
 	static std::unique_ptr<CMesh> ParseMesh(CGraphicalOutput& _Gfx, const aiMesh& _Mesh);
-	std::unique_ptr<CNode> ParseNode(const aiNode& _Node);
+	std::unique_ptr<CNode> ParseNode(int& _NextId, const aiNode& _Node);
 
 	std::unique_ptr<CNode> m_Root;
 	bool m_ProjectReflections;
