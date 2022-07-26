@@ -48,9 +48,7 @@ void engine::LogBufferMgr::Draw()
 constexpr static std::vector<std::string> 
 SplitStr(std::string_view _String, std::string_view _Delim)
 {
-	std::string token, strcpy;
-	std::copy(_String.begin(), _String.end(), strcpy.begin());
-
+	std::string token, strcpy = std::string(_String);
 	std::vector<std::string> vecs;
 
 	while (token != _String)
@@ -156,7 +154,6 @@ void engine::CConsole::SpawnWindow()
 	if (ImGui::Begin("Consola"))
 	{
 		CConsole& con = CConsole::Instance();
-		con.m_LogMgr.Draw();
 
 		int flags = ImGuiInputTextFlags_EnterReturnsTrue;
 		if (ImGui::InputText("Entrada", s_WndBuffer, _ENGINE_CONBUFFERSZ,
@@ -168,6 +165,8 @@ void engine::CConsole::SpawnWindow()
 				con.ExecuteCommand(cmd);
 			}
 		}
+
+		con.m_LogMgr.Draw();
 	}
 
 	ImGui::End();

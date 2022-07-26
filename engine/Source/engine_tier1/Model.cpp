@@ -15,7 +15,10 @@
 #include "dxprim/VertexBuffer.h"
 #include "dxprim/Topology.h"
 #include "dxprim/TransformConstBuffer.h"
+#include "dxprim/Texture.h"
 #include <engine_tier0/Exceptions.h>
+#include "dxprim/Sampler.h"
+#include "Surface.h"
 
 #include <tier0lib/String0.h>
 
@@ -226,7 +229,7 @@ engine::CModel::CModel(CGraphicalOutput& _Gfx, const std::wstring _Filename, boo
 
 	for (size_t i = 0; i < scene->mNumMeshes; i++)
 	{
-		m_MeshPtrs.push_back(this->ParseMesh(_Gfx, *scene->mMeshes[i]));
+		m_MeshPtrs.push_back(this->ParseMesh(_Gfx, *scene->mMeshes[i], scene->mMaterials));
 	}
 
 	int discrim = 0;
@@ -247,19 +250,21 @@ void engine::CModel::Draw(CGraphicalOutput& _Gfx) const
 	m_Root->Draw(_Gfx, DirectX::XMMatrixIdentity());
 }
 
-std::unique_ptr<engine::CMesh> engine::CModel::ParseMesh(CGraphicalOutput& _Gfx, const aiMesh& _Mesh)
+std::unique_ptr<engine::CMesh> engine::CModel::ParseMesh(CGraphicalOutput& _Gfx, const aiMesh& _Mesh, const aiMaterial* const* _Materials)
 {
 	layout::CVertexBuffer vbuf(std::move(
 		layout::CVertexLayout{}
 		.Append(layout::Position3D)
 		.Append(layout::Normal)
+		.Append(layout::Texture2D)
 	));
-
+	
 	for (unsigned int i = 0; i < _Mesh.mNumVertices; i++)
 	{
 		vbuf.EmplaceBack(
 			*reinterpret_cast<DirectX::XMFLOAT3*>(&_Mesh.mVertices[i]),
-			*reinterpret_cast<DirectX::XMFLOAT3*>(&_Mesh.mNormals[i])
+			*reinterpret_cast<DirectX::XMFLOAT3*>(&_Mesh.mNormals[i]),
+			*reinterpret_cast<DirectX::XMFLOAT2*>(&_Mesh.mTextureCoords[0][i])
 		);
 	}
 
@@ -277,30 +282,59 @@ std::unique_ptr<engine::CMesh> engine::CModel::ParseMesh(CGraphicalOutput& _Gfx,
 
 	std::vector<std::unique_ptr<CBase_Bind>> bindablePtrs;
 
+	bool hasSpec = false;
+	float shininess = 35.0f;
+	if (_Mesh.mMaterialIndex >= 0)
+	{
+		using namespace std::string_literals;
+		auto& mat = *_Materials[_Mesh.mMaterialIndex];
+		const std::string base = "resources/model/nanosoldier/"s;
+
+		aiString texFilename;
+		mat.GetTexture(aiTextureType_DIFFUSE, 0, &texFilename);
+		bindablePtrs.push_back(std::make_unique<engine::CTexture>(_Gfx, 
+			MAKE_SURFACE_MOUNT(base + texFilename.C_Str())
+		));
+
+		if (mat.GetTexture(aiTextureType_SPECULAR, 0, &texFilename) == aiReturn_SUCCESS)
+		{
+			bindablePtrs.push_back(std::make_unique<engine::CTexture>(_Gfx,
+				MAKE_SURFACE_MOUNT(base + texFilename.C_Str()),
+				1u
+			));
+			hasSpec = true;
+		}
+		else
+		{
+			mat.Get(AI_MATKEY_SHININESS, shininess);
+		}
+		bindablePtrs.push_back(std::make_unique<engine::CSampler>(_Gfx));
+	}
+
 	bindablePtrs.push_back(std::make_unique<engine::CVertexBuffer>(_Gfx, vbuf));
 
 	bindablePtrs.push_back(std::make_unique<engine::CIndexBuffer>(_Gfx, indices));
 
-	// std::wstring vsfile = m_ProjectReflections ? MAKE_SHADER_RESOURCE("P")
+	std::wstring vsfile = hasSpec ? MAKE_SHADER_RESOURCE("PhongSpecular_PS.cso") : MAKE_SHADER_RESOURCE("Phong_PS.cso");
+	if (!hasSpec)
+	{
+		struct __declspec(align(16)) PSMaterialConstant
+		{
+			float specularIntensity = 0.8f;
+			float specularPower;
+			float padding[2];
+		} pmc;
+		pmc.specularPower = shininess;
+		auto cpb = std::make_unique<engine::CConstantPixelBuffer<PSMaterialConstant>>(_Gfx, 10u);
+		cpb->Update(_Gfx, pmc);
+		bindablePtrs.push_back(std::move(cpb));
+	}
 
 	auto pvs = std::make_unique<engine::CVertexShader>(_Gfx, MAKE_SHADER_RESOURCE("Phong_VS.cso"));
 	auto pvsbc = pvs->GetBytecode();
 	bindablePtrs.push_back(std::move(pvs));
-
-	bindablePtrs.push_back(std::make_unique<engine::CPixelShader>(_Gfx, MAKE_SHADER_RESOURCE("Phong_PS.cso")));
-
+	bindablePtrs.push_back(std::make_unique<engine::CPixelShader>(_Gfx, vsfile));
 	bindablePtrs.push_back(std::make_unique<engine::CInputLayout>(_Gfx, vbuf.Layout().D3DLayout(), pvsbc));
-
-	struct PSMaterialConstant
-	{
-		DirectX::XMFLOAT3 color = { 0.6f,0.6f,0.8f };
-		float specularIntensity = 0.6f;
-		float specularPower = 30.0f;
-		float padding[3];
-	} pmc;
-	auto cpb = std::make_unique<engine::CConstantPixelBuffer<PSMaterialConstant>>(_Gfx, 10u);
-	cpb->Update(_Gfx, pmc);
-	bindablePtrs.push_back(std::move(cpb));
 
 	return std::make_unique<CMesh>(_Gfx, std::move(bindablePtrs));
 }

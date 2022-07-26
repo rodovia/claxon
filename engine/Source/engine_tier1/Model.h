@@ -5,7 +5,7 @@
 #include <engine_tier1/dxprim/draw/BaseMiddlewareDraw.h>
 
 #include <optional>
-
+#include <assimp/material.h>
 #include <assimp/mesh.h>
 
 namespace engine
@@ -55,7 +55,7 @@ public:
 	void ShowDiagWindow(const char* _Name);
 	~CModel() noexcept;
 private:
-	static std::unique_ptr<CMesh> ParseMesh(CGraphicalOutput& _Gfx, const aiMesh& _Mesh);
+	static std::unique_ptr<CMesh> ParseMesh(CGraphicalOutput& _Gfx, const aiMesh& _Mesh, const aiMaterial* const* _Materials);
 	std::unique_ptr<CNode> ParseNode(int& _NextId, const aiNode& _Node);
 
 	std::unique_ptr<CNode> m_Root;

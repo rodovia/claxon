@@ -1,9 +1,12 @@
 #include "Texture.h"
 #include <engine_tier1/Surface.h>
+#include <engine_tier0/Exceptions.h>
 
 engine::CTexture::CTexture(engine::CGraphicalOutput& _Gfx,
-							const engine::CSurface& _Surfc)
+							const engine::CSurface& _Surfc, unsigned int _Slot)
+	: m_Slot(_Slot)
 {
+	HRESULT hr;
 	D3D11_TEXTURE2D_DESC desc = {};
 	desc.Width = _Surfc.GetWidth();
 	desc.Height = _Surfc.GetHeight();
@@ -21,8 +24,10 @@ engine::CTexture::CTexture(engine::CGraphicalOutput& _Gfx,
 	sd.pSysMem = _Surfc.GetBufferPointer();
 	sd.SysMemPitch = _Surfc.GetWidth() * sizeof(engine::CColor);
 	CUtl_ComPtr<ID3D11Texture2D> tex;
-	GetDevice(_Gfx)->CreateTexture2D(
-		&desc, &sd, &tex
+	_ENGINE_MAYTHROW_GRAPHICS(
+		GetDevice(_Gfx)->CreateTexture2D(
+			&desc, &sd, &tex
+		)
 	);
 
 	D3D11_SHADER_RESOURCE_VIEW_DESC vd = {};
@@ -30,12 +35,14 @@ engine::CTexture::CTexture(engine::CGraphicalOutput& _Gfx,
 	vd.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
 	vd.Texture2D.MostDetailedMip = 0;
 	vd.Texture2D.MipLevels = 1;
-	GetDevice(_Gfx)->CreateShaderResourceView(
-		tex.Get(), &vd, &m_TextureView
+	_ENGINE_MAYTHROW_GRAPHICS(
+		GetDevice(_Gfx)->CreateShaderResourceView(
+			tex.Get(), &vd, &m_TextureView
+		)
 	);
 }
 
 void engine::CTexture::Bind(engine::CGraphicalOutput& _Gfx) noexcept
 {
-	GetContext(_Gfx)->PSSetShaderResources(0u, 1u, m_TextureView.GetAddressOf());
+	GetContext(_Gfx)->PSSetShaderResources(m_Slot, 1u, m_TextureView.GetAddressOf());
 }

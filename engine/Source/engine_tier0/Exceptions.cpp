@@ -41,6 +41,28 @@ std::string engine::CBaseException::GetOriginString() const noexcept
 
 // engine::CBaseException ^^^^
 
+// engine::CEngineError vvvv
+
+engine::CEngineError::CEngineError()
+	: m_Message("Unknown")
+{
+
+}
+
+engine::CEngineError::CEngineError(std::string _Message)
+	: m_Message(_Message)
+{}
+
+const char* engine::CEngineError::what() const noexcept
+{
+	return m_Message.c_str();
+}
+
+const char* engine::CEngineError::GetType() const noexcept
+{
+	return "Engine error";
+}
+
 // engine::CFromHResultException vvvv
 
 engine::CFromHResultException::CFromHResultException(int _Line, const char* _File, HRESULT _Result)

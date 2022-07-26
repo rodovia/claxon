@@ -44,6 +44,17 @@ protected:
 	mutable std::string m_WhatBuffer;
 };
 
+class _ENGINE_DLLEXP CEngineError : public CBaseException
+{
+public:
+	CEngineError();
+	CEngineError(std::string _Message);
+	const char* what() const noexcept override;
+	const char* GetType() const noexcept override;
+private:
+	std::string m_Message;
+};
+
 class _ENGINE_DLLEXP CFromHResultException : public CBaseException
 {
 public:

@@ -18,7 +18,7 @@ std::wstring gamepaths::CMountedPaths::GetPath(std::string _Path)
 		}
 	}
 
-	return L"";
+	return tier0::ConvertToWideString(_Path);
 }
 
 void gamepaths::CMountedPaths::AddPath(std::string _Path)

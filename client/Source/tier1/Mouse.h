@@ -115,7 +115,7 @@ private:
 	}
 	
 private:
-	static constexpr unsigned int BUFFER_SIZE = 16u;
+	static constexpr unsigned int BUFFER_SIZE = 64u;
 	int m_X, m_Y;
 	bool m_LeftPressed = false, m_RightPressed = false,
 		m_IsInWindow = false;

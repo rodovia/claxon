@@ -9,9 +9,13 @@ namespace Gdiplus
 #include <sstream>
 #include "Surface.h"
 
+#include <tier0lib/String0.h>
+
 #define FULL_WINTARD
 #include <tier0lib/Win32.h>
 #include <gdiplus.h>
+
+#include <engine_tier0/Exceptions.h>
 
 static void GetEncoderCLSID(const WCHAR* _Format, CLSID* _Clsid)
 {
@@ -113,11 +117,18 @@ const engine::CColor* engine::CSurface::GetBufferPointerConst() const noexcept
 
 engine::CSurface engine::CSurface::FromFile(const std::wstring& _FileName)
 {
+	using namespace std::string_literals;
 	unsigned int width = 0;
 	unsigned int height = 0;
 	std::unique_ptr<engine::CColor[]> buffer;
 
 	Gdiplus::Bitmap bitm(_FileName.c_str());
+	if (bitm.GetLastStatus() != Gdiplus::Status::Ok)
+	{
+		std::string mb = tier0::ConvertToMultiByteString(_FileName);
+		throw engine::CEngineError("CSurface: cannot open file '"s + mb + "'. "s + std::to_string(bitm.GetLastStatus()));
+	}
+
 	width = bitm.GetWidth();
 	height = bitm.GetHeight();
 	buffer = std::make_unique<engine::CColor[]>(width * height);

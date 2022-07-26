@@ -26,7 +26,7 @@ private:
 private:
 	hl2::CWindow m_Window;
 	engine::CCamera m_Cam;
-	engine::CModel m_Nano { m_Window.Graphics(), _GETPATH("resources/model/nano.gltf") };
+	engine::CModel m_Nano { m_Window.Graphics(), _GETPATH("resources/model/nanosoldier/nanosuit.obj") };
 	engine::CLightPoint m_Light;
 	hl2::CBasicTimer m_Timer;
 	bool m_ShowDemoWindow = true;

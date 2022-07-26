@@ -236,10 +236,6 @@
     <FxCompile Include="Shader\Solid_VS.hlsl" />
     <FxCompile Include="Shader\Texture_PS.hlsl" />
     <FxCompile Include="Shader\Texture_VS.hlsl" />
-    <FxCompile Include="Shader\IndexPhong_PS.hlsl" />
-    <FxCompile Include="Shader\BlendPhong_VS.hlsl" />
-    <FxCompile Include="Shader\BlendPhong_PS.hlsl" />
-    <FxCompile Include="Shader\TexturePhong_VS.hlsl" />
-    <FxCompile Include="Shader\TexturePhong_PS.hlsl" />
+    <FxCompile Include="Shader\PhongSpecular_PS.hlsl" />
   </ItemGroup>
 </Project>
