@@ -1,4 +1,5 @@
 #include "TransformConstBuffer.h"
+#include <typeinfo>
 
 engine::CTransformConstantBuffer::CTransformConstantBuffer(
 			CGraphicalOutput& _Gfx, const CBase_Draw& _Parent, UINT _Slot)
@@ -27,3 +28,4 @@ void engine::CTransformConstantBuffer::Bind(CGraphicalOutput& _Gfx)
 }
 
 std::unique_ptr<engine::CConstantVertexBuffer<engine::CTransformConstantBuffer::Transforms>> engine::CTransformConstantBuffer::m_VertBuffer;
+

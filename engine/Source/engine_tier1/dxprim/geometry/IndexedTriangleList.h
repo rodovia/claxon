@@ -2,35 +2,36 @@
 
 #include <vector>
 #include <DirectXMath.h>
+#include <engine_tier1/BindableCodex.h>
+#include <engine_tier1/VertexLayout.h>
 
 namespace engine
 {
 
-template<class T>
 class CIndexedTriangleList
 {
 public:
 	CIndexedTriangleList() = default;
-	CIndexedTriangleList(std::vector<T> _VertsIn, std::vector<unsigned short> _Indices)
-		: m_Vertices(_VertsIn),
-		  m_Indices(_Indices)
+	CIndexedTriangleList(layout::CVertexBuffer _VertsIn, std::vector<unsigned short> _Indices)
+		: m_Vertices(std::move(_VertsIn)),
+		  m_Indices(std::move(_Indices))
 	{
-		assert(_VertsIn.size() > 2);
-		assert(_Indices.size() % 3 == 0);
+		assert(m_Vertices.Size() > 2);
+		assert(m_Indices.size() % 3 == 0);
 	}
 
 	void Transform(DirectX::FXMMATRIX _Matrix)
 	{
-		for (auto& v : m_Vertices)
+		for (int i = 0; i < m_Vertices.Size(); i++)
 		{
-			const DirectX::XMVECTOR pos = DirectX::XMLoadFloat3(&v.pos);
+			auto& pos = m_Vertices[i].Attrib<layout::Position3D>();
 			DirectX::XMStoreFloat3(
-				&v.pos,
-				DirectX::XMVector3Transform(pos, _Matrix)
+				&pos,
+				DirectX::XMVector3Transform(DirectX::XMLoadFloat3(&pos), _Matrix)
 			);
 		}
 	}
-
+/*
 	void SetNormalsIndependentFlat()
 	{
 		using namespace DirectX; // DirectX::XMVECTOR::operator- (binary)
@@ -54,8 +55,9 @@ public:
 			DirectX::XMStoreFloat3(&v2.norm, norm);
 		}
 	}
+	*/
 public:
-	std::vector<T> m_Vertices;
+	layout::CVertexBuffer m_Vertices;
 	std::vector<unsigned short> m_Indices;
 };
 

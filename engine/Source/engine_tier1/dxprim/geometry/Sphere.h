@@ -3,6 +3,8 @@
 #include "IndexedTriangleList.h"
 #include <DirectXMath.h>
 #include <engine_tier0/_Math.h>
+#include <optional>
+#include <engine_tier1/VertexLayout.h>
 
 namespace engine
 {
@@ -12,8 +14,7 @@ namespace engine
 	class CSphere
 	{
 	public:
-		template<class T>
-		static CIndexedTriangleList<T> MakeTessel(int _LatDivisions, int _LonDivisions)
+		static CIndexedTriangleList MakeTessel(layout::CVertexLayout _Layout, int _LatDivisions, int _LonDivisions)
 		{
 			assert(_LatDivisions >= 3);
 			assert(_LonDivisions >= 3);
@@ -23,7 +24,7 @@ namespace engine
 			const float latAngle = PI_f / _LatDivisions;
 			const float lonAngle = 2.0f * PI_f / _LonDivisions;
 
-			std::vector<T> vertices;
+			layout::CVertexBuffer vertices{ std::move(_Layout) };
 			for (int ila = 1; ila < _LatDivisions; ila++)
 			{
 				const auto labase = DirectX::XMVector3Transform(
@@ -31,23 +32,29 @@ namespace engine
 				);
 				for (int ilo = 0; ilo < _LonDivisions; ilo++)
 				{
-					vertices.emplace_back();
+					DirectX::XMFLOAT3 calculatedPos;
 					auto v = DirectX::XMVector3Transform(
 						labase,
 						DirectX::XMMatrixRotationZ(((float)_LonDivisions) * ilo)
 					);
-					DirectX::XMStoreFloat3(&vertices.back().pos, v);
+					DirectX::XMStoreFloat3(&calculatedPos, v);
+					vertices.EmplaceBack(calculatedPos);
 				}
 			}
 
-			const unsigned short nPole = vertices.size();
-			vertices.emplace_back();
-			DirectX::XMStoreFloat3(&vertices.back().pos, base);
+			const unsigned short nPole = (unsigned short) vertices.Size();
+			{
+				DirectX::XMFLOAT3 northpos;
+				DirectX::XMStoreFloat3(&northpos, base);
+				vertices.EmplaceBack(northpos);
+			}
 
-			const unsigned short sPole = vertices.size();
-			vertices.emplace_back();
-			DirectX::XMStoreFloat3(&vertices.back().pos, DirectX::XMVectorNegate(base));
-
+			const unsigned short sPole = (unsigned short)vertices.Size();
+			{
+				DirectX::XMFLOAT3 southpos;
+				DirectX::XMStoreFloat3(&southpos, DirectX::XMVectorNegate(base));
+				vertices.EmplaceBack(southpos);
+			}
 			const auto CalculateIndex = [_LatDivisions, _LonDivisions](unsigned short _Lat, unsigned short _Lon)
 			{
 				return _Lat * _LonDivisions + _Lon;
@@ -99,10 +106,14 @@ namespace engine
 			return { std::move(vertices), std::move(indices) };
 		}
 
-		template<class T>
-		static CIndexedTriangleList<T> Make()
+		static CIndexedTriangleList Make(std::optional<layout::CVertexLayout> _Layout = std::nullopt)
 		{
-			return MakeTessel<T>(12, 24);
+			if (!_Layout)
+			{
+				_Layout = layout::CVertexLayout{}.Append(layout::Position3D);
+			}
+
+			return MakeTessel(*_Layout, 12, 24);
 		}
 	};
 

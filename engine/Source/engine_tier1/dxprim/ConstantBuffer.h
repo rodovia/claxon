@@ -3,6 +3,7 @@
 
 #include <engine_tier1/GraphicalOutput.h>
 #include <engine_tier0/Exceptions.h>
+#include <typeinfo>
 
 namespace engine
 {
@@ -75,6 +76,21 @@ public:
 	{
 		GetContext(_Gfx)->VSSetConstantBuffers(m_Slot, 1u, &m_ConstBuffer);
 	}
+
+	static std::string Discriminate() noexcept
+	{
+		return typeid(CConstantVertexBuffer).name();
+	}
+
+	static std::string Discriminate(const T& _Ignored, UINT _Ignored2 = 0) noexcept
+	{
+		return Discriminate();
+	}
+
+	std::string GenerateDiscriminator() const noexcept
+	{
+		return this->Discriminate();
+	}
 };
 
 template<class T>
@@ -88,6 +104,26 @@ public:
 	void Bind(CGraphicalOutput& _Gfx) override
 	{
 		GetContext(_Gfx)->PSSetConstantBuffers(m_Slot, 1u, &m_ConstBuffer);
+	}
+
+	static std::string Discriminate() noexcept
+	{
+		return typeid(CConstantPixelBuffer).name();
+	}
+
+	static std::string Discriminate(const T& _Ignored, UINT _Ignored2 = 0u) noexcept
+	{
+		return Discriminate();
+	}
+
+	static std::string Discriminate(UINT _Ignored) noexcept
+	{
+		return Discriminate();
+	}
+
+	std::string GenerateDiscriminator() const noexcept
+	{
+		return this->Discriminate();
 	}
 };
 

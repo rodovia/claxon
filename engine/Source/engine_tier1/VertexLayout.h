@@ -8,10 +8,10 @@
 
 #include "GraphicalOutput.h"
 
-#define _ENGINE_MAP_SPECIALIZ(T, SyT, St, S) \
+#define _ENGINE_MAP_SPECIALIZ(T, SyT, St, S, M) \
 	template<> struct Map<  T  > \
 	{ using SystemType = SyT; static constexpr DXGI_FORMAT DxgiFormat = DXGI_FORMAT_ ## St;  \
-	static constexpr const char* Semantic = #S ## ; }
+	static constexpr const char* Semantic = #S ## ; static constexpr const char* Mangled = #M ## ; }
 
 namespace engine
 {
@@ -44,13 +44,13 @@ enum ElementType
 };
 
 template<ElementType> struct Map;
-_ENGINE_MAP_SPECIALIZ(Position2D, DirectX::XMFLOAT2, R32G32_FLOAT, Position);
-_ENGINE_MAP_SPECIALIZ(Position3D, DirectX::XMFLOAT3, R32G32B32_FLOAT, Position);
-_ENGINE_MAP_SPECIALIZ(Texture2D, DirectX::XMFLOAT2, R32G32_FLOAT, TexCoord);
-_ENGINE_MAP_SPECIALIZ(Normal, DirectX::XMFLOAT3, R32G32B32_FLOAT, Normal);
-_ENGINE_MAP_SPECIALIZ(Float3Color, DirectX::XMFLOAT3, R32G32B32_FLOAT, Color);
-_ENGINE_MAP_SPECIALIZ(Float4Color, DirectX::XMFLOAT4, R32G32B32A32_FLOAT, Color);
-_ENGINE_MAP_SPECIALIZ(BGRAColor, BGRAElement, R8G8B8A8_UNORM, Color);
+_ENGINE_MAP_SPECIALIZ(Position2D, DirectX::XMFLOAT2, R32G32_FLOAT, Position, "ZA");
+_ENGINE_MAP_SPECIALIZ(Position3D, DirectX::XMFLOAT3, R32G32B32_FLOAT, Position, "YA");
+_ENGINE_MAP_SPECIALIZ(Texture2D, DirectX::XMFLOAT2, R32G32_FLOAT, TexCoord, "PP");
+_ENGINE_MAP_SPECIALIZ(Normal, DirectX::XMFLOAT3, R32G32B32_FLOAT, Normal, "!O");
+_ENGINE_MAP_SPECIALIZ(Float3Color, DirectX::XMFLOAT3, R32G32B32_FLOAT, Color, "A)");
+_ENGINE_MAP_SPECIALIZ(Float4Color, DirectX::XMFLOAT4, R32G32B32A32_FLOAT, Color, "PP");
+_ENGINE_MAP_SPECIALIZ(BGRAColor, BGRAElement, R8G8B8A8_UNORM, Color, "PL");
 
 class _ENGINE_DLLEXP CElement
 {
@@ -66,6 +66,7 @@ public:
 	static constexpr size_t SizeOf(ElementType _Type) noexcept;
 	ElementType Type() const noexcept;
 	D3D11_INPUT_ELEMENT_DESC D3DDescriptor() const noexcept;
+	const char* Mangle() const noexcept;
 private:
 	template<ElementType _Ty_Type>
 	static constexpr D3D11_INPUT_ELEMENT_DESC GenerateDescriptor(size_t _Offset)
@@ -102,6 +103,7 @@ public:
 	size_t Size() const noexcept;
 	size_t ElementCount() const noexcept;
 	std::vector<D3D11_INPUT_ELEMENT_DESC> D3DLayout() const noexcept;
+	std::string Mangle() const noexcept;
 private:
 	std::vector<CElement> m_Elements;
 };

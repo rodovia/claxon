@@ -8,21 +8,16 @@ void engine::CBase_Draw::Draw(engine::CGraphicalOutput& _Gfx) const
 		b->Bind(_Gfx);
 	}
 
-	for (const std::shared_ptr<CBase_Bind>& b : GetStaticBinds())
-	{
-		b->Bind(_Gfx);
-	}
-
 	return _Gfx.DrawIndexed(m_IndexBuffer->GetCount());
 }
 
 void engine::CBase_Draw::AddBind(std::shared_ptr<engine::CBase_Bind> _Bind)
 {
+	if (typeid(*_Bind) == typeid(engine::CIndexBuffer))
+	{
+		assert(m_IndexBuffer == nullptr && "An attempt was made to bind mutiple index buffers");
+		m_IndexBuffer = &static_cast<engine::CIndexBuffer&>(*_Bind);
+	}
 	m_Binds.push_back(std::move(_Bind));
 }
 
-void engine::CBase_Draw::AddIndexBuffer(std::shared_ptr<engine::CIndexBuffer> _Buffer) noexcept
-{
-	m_IndexBuffer = _Buffer.get();
-	m_Binds.push_back(std::move(_Buffer));
-}

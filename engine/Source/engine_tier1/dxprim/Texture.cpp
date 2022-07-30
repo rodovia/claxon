@@ -1,15 +1,19 @@
 #include "Texture.h"
 #include <engine_tier1/Surface.h>
 #include <engine_tier0/Exceptions.h>
+#include <tier0lib/String0.h>
+#include <typeinfo>
 
-engine::CTexture::CTexture(engine::CGraphicalOutput& _Gfx,
-							const engine::CSurface& _Surfc, unsigned int _Slot)
-	: m_Slot(_Slot)
+engine::CTexture::CTexture(engine::CGraphicalOutput& _Gfx, const std::wstring& _Filename, unsigned int _Slot)
+	: m_Slot(_Slot),
+	m_Name(_Filename)
 {
+	const CSurface surf = engine::CSurface::FromFile(m_Name);
+
 	HRESULT hr;
 	D3D11_TEXTURE2D_DESC desc = {};
-	desc.Width = _Surfc.GetWidth();
-	desc.Height = _Surfc.GetHeight();
+	desc.Width = surf.GetWidth();
+	desc.Height = surf.GetHeight();
 	desc.MipLevels = 1;
 	desc.ArraySize = 1;
 	desc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
@@ -21,8 +25,8 @@ engine::CTexture::CTexture(engine::CGraphicalOutput& _Gfx,
 	desc.MiscFlags = 0;
 	
 	D3D11_SUBRESOURCE_DATA sd = {};
-	sd.pSysMem = _Surfc.GetBufferPointer();
-	sd.SysMemPitch = _Surfc.GetWidth() * sizeof(engine::CColor);
+	sd.pSysMem = surf.GetBufferPointer();
+	sd.SysMemPitch = surf.GetWidth() * sizeof(engine::CColor);
 	CUtl_ComPtr<ID3D11Texture2D> tex;
 	_ENGINE_MAYTHROW_GRAPHICS(
 		GetDevice(_Gfx)->CreateTexture2D(
@@ -45,4 +49,19 @@ engine::CTexture::CTexture(engine::CGraphicalOutput& _Gfx,
 void engine::CTexture::Bind(engine::CGraphicalOutput& _Gfx) noexcept
 {
 	GetContext(_Gfx)->PSSetShaderResources(m_Slot, 1u, m_TextureView.GetAddressOf());
+}
+
+std::string engine::CTexture::Discriminate(const std::wstring& _Filename, unsigned int _Slot) noexcept
+{
+	using namespace std::string_literals;
+	std::wstring cpy = _Filename;
+
+	return typeid(engine::CTexture).name() + "@"s 
+		+ std::to_string(_Slot) + "@"s
+		+ tier0::ConvertToMultiByteString(cpy);
+}
+
+std::string engine::CTexture::GenerateDiscriminator() noexcept
+{
+	return this->Discriminate(m_Name, m_Slot);
 }

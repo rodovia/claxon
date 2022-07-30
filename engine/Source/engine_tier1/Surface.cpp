@@ -143,7 +143,7 @@ engine::CSurface engine::CSurface::FromFile(const std::wstring& _FileName)
 		}
 	}
 
-	return CSurface(width, height, std::move(buffer));
+	return CSurface(width, height, std::move(buffer), _FileName.c_str());
 }
 
 void engine::CSurface::WriteToFile(std::wstring_view _Filename) const
@@ -164,10 +164,17 @@ void engine::CSurface::Copy(const CSurface& _Src) noexcept
 	memcpy(m_Buffer.get(), _Src.m_Buffer.get(), m_Width * m_Height * sizeof(engine::CColor));
 }
 
-engine::CSurface::CSurface(unsigned int _Width, unsigned int _Height, std::unique_ptr<CColor[]> _BufferPtr) noexcept
+const wchar_t* engine::CSurface::GetFilename() const noexcept
+{
+	return m_Filename;
+}
+
+engine::CSurface::CSurface(unsigned int _Width, unsigned int _Height, 
+	std::unique_ptr<CColor[]> _BufferPtr, const wchar_t* _Filename) noexcept
 	: m_Height(_Height),
 	  m_Width(_Width),
-	  m_Buffer(std::move(_BufferPtr))
+	  m_Buffer(std::move(_BufferPtr)),
+	m_Filename(_Filename)
 {
 
 }

@@ -103,13 +103,16 @@ public:
 	CColor* GetBufferPointer() noexcept;
 	const CColor* GetBufferPointer() const noexcept;
 	const CColor* GetBufferPointerConst() const noexcept;
+	const wchar_t* GetFilename() const noexcept;
 
 	static CSurface FromFile(const std::wstring& _Filename);
 	void WriteToFile(std::wstring_view _Filename) const;
 	void Copy(const CSurface& _Src) noexcept;
 private:
-	CSurface(unsigned int _Width, unsigned int _Height, std::unique_ptr<CColor[]> _BufferPtr) noexcept;
+	CSurface(unsigned int _Width, unsigned int _Height, 
+		std::unique_ptr<CColor[]> _BufferPtr, const wchar_t* _Filename) noexcept;
 private:
+	const wchar_t* m_Filename = nullptr;
 	std::unique_ptr<CColor[]> m_Buffer;
 	unsigned int m_Width;
 	unsigned int m_Height;

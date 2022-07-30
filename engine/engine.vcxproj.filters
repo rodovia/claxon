@@ -134,9 +134,6 @@
     <ClInclude Include="Source\engine_tier1\dxprim\draw\BaseDraw.h">
       <Filter>Arquivos de Cabeçalho</Filter>
     </ClInclude>
-    <ClInclude Include="Source\engine_tier1\dxprim\draw\BaseMiddlewareDraw.h">
-      <Filter>Arquivos de Cabeçalho</Filter>
-    </ClInclude>
     <ClInclude Include="Source\engine_tier1\dxprim\IndexBuffer.h">
       <Filter>Arquivos de Cabeçalho</Filter>
     </ClInclude>
@@ -222,6 +219,12 @@
       <Filter>Arquivos de Cabeçalho</Filter>
     </ClInclude>
     <ClInclude Include="Source\engine_tier1\dxprim\draw\SolidSphere.h">
+      <Filter>Arquivos de Cabeçalho</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\engine_tier1\dxprim\draw\BaseMiddlewareDraw.h">
+      <Filter>Arquivos de Cabeçalho</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\engine_tier1\BindableCodex.h">
       <Filter>Arquivos de Cabeçalho</Filter>
     </ClInclude>
   </ItemGroup>

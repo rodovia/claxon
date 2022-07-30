@@ -18,6 +18,7 @@
 #include "dxprim/Texture.h"
 #include <engine_tier0/Exceptions.h>
 #include "dxprim/Sampler.h"
+#include "BindableCodex.h"
 #include "Surface.h"
 
 #include <tier0lib/String0.h>
@@ -101,27 +102,16 @@ engine::CNode* CModelDiagWindow::SelectedNode() const noexcept
 
 #pragma region CMesh
 
-engine::CMesh::CMesh(engine::CGraphicalOutput& _Gfx, std::vector<std::unique_ptr<engine::CBase_Bind>> _BindPtrs)
+engine::CMesh::CMesh(engine::CGraphicalOutput& _Gfx, std::vector<std::shared_ptr<engine::CBase_Bind>> _BindPtrs)
 {
-	if (!this->IsStaticInit())
-	{
-		this->AddStaticBind(std::make_unique<CPrim_Topology>(_Gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST));
-	}
+	this->AddBind(CCodex::Query<CPrim_Topology>(_Gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST));
 
 	for (auto& pb : _BindPtrs)
 	{
-		if (auto pi = dynamic_cast<engine::CIndexBuffer*>(pb.get()))
-		{
-			this->AddIndexBuffer(std::unique_ptr<engine::CIndexBuffer>{ pi });
-			pb.release();
-		}
-		else
-		{
-			this->AddBind(std::move(pb));
-		}
+		this->AddBind(std::move(pb));
 	}
 
-	this->AddBind(std::make_unique<engine::CTransformConstantBuffer>(_Gfx, *this));
+	this->AddBind(std::make_shared<engine::CTransformConstantBuffer>(_Gfx, *this));
 }
 
 void engine::CMesh::Draw(CGraphicalOutput& _Gfx, DirectX::FXMMATRIX _AccumTransform) noexcept
@@ -280,7 +270,7 @@ std::unique_ptr<engine::CMesh> engine::CModel::ParseMesh(CGraphicalOutput& _Gfx,
 		indices.push_back(face.mIndices[2]);
 	}
 
-	std::vector<std::unique_ptr<CBase_Bind>> bindablePtrs;
+	std::vector<std::shared_ptr<CBase_Bind>> bindablePtrs;
 
 	bool hasSpec = false;
 	float shininess = 35.0f;
@@ -292,14 +282,14 @@ std::unique_ptr<engine::CMesh> engine::CModel::ParseMesh(CGraphicalOutput& _Gfx,
 
 		aiString texFilename;
 		mat.GetTexture(aiTextureType_DIFFUSE, 0, &texFilename);
-		bindablePtrs.push_back(std::make_unique<engine::CTexture>(_Gfx, 
-			MAKE_SURFACE_MOUNT(base + texFilename.C_Str())
+		bindablePtrs.push_back(CCodex::Query<engine::CTexture>(_Gfx, 
+			_GETPATH(base + texFilename.C_Str())
 		));
 
 		if (mat.GetTexture(aiTextureType_SPECULAR, 0, &texFilename) == aiReturn_SUCCESS)
 		{
-			bindablePtrs.push_back(std::make_unique<engine::CTexture>(_Gfx,
-				MAKE_SURFACE_MOUNT(base + texFilename.C_Str()),
+			bindablePtrs.push_back(CCodex::Query<engine::CTexture>(_Gfx,
+				_GETPATH(base + texFilename.C_Str()),
 				1u
 			));
 			hasSpec = true;
@@ -308,12 +298,12 @@ std::unique_ptr<engine::CMesh> engine::CModel::ParseMesh(CGraphicalOutput& _Gfx,
 		{
 			mat.Get(AI_MATKEY_SHININESS, shininess);
 		}
-		bindablePtrs.push_back(std::make_unique<engine::CSampler>(_Gfx));
+		bindablePtrs.push_back(CCodex::Query<engine::CSampler>(_Gfx));
 	}
 
-	bindablePtrs.push_back(std::make_unique<engine::CVertexBuffer>(_Gfx, vbuf));
+	bindablePtrs.push_back(CCodex::Query<engine::CVertexBuffer>(_Gfx, std::string(_Mesh.mName.C_Str()), vbuf));
 
-	bindablePtrs.push_back(std::make_unique<engine::CIndexBuffer>(_Gfx, indices));
+	bindablePtrs.push_back(CCodex::Query<engine::CIndexBuffer>(_Gfx, indices, std::string(_Mesh.mName.C_Str())));
 
 	std::wstring vsfile = hasSpec ? MAKE_SHADER_RESOURCE("PhongSpecular_PS.cso") : MAKE_SHADER_RESOURCE("Phong_PS.cso");
 	if (!hasSpec)
@@ -325,16 +315,16 @@ std::unique_ptr<engine::CMesh> engine::CModel::ParseMesh(CGraphicalOutput& _Gfx,
 			float padding[2];
 		} pmc;
 		pmc.specularPower = shininess;
-		auto cpb = std::make_unique<engine::CConstantPixelBuffer<PSMaterialConstant>>(_Gfx, 10u);
+		auto cpb = CCodex::Query<engine::CConstantPixelBuffer<PSMaterialConstant>>(_Gfx, 10u);
 		cpb->Update(_Gfx, pmc);
 		bindablePtrs.push_back(std::move(cpb));
 	}
 
-	auto pvs = std::make_unique<engine::CVertexShader>(_Gfx, MAKE_SHADER_RESOURCE("Phong_VS.cso"));
+	auto pvs = CCodex::Query<engine::CVertexShader>(_Gfx, MAKE_SHADER_RESOURCE("Phong_VS.cso"));
 	auto pvsbc = pvs->GetBytecode();
 	bindablePtrs.push_back(std::move(pvs));
-	bindablePtrs.push_back(std::make_unique<engine::CPixelShader>(_Gfx, vsfile));
-	bindablePtrs.push_back(std::make_unique<engine::CInputLayout>(_Gfx, vbuf.Layout().D3DLayout(), pvsbc));
+	bindablePtrs.push_back(CCodex::Query<engine::CPixelShader>(_Gfx, vsfile));
+	bindablePtrs.push_back(CCodex::Query<engine::CInputLayout>(_Gfx, vbuf.Layout(), pvsbc));
 
 	return std::make_unique<CMesh>(_Gfx, std::move(bindablePtrs));
 }

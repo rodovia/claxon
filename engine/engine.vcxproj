@@ -219,6 +219,7 @@
     <ClInclude Include="Source\engine_tier0\Exceptions.h" />
     <ClInclude Include="Source\engine_tier0\GDIPlusManager.h" />
     <ClInclude Include="Source\engine_tier0\_Math.h" />
+    <ClInclude Include="Source\engine_tier1\BindableCodex.h" />
     <ClInclude Include="Source\engine_tier1\Camera.h" />
     <ClInclude Include="Source\engine_tier1\dxprim\ConstantBuffer.h" />
     <ClInclude Include="Source\engine_tier1\dxprim\draw\BaseDraw.h" />

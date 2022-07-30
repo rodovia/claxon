@@ -35,6 +35,30 @@ constexpr size_t engine::layout::CElement::SizeOf(ElementType _Type) noexcept
 	return 0u;
 }
 
+const char* engine::layout::CElement::Mangle() const noexcept
+{
+	switch (m_Type)
+	{
+	case Position2D:
+		return Map<Position2D>::Mangled;
+	case Position3D:
+		return Map<Position3D>::Mangled;
+	case Texture2D:
+		return Map<Texture2D>::Mangled;
+	case Normal:
+		return Map<Normal>::Mangled;
+	case Float3Color:
+		return Map<Float3Color>::Mangled;
+	case Float4Color:
+		return Map<Float4Color>::Mangled;
+	case BGRAColor:
+		return Map<BGRAColor>::Mangled;
+	}
+
+	assert("No mangle" && false);
+	return "**";
+}
+
 engine::layout::ElementType engine::layout::CElement::Type() const noexcept
 {
 	return m_Type;
@@ -80,6 +104,16 @@ engine::layout::CVertexLayout& engine::layout::CVertexLayout::Append(ElementType
 size_t engine::layout::CVertexLayout::Size() const noexcept
 {
 	return m_Elements.empty() ? 0u : m_Elements.back().OffsetAfter();
+}
+
+std::string engine::layout::CVertexLayout::Mangle() const noexcept
+{
+	std::string man;
+	for (const CElement& e : m_Elements)
+	{
+		man += e.Mangle();
+	}
+	return man;
 }
 
 size_t engine::layout::CVertexLayout::ElementCount() const noexcept

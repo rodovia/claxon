@@ -1,15 +1,14 @@
 #pragma once
 
-#include "BaseMiddlewareDraw.h"
+#include "BaseDraw.h"
 
 namespace engine
 {
 
-class CSolidSphere : public CBase_MiddlewareDraw<CSolidSphere>
+class CSolidSphere : public CBase_Draw
 {
 public:
 	CSolidSphere(CGraphicalOutput& _Gfx, float _Radius);
-	void Update(float _Dt) noexcept override;
 	void SetPos(DirectX::XMFLOAT3 _Pos) noexcept;
 	DirectX::XMMATRIX GetTransformMatrix() const noexcept override;
 private:

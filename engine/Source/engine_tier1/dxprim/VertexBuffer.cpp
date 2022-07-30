@@ -1,4 +1,5 @@
 #include "VertexBuffer.h"
+#include <typeinfo>
 
 void engine::CVertexBuffer::Bind(CGraphicalOutput& _Gfx)
 {
@@ -7,3 +8,12 @@ void engine::CVertexBuffer::Bind(CGraphicalOutput& _Gfx)
 										&m_Stride, &off);
 }
 
+std::string engine::CVertexBuffer::Discriminate1(std::string _Tag)
+{
+	return typeid(engine::CVertexBuffer).name() + _Tag;
+}
+
+std::string engine::CVertexBuffer::GenerateDiscriminator() const noexcept
+{
+	return this->Discriminate1(m_Tag);
+}
