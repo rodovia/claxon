@@ -105,6 +105,9 @@
     <ClCompile Include="Source\engine_tier1\dxprim\draw\SolidSphere.cpp">
       <Filter>Arquivos de Origem</Filter>
     </ClCompile>
+    <ClCompile Include="Source\engine_tier1\dxprim\draw\test_plane.cpp">
+      <Filter>Arquivos de Origem</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\engine_tier0\BaseBind.h">
@@ -227,6 +230,15 @@
     <ClInclude Include="Source\engine_tier1\BindableCodex.h">
       <Filter>Arquivos de Cabeçalho</Filter>
     </ClInclude>
+    <ClInclude Include="Source\engine_tier1\dxprim\geometry\Plane.h">
+      <Filter>Arquivos de Cabeçalho</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\engine_tier1\dxprim\draw\TestPlane.h">
+      <Filter>Arquivos de Cabeçalho</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\engine_tier1\dxprim\fwd.h">
+      <Filter>Arquivos de Cabeçalho</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\Phong_PS.hlsl" />
@@ -240,5 +252,9 @@
     <FxCompile Include="Shader\Texture_PS.hlsl" />
     <FxCompile Include="Shader\Texture_VS.hlsl" />
     <FxCompile Include="Shader\PhongSpecular_PS.hlsl" />
+    <FxCompile Include="Shader\PhongNormalMap_PS.hlsl" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include=".clang-format" />
   </ItemGroup>
 </Project>

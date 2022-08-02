@@ -16,7 +16,7 @@ public:
 		: m_Vertices(std::move(_VertsIn)),
 		  m_Indices(std::move(_Indices))
 	{
-		assert(m_Vertices.Size() > 2);
+		// assert(m_Vertices.Size() > 2);
 		assert(m_Indices.size() % 3 == 0);
 	}
 

@@ -187,6 +187,7 @@
     <ClCompile Include="Source\engine_tier1\Camera.cpp" />
     <ClCompile Include="Source\engine_tier1\dxprim\draw\BaseDraw.cpp" />
     <ClCompile Include="Source\engine_tier1\dxprim\draw\SolidSphere.cpp" />
+    <ClCompile Include="Source\engine_tier1\dxprim\draw\test_plane.cpp" />
     <ClCompile Include="Source\engine_tier1\dxprim\IndexBuffer.cpp" />
     <ClCompile Include="Source\engine_tier1\dxprim\InputLayout.cpp" />
     <ClCompile Include="Source\engine_tier1\dxprim\Sampler.cpp" />
@@ -221,11 +222,14 @@
     <ClInclude Include="Source\engine_tier0\_Math.h" />
     <ClInclude Include="Source\engine_tier1\BindableCodex.h" />
     <ClInclude Include="Source\engine_tier1\Camera.h" />
+    <ClInclude Include="Source\engine_tier1\dxprim\fwd.h" />
     <ClInclude Include="Source\engine_tier1\dxprim\ConstantBuffer.h" />
     <ClInclude Include="Source\engine_tier1\dxprim\draw\BaseDraw.h" />
     <ClInclude Include="Source\engine_tier1\dxprim\draw\BaseMiddlewareDraw.h" />
     <ClInclude Include="Source\engine_tier1\dxprim\draw\SolidSphere.h" />
+    <ClInclude Include="Source\engine_tier1\dxprim\draw\TestPlane.h" />
     <ClInclude Include="Source\engine_tier1\dxprim\geometry\IndexedTriangleList.h" />
+    <ClInclude Include="Source\engine_tier1\dxprim\geometry\Plane.h" />
     <ClInclude Include="Source\engine_tier1\dxprim\geometry\Sphere.h" />
     <ClInclude Include="Source\engine_tier1\dxprim\IndexBuffer.h" />
     <ClInclude Include="Source\engine_tier1\dxprim\InputLayout.h" />
@@ -308,6 +312,20 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+    </FxCompile>
+    <FxCompile Include="Shader\PhongNormalMap_PS.hlsl">
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">4.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">4.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4.0</ShaderModel>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(solutiondir)mod\resources\hlsl\%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(solutiondir)mod\resources\hlsl\%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(solutiondir)mod\resources\hlsl\%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(solutiondir)mod\resources\hlsl\%(Filename).cso</ObjectFileOutput>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
     </FxCompile>
     <FxCompile Include="Shader\Phong_PS.hlsl">
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">4.0</ShaderModel>
@@ -407,6 +425,9 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
     </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include=".clang-format" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

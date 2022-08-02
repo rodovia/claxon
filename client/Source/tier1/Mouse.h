@@ -122,7 +122,7 @@ private:
 	std::queue<Event> m_Buffer;
 	std::queue<RawMiceDelta> m_RawBuffer;
 	int m_DeltaCarry;
-	bool m_CaptureRaw = true;
+	bool m_CaptureRaw = false;
 };
 
 using CMouseEvent = CMouse::Event;

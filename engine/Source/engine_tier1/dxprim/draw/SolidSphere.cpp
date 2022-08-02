@@ -32,7 +32,7 @@ engine::CSolidSphere::CSolidSphere(CGraphicalOutput& _Gfx, float _Radius)
 	this->AddBind(CCodex::Query<engine::CPixelShader>(_Gfx, MAKE_SHADER_RESOURCE("Solid_PS.cso")));
 
 	PSColorConstant cconst;
-	auto cpb = CCodex::Query<engine::CConstantPixelBuffer<PSColorConstant>>(_Gfx, 0u);
+	auto cpb = CCodex::Query<engine::CConstantPixelBuffer<PSColorConstant>>(_Gfx, 1u);
 	cpb->Update(_Gfx, cconst);
 
 	this->AddBind(std::move(cpb));

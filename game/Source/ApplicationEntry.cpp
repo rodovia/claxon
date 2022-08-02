@@ -28,12 +28,14 @@ engine::CConCmd debug_break("debug_break", []
 		__debugbreak();
 	});
 
-hl2::CApplication::CApplication() 
+hl2::CApplication::CApplication()
 	: m_Window(800, 600, L"TAIKO NO TATSUJIN", engine::imgui::SetupImGui()),
-	  m_Light(m_Window.Graphics())
+	m_Light(m_Window.Graphics()),
+	m_Plane(m_Window.Graphics(), 3.0f)
 {
 	gamepaths::CInfoParser::FromFile("gameinfo.txt");
 	m_Window.Graphics().SetProjection(DirectX::XMMatrixPerspectiveLH(1.0f, 3.0f / 4.0f, 0.5f, 40.0f));
+	m_Plane.SetPos({ 1.0f, 17.0f, -1.0f });
 }
 
 WPARAM hl2::CApplication::Main()
@@ -55,7 +57,8 @@ void hl2::CApplication::FrameLoop()
 	if (m_Window.m_Keyboard.IsKeyPressed(VK_F1))
 	{
 		m_Window.ToggleCursorDisplay();
-		m_ShowDemoWindow = !m_ShowDemoWindow;
+		m_Window.m_Mouse.ToggleRawCapture();
+		// m_ShowDemoWindow = !m_ShowDemoWindow;
 	}
 
 	if (!m_Window.CursorEnabled())
@@ -78,7 +81,7 @@ void hl2::CApplication::FrameLoop()
 		}
 		if (m_Window.m_Keyboard.IsKeyPressed('R'))
 		{
-			m_Cam.Translate({ 0.0f, dt, 0.0f});
+			m_Cam.Translate({ 0.0f, dt, 0.0f });
 		}
 		if (m_Window.m_Keyboard.IsKeyPressed('F'))
 		{
@@ -97,6 +100,7 @@ void hl2::CApplication::FrameLoop()
 
 	m_Nano.Draw(m_Window.Graphics());
 	m_Light.Draw(m_Window.Graphics());
+	m_Plane.Draw(m_Window.Graphics());
 
 	if (m_ShowDemoWindow)
 	{
@@ -104,6 +108,8 @@ void hl2::CApplication::FrameLoop()
 		m_Cam.SpawnControlWindow();
 		m_Nano.ShowDiagWindow("nanosuit.obj");
 		engine::CConsole::SpawnWindow();
+		this->ShowRawMouseWindow();
+		m_Plane.SpawnTestWindow(m_Window.Graphics());
 	}
 
 	m_Window.Graphics().EndFrame();

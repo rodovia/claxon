@@ -8,6 +8,7 @@
 #include <engine_tier1/LightPoint.h>
 #include <engine_tier1/dxprim/draw/BaseDraw.h>
 #include <engine_tier1/Model.h>
+#include <engine_tier1/dxprim/draw/TestPlane.h>
 
 #include "tier1/Window.hh"
 #include <tier0/Timer.h>
@@ -28,6 +29,7 @@ private:
 	engine::CCamera m_Cam;
 	engine::CModel m_Nano { m_Window.Graphics(), _GETPATH("resources/model/nanosoldier/nanosuit.obj") };
 	engine::CLightPoint m_Light;
+	engine::CPlane m_Plane;
 	hl2::CBasicTimer m_Timer;
 	bool m_ShowDemoWindow = true;
 
