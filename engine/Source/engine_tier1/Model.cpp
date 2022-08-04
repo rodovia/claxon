@@ -1,10 +1,10 @@
-/* Model.cpp -- The implementation of a scene graph. 
+/* Model.cpp -- The implementation of a scene graph.
 				(and the implementation of CMesh, CNode and CModel) */
 
 // This file does not use Win32 API, but windows.h gets included by indirection,
 // defines MINMAX macros, and assimp.h uses std::min and std::max, creating conflict
 
-#include <tier0lib/Win32.h> 
+#include <tier0lib/Win32.h>
 
 #include "Model.h"
 #include "VertexLayout.h"
@@ -41,8 +41,10 @@ public:
 	void Show(const char* _Name, const engine::CNode& _Root);
 	DirectX::XMMATRIX GetTransformMatrix() const noexcept;
 	CNode* SelectedNode() const noexcept;
+
 private:
-	struct TransformParams {
+	struct TransformParams
+	{
 		float Roll = 0.0f;
 		float Pitch = 0.0f;
 		float Yaw = 0.0f;
@@ -77,7 +79,6 @@ void CModelDiagWindow::Show(const char* _Name, const engine::CNode& _Root)
 			ImGui::SliderFloat("Y", &transform.Y, -20.0f, 20.0f);
 			ImGui::SliderFloat("Z", &transform.Z, -20.0f, 20.0f);
 		}
-
 	}
 
 	ImGui::End();
@@ -87,8 +88,7 @@ DirectX::XMMATRIX CModelDiagWindow::GetTransformMatrix() const noexcept
 {
 	assert(m_SelectedNode != nullptr);
 	const auto& transform = m_Transforms.at(m_SelectedNode->GetId());
-	return DirectX::XMMatrixRotationRollPitchYaw(transform.Pitch, transform.Yaw, transform.Roll) *
-		DirectX::XMMatrixTranslation(transform.X, transform.Y, transform.Z);
+	return DirectX::XMMatrixRotationRollPitchYaw(transform.Pitch, transform.Yaw, transform.Roll) * DirectX::XMMatrixTranslation(transform.X, transform.Y, transform.Z);
 }
 
 engine::CNode* CModelDiagWindow::SelectedNode() const noexcept
@@ -96,7 +96,7 @@ engine::CNode* CModelDiagWindow::SelectedNode() const noexcept
 	return m_SelectedNode;
 }
 
-}
+} // namespace engine
 
 #pragma endregion CModelDiagWindow
 
@@ -129,13 +129,11 @@ DirectX::XMMATRIX engine::CMesh::GetTransformMatrix() const noexcept
 
 #pragma region CNode
 
-engine::CNode::CNode(int _Id, const std::string& _Name, std::vector<engine::CMesh*> _MeshPtrs, 
-	const DirectX::XMMATRIX& _Transform
-) noexcept
-	:
-	m_Id(_Id),
-	m_MeshPtrs(std::move(_MeshPtrs)),
-	m_Name(_Name)
+engine::CNode::CNode(int _Id, const std::string& _Name, std::vector<engine::CMesh*> _MeshPtrs,
+					 const DirectX::XMMATRIX& _Transform) noexcept
+	: m_Id(_Id),
+	  m_MeshPtrs(std::move(_MeshPtrs)),
+	  m_Name(_Name)
 {
 	DirectX::XMStoreFloat4x4(&m_BaseTransform, _Transform);
 	DirectX::XMStoreFloat4x4(&m_ApplTransform, DirectX::XMMatrixIdentity());
@@ -154,9 +152,7 @@ void engine::CNode::SetAppliedTransform(DirectX::FXMMATRIX _Transform) noexcept
 void engine::CNode::Draw(CGraphicalOutput& _Gfx, DirectX::FXMMATRIX _AccumTransform) noexcept
 {
 	const auto built =
-		DirectX::XMLoadFloat4x4(&m_ApplTransform) *
-		DirectX::XMLoadFloat4x4(&m_BaseTransform) *
-		_AccumTransform;
+		DirectX::XMLoadFloat4x4(&m_ApplTransform) * DirectX::XMLoadFloat4x4(&m_BaseTransform) * _AccumTransform;
 	for (const auto pm : m_MeshPtrs)
 	{
 		pm->Draw(_Gfx, built);
@@ -175,9 +171,7 @@ void engine::CNode::AddChild(std::unique_ptr<CNode> _Child) noexcept
 void engine::CNode::RenderTree(engine::CNode*& _SelectedNode) const noexcept
 {
 	const int selecDiscrim = (_SelectedNode == nullptr) ? -1 : _SelectedNode->GetId();
-	const int flags = ImGuiTreeNodeFlags_OpenOnArrow | 
-		((m_Id == selecDiscrim) ? ImGuiTreeNodeFlags_Selected : 0) |
-		((m_NodePtrs.empty()) ? ImGuiTreeNodeFlags_Leaf : 0);
+	const int flags = ImGuiTreeNodeFlags_OpenOnArrow | ((m_Id == selecDiscrim) ? ImGuiTreeNodeFlags_Selected : 0) | ((m_NodePtrs.empty()) ? ImGuiTreeNodeFlags_Leaf : 0);
 
 	const bool expnd = ImGui::TreeNodeEx((void*)(intptr_t)m_Id, flags, m_Name.c_str());
 
@@ -202,15 +196,15 @@ void engine::CNode::RenderTree(engine::CNode*& _SelectedNode) const noexcept
 
 engine::CModel::CModel(CGraphicalOutput& _Gfx, const std::wstring _Filename, bool _ProjectReflections)
 	: m_ModelWindow(std::make_unique<CModelDiagWindow>()),
-	m_ProjectReflections(_ProjectReflections)
+	  m_ProjectReflections(_ProjectReflections)
 {
 	Assimp::Importer imp;
 	const auto scene = imp.ReadFile(tier0::ConvertToMultiByteString(_Filename),
-		aiProcess_Triangulate |
-		aiProcess_JoinIdenticalVertices |
-		aiProcess_ConvertToLeftHanded |
-		aiProcess_GenNormals
-	);
+									aiProcess_Triangulate
+										| aiProcess_JoinIdenticalVertices
+										| aiProcess_ConvertToLeftHanded
+										| aiProcess_GenNormals
+										| aiProcess_CalcTangentSpace);
 
 	if (scene == nullptr)
 	{
@@ -244,18 +238,20 @@ std::unique_ptr<engine::CMesh> engine::CModel::ParseMesh(CGraphicalOutput& _Gfx,
 {
 	layout::CVertexBuffer vbuf(std::move(
 		layout::CVertexLayout{}
-		.Append(layout::Position3D)
-		.Append(layout::Normal)
-		.Append(layout::Texture2D)
-	));
-	
+			.Append(layout::Position3D)
+			.Append(layout::Normal)
+			.Append(layout::Tangent)
+			.Append(layout::Bitangent)
+			.Append(layout::Texture2D)));
+
 	for (unsigned int i = 0; i < _Mesh.mNumVertices; i++)
 	{
 		vbuf.EmplaceBack(
 			*reinterpret_cast<DirectX::XMFLOAT3*>(&_Mesh.mVertices[i]),
 			*reinterpret_cast<DirectX::XMFLOAT3*>(&_Mesh.mNormals[i]),
-			*reinterpret_cast<DirectX::XMFLOAT2*>(&_Mesh.mTextureCoords[0][i])
-		);
+			*reinterpret_cast<DirectX::XMFLOAT3*>(&_Mesh.mTangents[i]),
+			*reinterpret_cast<DirectX::XMFLOAT3*>(&_Mesh.mBitangents[i]),
+			*reinterpret_cast<DirectX::XMFLOAT2*>(&_Mesh.mTextureCoords[0][i]));
 	}
 
 	std::vector<unsigned short> indices;
@@ -278,26 +274,27 @@ std::unique_ptr<engine::CMesh> engine::CModel::ParseMesh(CGraphicalOutput& _Gfx,
 	{
 		using namespace std::string_literals;
 		auto& mat = *_Materials[_Mesh.mMaterialIndex];
-		const std::string base = "resources/model/nanosoldier/"s;
+		const std::string base = "resources/model/urban_misc/"s;
 
 		aiString texFilename;
 		mat.GetTexture(aiTextureType_DIFFUSE, 0, &texFilename);
-		bindablePtrs.push_back(CCodex::Query<engine::CTexture>(_Gfx, 
-			_GETPATH(base + texFilename.C_Str())
-		));
+		bindablePtrs.push_back(CCodex::Query<engine::CTexture>(_Gfx,
+															   _GETPATH(base + texFilename.C_Str())));
 
 		if (mat.GetTexture(aiTextureType_SPECULAR, 0, &texFilename) == aiReturn_SUCCESS)
 		{
 			bindablePtrs.push_back(CCodex::Query<engine::CTexture>(_Gfx,
-				_GETPATH(base + texFilename.C_Str()),
-				1u
-			));
+																   _GETPATH(base + texFilename.C_Str()),
+																   1u));
 			hasSpec = true;
 		}
 		else
 		{
 			mat.Get(AI_MATKEY_SHININESS, shininess);
 		}
+
+		mat.GetTexture(aiTextureType_NORMALS, 0, &texFilename);
+		bindablePtrs.push_back(CCodex::Query<engine::CTexture>(_Gfx, _GETPATH(base + texFilename.C_Str()), 2u));
 		bindablePtrs.push_back(CCodex::Query<engine::CSampler>(_Gfx));
 	}
 
@@ -305,9 +302,25 @@ std::unique_ptr<engine::CMesh> engine::CModel::ParseMesh(CGraphicalOutput& _Gfx,
 
 	bindablePtrs.push_back(CCodex::Query<engine::CIndexBuffer>(_Gfx, indices, std::string(_Mesh.mName.C_Str())));
 
-	std::wstring vsfile = hasSpec ? MAKE_SHADER_RESOURCE("PhongSpecular_PS.cso") : MAKE_SHADER_RESOURCE("Phong_PS.cso");
-	if (!hasSpec)
+	if (hasSpec)
 	{
+		std::wstring filename = MAKE_SHADER_RESOURCE("PhongSpecular_PS.cso");
+		bindablePtrs.push_back(CCodex::Query<CPixelShader>(_Gfx, filename));
+
+		struct __declspec(align(16)) PSMaterialConstant
+		{
+			BOOL NormalMapEnabled = TRUE;
+		} pmc;
+
+		auto ptr = CCodex::Query<CConstantPixelBuffer<PSMaterialConstant>>(_Gfx, 10u);
+		ptr->Update(_Gfx, pmc);
+		bindablePtrs.push_back(std::move(ptr));
+	}
+	else
+	{
+		std::wstring filename = MAKE_SHADER_RESOURCE("PhongNormalMap_PS.cso");
+		bindablePtrs.push_back(CCodex::Query<CPixelShader>(_Gfx, filename));
+
 		struct __declspec(align(16)) PSMaterialConstant
 		{
 			float specularIntensity = 0.8f;
@@ -323,7 +336,6 @@ std::unique_ptr<engine::CMesh> engine::CModel::ParseMesh(CGraphicalOutput& _Gfx,
 	auto pvs = CCodex::Query<engine::CVertexShader>(_Gfx, MAKE_SHADER_RESOURCE("Phong_VS.cso"));
 	auto pvsbc = pvs->GetBytecode();
 	bindablePtrs.push_back(std::move(pvs));
-	bindablePtrs.push_back(CCodex::Query<engine::CPixelShader>(_Gfx, vsfile));
 	bindablePtrs.push_back(CCodex::Query<engine::CInputLayout>(_Gfx, vbuf.Layout(), pvsbc));
 
 	return std::make_unique<CMesh>(_Gfx, std::move(bindablePtrs));
@@ -332,8 +344,7 @@ std::unique_ptr<engine::CMesh> engine::CModel::ParseMesh(CGraphicalOutput& _Gfx,
 std::unique_ptr<engine::CNode> engine::CModel::ParseNode(int& _Id, const aiNode& _Node)
 {
 	const auto transform = DirectX::XMMatrixTranspose(DirectX::XMLoadFloat4x4(
-		reinterpret_cast<const DirectX::XMFLOAT4X4*>(&_Node.mTransformation)
-	));
+		reinterpret_cast<const DirectX::XMFLOAT4X4*>(&_Node.mTransformation)));
 
 	std::vector<engine::CMesh*> curMeshPtrs;
 	curMeshPtrs.reserve(_Node.mNumMeshes);
@@ -353,6 +364,7 @@ std::unique_ptr<engine::CNode> engine::CModel::ParseNode(int& _Id, const aiNode&
 }
 
 engine::CModel::~CModel() noexcept
-{}
+{
+}
 
 #pragma endregion CModel

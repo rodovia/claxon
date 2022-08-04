@@ -195,6 +195,7 @@
     <ClCompile Include="Source\engine_tier1\dxprim\Texture.cpp" />
     <ClCompile Include="Source\engine_tier1\dxprim\Topology.cpp" />
     <ClCompile Include="Source\engine_tier1\dxprim\TransformConstBuffer.cpp" />
+    <ClCompile Include="Source\engine_tier1\dxprim\trans_const_pbuffer.cpp" />
     <ClCompile Include="Source\engine_tier1\dxprim\VertexBuffer.cpp" />
     <ClCompile Include="Source\engine_tier1\GraphicalOutput.cpp" />
     <ClCompile Include="Source\engine_tier1\LightPoint.cpp" />
@@ -238,6 +239,7 @@
     <ClInclude Include="Source\engine_tier1\dxprim\Texture.h" />
     <ClInclude Include="Source\engine_tier1\dxprim\Topology.h" />
     <ClInclude Include="Source\engine_tier1\dxprim\TransformConstBuffer.h" />
+    <ClInclude Include="Source\engine_tier1\dxprim\TransformConstPixelBuffer.h" />
     <ClInclude Include="Source\engine_tier1\dxprim\VertexBuffer.h" />
     <ClInclude Include="Source\engine_tier1\dxprim\Viewport.h" />
     <ClInclude Include="Source\engine_tier1\GraphicalOutput.h" />

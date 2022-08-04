@@ -18,18 +18,28 @@ cbuffer CObject : register(b10)
 	float _padding[1];
 };
 
+// Slot 0 - Diff. Texture
+// Slot 1 - Specular Texture
+// Slot 2 - Normal map Texture
 Texture2D g_Texture;
-Texture2D g_NormalMap;
+Texture2D g_NormalMap : register(t2);
 SamplerState g_Sampler;
 
-float4 main(float3 _WorldPos : Position, float3 _Norm : Normal, float4 _Ignored : SV_Position, float2 _TexCoord : Texcoord) : SV_TARGET
+float4 main(float3 _WorldPos : Position, float3 _Norm : Normal, float3 _Tan : Tangent, float3 _Bit : Bitangent, float4 _Ignored : SV_Position, float2 _TexCoord : Texcoord) : SV_TARGET
 {
 	if (EnableNormalMap)
 	{
+        const float3x3 tanview = float3x3(
+			normalize(_Tan),
+			normalize(_Bit),
+			normalize(_Norm)
+		);
         const float3 normalSample = g_NormalMap.Sample(g_Sampler, _TexCoord).xyz;
         _Norm.x = normalSample.x * 2.0f - 1.0f;
         _Norm.y = -normalSample.y * 2.0f + 1.0f;
         _Norm.z = -normalSample.z;
+        //_Norm = mul(_Norm, (float3x3) ModelView);
+        _Norm = mul(_Norm, tanview);
     }
 	
 	// fragment to light vector data

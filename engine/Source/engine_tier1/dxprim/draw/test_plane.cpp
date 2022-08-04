@@ -38,7 +38,7 @@ engine::CPlane::CPlane(CGraphicalOutput& _Gfx, float _Size)
 	this->AddBind(CCodex::Query<CPrim_Topology>(
 		_Gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST));
 
-	this->AddBind(std::make_shared<CTransformConstantBuffer>(_Gfx, *this));
+	this->AddBind(std::make_shared<CTransformConstantPixelBuffer>(_Gfx, *this, 0u, 2u));
 }
 
 void engine::CPlane::SetPos(DirectX::XMFLOAT3 _Pos) noexcept
@@ -79,11 +79,10 @@ void engine::CPlane::SpawnTestWindow(CGraphicalOutput& _Gfx) noexcept
 			"Specular Pwr.", &m_Pmc.SpecularPower, 0.0f, 100.0f);
 		bool normaMapState = m_Pmc.EnableNormalMap == TRUE;
 		bool cnd = ImGui::Checkbox("Enable Normal Map", &normaMapState);
+		m_Pmc.EnableNormalMap = normaMapState ? TRUE : FALSE;
 		if (changedInt || changedPower || cnd)
 		{
-			CCodex::QueryExistent<
-				engine::CConstantPixelBuffer<PSConstantBuffer>>()
-				->Update(_Gfx, m_Pmc);
+			CCodex::QueryExistent<engine::CConstantPixelBuffer<PSConstantBuffer>>()->Update(_Gfx, m_Pmc);
 		}
 	}
 

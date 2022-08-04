@@ -27,6 +27,9 @@ constexpr size_t engine::layout::CElement::SizeOf(ElementType _Type) noexcept
 	case Float4Color:
 	case Position3D:
 		return sizeof(Map<Position3D>::SystemType);
+	case Tangent:
+	case Bitangent:
+		return sizeof(Map<Tangent>::SystemType);
 	case BGRAColor:
 		return sizeof(unsigned int);
 	}
@@ -53,6 +56,10 @@ const char* engine::layout::CElement::Mangle() const noexcept
 		return Map<Float4Color>::Mangled;
 	case BGRAColor:
 		return Map<BGRAColor>::Mangled;
+	case Tangent:
+		return Map<Tangent>::Mangled;
+	case Bitangent:
+		return Map<Bitangent>::Mangled;
 	}
 
 	assert("No mangle" && false);
@@ -82,6 +89,10 @@ D3D11_INPUT_ELEMENT_DESC engine::layout::CElement::D3DDescriptor() const noexcep
 		return GenerateDescriptor<Float4Color>(m_Offset);
 	case BGRAColor:
 		return GenerateDescriptor<BGRAColor>(m_Offset);
+	case Tangent:
+		return GenerateDescriptor<Tangent>(m_Offset);
+	case Bitangent:
+		return GenerateDescriptor<Bitangent>(m_Offset);
 	}
 
 	assert("GetD3DDescriptor: Invalid type" && false);

@@ -9,6 +9,7 @@ void engine::LogBufferMgr::AddLog(const char* _Fmt, ...)
 	va_list argl;
 	va_start(argl, _Fmt);
 	Buffer.appendfv(_Fmt, argl);
+	Buffer.append("\n");
 	va_end(argl);
 
 	ScrollToBottom = true;

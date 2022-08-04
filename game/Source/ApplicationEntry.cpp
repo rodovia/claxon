@@ -30,12 +30,10 @@ engine::CConCmd debug_break("debug_break", []
 
 hl2::CApplication::CApplication()
 	: m_Window(800, 600, L"TAIKO NO TATSUJIN", engine::imgui::SetupImGui()),
-	m_Light(m_Window.Graphics()),
-	m_Plane(m_Window.Graphics(), 3.0f)
+	m_Light(m_Window.Graphics())
 {
 	gamepaths::CInfoParser::FromFile("gameinfo.txt");
 	m_Window.Graphics().SetProjection(DirectX::XMMatrixPerspectiveLH(1.0f, 3.0f / 4.0f, 0.5f, 40.0f));
-	m_Plane.SetPos({ 1.0f, 17.0f, -1.0f });
 }
 
 WPARAM hl2::CApplication::Main()
@@ -98,18 +96,17 @@ void hl2::CApplication::FrameLoop()
 	m_Window.Graphics().SetCamera(m_Cam.GetMatrix());
 	m_Light.Bind(m_Window.Graphics(), m_Cam.GetMatrix());
 
-	m_Nano.Draw(m_Window.Graphics());
+	m_Wall.Draw(m_Window.Graphics());
 	m_Light.Draw(m_Window.Graphics());
-	m_Plane.Draw(m_Window.Graphics());
+	// m_Plane.Draw(m_Window.Graphics());
 
 	if (m_ShowDemoWindow)
 	{
 		m_Light.SpawnControlWindow();
 		m_Cam.SpawnControlWindow();
-		m_Nano.ShowDiagWindow("nanosuit.obj");
+		m_Wall.ShowDiagWindow("brick_wall.obj");
 		engine::CConsole::SpawnWindow();
 		this->ShowRawMouseWindow();
-		m_Plane.SpawnTestWindow(m_Window.Graphics());
 	}
 
 	m_Window.Graphics().EndFrame();

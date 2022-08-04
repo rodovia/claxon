@@ -27,9 +27,8 @@ private:
 private:
 	hl2::CWindow m_Window;
 	engine::CCamera m_Cam;
-	engine::CModel m_Nano { m_Window.Graphics(), _GETPATH("resources/model/nanosoldier/nanosuit.obj") };
+	engine::CModel m_Wall { m_Window.Graphics(), _GETPATH("resources/model/urban_misc/brick_wall.obj") };
 	engine::CLightPoint m_Light;
-	engine::CPlane m_Plane;
 	hl2::CBasicTimer m_Timer;
 	bool m_ShowDemoWindow = true;
 

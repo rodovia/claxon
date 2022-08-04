@@ -108,7 +108,7 @@ private:
 	template<class _Ty>
 	void TrimBuffer(std::queue<_Ty> _Queue) noexcept
 	{
-		while (m_Buffer.size() > BUFFER_SIZE)
+		while (m_Buffer.size() > BUFFER_SIZE / 2)
 		{
 			m_Buffer.pop();
 		}
@@ -121,7 +121,7 @@ private:
 		m_IsInWindow = false;
 	std::queue<Event> m_Buffer;
 	std::queue<RawMiceDelta> m_RawBuffer;
-	int m_DeltaCarry;
+	int m_DeltaCarry = 0;
 	bool m_CaptureRaw = false;
 };
 
