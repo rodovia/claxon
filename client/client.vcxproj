@@ -75,36 +75,36 @@
     <TargetName>client</TargetName>
     <OutDir>$(SolutionDir)Output\$(Configuration)\$(Platform)\</OutDir>
     <IntDir>$(SolutionDir)Output\$(Configuration)\$(Platform)\$(ProjectName)\</IntDir>
-    <IncludePath>$(solutiondir)3rdparty\libconfig\include\libconfig;$(solutiondir)tier0\Source;$(solutiondir)gamepaths\Source;$(ProjectDir)Resource;$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)tier0\Source;$(SolutionDir)engine\Source;$(ProjectDir)Source</IncludePath>
+    <IncludePath>$(solutiondir)3rdparty\assimp\include;$(solutiondir)3rdparty\libconfig\include\libconfig;$(solutiondir)tier0\Source;$(solutiondir)gamepaths\Source;$(ProjectDir)Resource;$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)tier0\Source;$(SolutionDir)engine\Source;$(ProjectDir)Source</IncludePath>
     <PublicIncludeDirectories>$(ProjectDir)Source</PublicIncludeDirectories>
-    <LibraryPath>$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);$(OutDir)</LibraryPath>
+    <LibraryPath>$(solutiondir)3rdparty\assimp\lib\$(Configuration);$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);$(OutDir)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <TargetName>client</TargetName>
     <OutDir>$(SolutionDir)Output\$(Configuration)\$(Platform)\</OutDir>
     <IntDir>$(SolutionDir)Output\$(Configuration)\$(Platform)\$(ProjectName)\</IntDir>
-    <IncludePath>$(solutiondir)3rdparty\libconfig\include\libconfig;$(solutiondir)tier0\Source;$(solutiondir)gamepaths\Source;$(ProjectDir)Resource;$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)tier0\Source;$(SolutionDir)engine\Source;$(ProjectDir)Source</IncludePath>
+    <IncludePath>$(solutiondir)3rdparty\assimp\include;$(solutiondir)3rdparty\libconfig\include\libconfig;$(solutiondir)tier0\Source;$(solutiondir)gamepaths\Source;$(ProjectDir)Resource;$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)tier0\Source;$(SolutionDir)engine\Source;$(ProjectDir)Source</IncludePath>
     <PublicIncludeDirectories>$(ProjectDir)Source</PublicIncludeDirectories>
-    <LibraryPath>$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);$(OutDir)</LibraryPath>
+    <LibraryPath>$(solutiondir)3rdparty\assimp\lib\$(Configuration);$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);$(OutDir)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <TargetName>client</TargetName>
     <OutDir>$(SolutionDir)Output\$(Configuration)\$(Platform)\</OutDir>
     <IntDir>$(SolutionDir)Output\$(Configuration)\$(Platform)\$(ProjectName)\</IntDir>
-    <IncludePath>$(solutiondir)3rdparty\libconfig\include\libconfig;$(solutiondir)tier0\Source;$(solutiondir)gamepaths\Source;$(ProjectDir)Resource;$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)tier0\Source;$(SolutionDir)engine\Source;$(ProjectDir)Source</IncludePath>
+    <IncludePath>$(solutiondir)3rdparty\assimp\include;$(solutiondir)3rdparty\libconfig\include\libconfig;$(solutiondir)tier0\Source;$(solutiondir)gamepaths\Source;$(ProjectDir)Resource;$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)tier0\Source;$(SolutionDir)engine\Source;$(ProjectDir)Source</IncludePath>
     <PublicIncludeDirectories>$(ProjectDir)Source</PublicIncludeDirectories>
-    <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(OutDir)</LibraryPath>
+    <LibraryPath>$(solutiondir)3rdparty\assimp\lib\$(Configuration);$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(OutDir)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <TargetName>client</TargetName>
     <OutDir>$(SolutionDir)Output\$(Configuration)\$(Platform)\</OutDir>
     <IntDir>$(SolutionDir)Output\$(Configuration)\$(Platform)\$(ProjectName)\</IntDir>
-    <IncludePath>$(solutiondir)3rdparty\libconfig\include\libconfig;$(solutiondir)tier0\Source;$(solutiondir)gamepaths\Source;$(ProjectDir)Resource;$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)tier0\Source;$(SolutionDir)engine\Source;$(ProjectDir)Source</IncludePath>
+    <IncludePath>$(solutiondir)3rdparty\assimp\include;$(solutiondir)3rdparty\libconfig\include\libconfig;$(solutiondir)tier0\Source;$(solutiondir)gamepaths\Source;$(ProjectDir)Resource;$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)tier0\Source;$(SolutionDir)engine\Source;$(ProjectDir)Source</IncludePath>
     <PublicIncludeDirectories>$(ProjectDir)Source</PublicIncludeDirectories>
-    <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(OutDir)</LibraryPath>
+    <LibraryPath>$(solutiondir)3rdparty\assimp\lib\$(Configuration);$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(OutDir)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -119,7 +119,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>tier0_dxerr.lib;mount.lib;engine.lib;d3d11.lib;d3dcompiler.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>tier0_dxerr.lib;mount.lib;engine.lib;d3d11.lib;d3dcompiler.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;assimp-vc143-mtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)client$(TargetExt)</OutputFile>
     </Link>
   </ItemDefinitionGroup>
@@ -140,7 +140,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>tier0_dxerr.lib;mount.lib;engine.lib;d3d11.lib;d3dcompiler.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>tier0_dxerr.lib;mount.lib;engine.lib;d3d11.lib;d3dcompiler.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;assimp-vc143-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)client$(TargetExt)</OutputFile>
     </Link>
   </ItemDefinitionGroup>
@@ -157,7 +157,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>tier0_dxerr.lib;mount.lib;engine.lib;d3d11.lib;d3dcompiler.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>tier0_dxerr.lib;mount.lib;engine.lib;d3d11.lib;d3dcompiler.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;assimp-vc143-mtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)client$(TargetExt)</OutputFile>
     </Link>
   </ItemDefinitionGroup>
@@ -178,13 +178,17 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>tier0_dxerr.lib;mount.lib;engine.lib;d3d11.lib;d3dcompiler.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>tier0_dxerr.lib;mount.lib;engine.lib;d3d11.lib;d3dcompiler.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;assimp-vc143-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)client$(TargetExt)</OutputFile>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Resource\resource.h" />
     <ClInclude Include="Source\dx\Bindable.h" />
+    <ClInclude Include="Source\scene\BaseScene.h" />
+    <ClInclude Include="Source\scene\current\GameScene.h" />
+    <ClInclude Include="Source\scene\current\MainMenuScene.h" />
+    <ClInclude Include="Source\scene\SceneManager.h" />
     <ClInclude Include="Source\tier0\DLL.h" />
     <ClInclude Include="Source\tier0\Exceptions.h" />
     <ClInclude Include="Source\tier0\GetSet.h" />
@@ -195,6 +199,10 @@
     <ClInclude Include="Source\tier1\Window.hh" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\scene\current\game_scn.cpp" />
+    <ClCompile Include="Source\scene\current\main_menu_scn.cpp" />
+    <ClCompile Include="Source\scene\scene.cpp" />
+    <ClCompile Include="Source\scene\scene_mgr.cpp" />
     <ClCompile Include="Source\tier0\Exceptions.cpp" />
     <ClCompile Include="Source\tier1\Keyboard.cpp" />
     <ClCompile Include="Source\tier1\Mouse.cpp" />

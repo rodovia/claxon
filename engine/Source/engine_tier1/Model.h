@@ -11,6 +11,12 @@
 namespace engine
 {
 
+struct MODEL_DESCRIPTOR
+{
+	float Scale = 1.0f;
+	bool AffectedByLight = true;
+};
+
 class CMesh : public CBase_Draw
 {
 public:
@@ -50,16 +56,16 @@ public:
 	* I want to make my life easier by not having to call
 	* tier0::ConvertToMultiByteString explicitly everytime I use _GETPATH. 
 	*/
-	CModel(CGraphicalOutput& _Gfx, std::wstring _Filename, bool _ProjectReflections = true);
+	CModel(CGraphicalOutput& _Gfx, std::wstring _Filename, MODEL_DESCRIPTOR _Options = {});
 	void Draw(CGraphicalOutput& _Gfx) const;
 	void ShowDiagWindow(const char* _Name);
 	~CModel() noexcept;
 private:
-	static std::unique_ptr<CMesh> ParseMesh(CGraphicalOutput& _Gfx, const aiMesh& _Mesh, const aiMaterial* const* _Materials);
+	std::unique_ptr<CMesh> ParseMesh(CGraphicalOutput& _Gfx, const aiMesh& _Mesh, const aiMaterial* const* _Materials);
 	std::unique_ptr<CNode> ParseNode(int& _NextId, const aiNode& _Node);
 
 	std::unique_ptr<CNode> m_Root;
-	bool m_ProjectReflections;
+	MODEL_DESCRIPTOR m_Desc;
 	std::vector<std::unique_ptr<CMesh>> m_MeshPtrs;
 	std::unique_ptr<class CModelDiagWindow> m_ModelWindow;
 };

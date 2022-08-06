@@ -1,15 +1,10 @@
 #include "ApplicationEntry.h"
-
 #include <InfoParser.h>
-
 #include <imguihlp.h>
-#include <engine_tier0/_Math.h>
-#include <engine_tier1/BindableCodex.h>
-#include <engine_tier0/GDIPlusManager.h>
-#include <engine_tier1/Surface.h>
-#include <engine_ui/Console.h>
-#include <engine_tier1/dxprim/Shaders.h>
 
+#include <engine_tier0/GDIPlusManager.h>
+
+#include <scene/current/MainMenuScene.h>
 #include <engine_tier1/VertexLayout.h>
 
 #include <tier0/Timer.h>
@@ -21,19 +16,16 @@
 
 engine::CGDIPlusManager gdi;
 
-engine::CConCmd debug_break("debug_break", []
-(std::vector<std::string> _Ignored)
-	{
-		engine::CConsole::Instance().EmitMessage("Check your debugger...");
-		__debugbreak();
-	});
-
 hl2::CApplication::CApplication()
-	: m_Window(800, 600, L"TAIKO NO TATSUJIN", engine::imgui::SetupImGui()),
-	m_Light(m_Window.Graphics())
 {
-	gamepaths::CInfoParser::FromFile("gameinfo.txt");
-	m_Window.Graphics().SetProjection(DirectX::XMMatrixPerspectiveLH(1.0f, 3.0f / 4.0f, 0.5f, 40.0f));
+	m_ScnMgr = new CSceneManager;
+	m_Window = std::make_unique<CWindow>(800, 600, L"TAIKO NO TATSUJIN", engine::imgui::SetupImGui());
+	m_ScnMgr->SetScene(std::make_unique<CScn_MainMenu>(m_Window));
+}
+
+hl2::CApplication::~CApplication()
+{
+	delete m_ScnMgr;
 }
 
 WPARAM hl2::CApplication::Main()
@@ -50,71 +42,12 @@ WPARAM hl2::CApplication::Main()
 
 void hl2::CApplication::FrameLoop()
 {
-	const auto dt = m_Timer.Mark().count();
-
-	if (m_Window.m_Keyboard.IsKeyPressed(VK_F1))
-	{
-		m_Window.ToggleCursorDisplay();
-		m_Window.m_Mouse.ToggleRawCapture();
-		// m_ShowDemoWindow = !m_ShowDemoWindow;
-	}
-
-	if (!m_Window.CursorEnabled())
-	{
-		if (m_Window.m_Keyboard.IsKeyPressed('W'))
-		{
-			m_Cam.Translate({ 0.0f, 0.0f, dt });
-		}
-		if (m_Window.m_Keyboard.IsKeyPressed('A'))
-		{
-			m_Cam.Translate({ -dt, 0.0f, 0.0f });
-		}
-		if (m_Window.m_Keyboard.IsKeyPressed('S'))
-		{
-			m_Cam.Translate({ 0.0f, 0.0f, -dt });
-		}
-		if (m_Window.m_Keyboard.IsKeyPressed('D'))
-		{
-			m_Cam.Translate({ dt, 0.0f, 0.0f });
-		}
-		if (m_Window.m_Keyboard.IsKeyPressed('R'))
-		{
-			m_Cam.Translate({ 0.0f, dt, 0.0f });
-		}
-		if (m_Window.m_Keyboard.IsKeyPressed('F'))
-		{
-			m_Cam.Translate({ 0.0f, -dt, 0.0f });
-		}
-
-		while (const auto delta = m_Window.m_Mouse.ReadRawDelta())
-		{
-			m_Cam.Rotate(delta->X, delta->Y);
-		}
-	}
-
-	m_Window.Graphics().BeginFrameNorm(200, 200, 200);
-	m_Window.Graphics().SetCamera(m_Cam.GetMatrix());
-	m_Light.Bind(m_Window.Graphics(), m_Cam.GetMatrix());
-
-	m_Wall.Draw(m_Window.Graphics());
-	m_Light.Draw(m_Window.Graphics());
-	// m_Plane.Draw(m_Window.Graphics());
-
-	if (m_ShowDemoWindow)
-	{
-		m_Light.SpawnControlWindow();
-		m_Cam.SpawnControlWindow();
-		m_Wall.ShowDiagWindow("brick_wall.obj");
-		engine::CConsole::SpawnWindow();
-		this->ShowRawMouseWindow();
-	}
-
-	m_Window.Graphics().EndFrame();
+	m_ScnMgr->ShowScene();
 }
 
 void hl2::CApplication::ShowRawMouseWindow()
 {
-	while (const auto d = m_Window.m_Mouse.ReadRawDelta())
+	while (const auto d = m_Window->m_Mouse.ReadRawDelta())
 	{
 		m_X += d->X;
 		m_Y += d->Y;

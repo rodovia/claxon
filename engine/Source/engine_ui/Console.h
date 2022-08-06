@@ -10,6 +10,7 @@
 
 // Size of console text input buffer
 #define _ENGINE_CONBUFFERSZ 256
+#define Msg engine::CConsole::Instance().EmitMessage
 
 namespace engine
 {

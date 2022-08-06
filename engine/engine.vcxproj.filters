@@ -259,6 +259,9 @@
     <FxCompile Include="Shader\Texture_VS.hlsl" />
     <FxCompile Include="Shader\PhongSpecular_PS.hlsl" />
     <FxCompile Include="Shader\PhongNormalMap_PS.hlsl" />
+    <FxCompile Include="Shader\PhongNormalMapOS_PS.hlsl" />
+    <FxCompile Include="Shader\SolidTexture_PS.hlsl" />
+    <FxCompile Include="Shader\SolidTexture_VS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".clang-format" />

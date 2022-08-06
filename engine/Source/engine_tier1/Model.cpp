@@ -4,6 +4,8 @@
 // This file does not use Win32 API, but windows.h gets included by indirection,
 // defines MINMAX macros, and assimp.h uses std::min and std::max, creating conflict
 
+#define _MDL_SCALE_THRESHOLD 500
+
 #include <tier0lib/Win32.h>
 
 #include "Model.h"
@@ -20,6 +22,7 @@
 #include "dxprim/Sampler.h"
 #include "BindableCodex.h"
 #include "Surface.h"
+#include <engine_ui/Console.h>
 
 #include <tier0lib/String0.h>
 
@@ -194,17 +197,25 @@ void engine::CNode::RenderTree(engine::CNode*& _SelectedNode) const noexcept
 
 #pragma region CModel
 
-engine::CModel::CModel(CGraphicalOutput& _Gfx, const std::wstring _Filename, bool _ProjectReflections)
+engine::CModel::CModel(CGraphicalOutput& _Gfx, const std::wstring _Filename,
+					   MODEL_DESCRIPTOR _Desc)
 	: m_ModelWindow(std::make_unique<CModelDiagWindow>()),
-	  m_ProjectReflections(_ProjectReflections)
+	  m_Desc(_Desc)
 {
 	Assimp::Importer imp;
-	const auto scene = imp.ReadFile(tier0::ConvertToMultiByteString(_Filename),
+	std::string fname = tier0::ConvertToMultiByteString(_Filename);
+	Msg("Loading model %s", fname.c_str());
+	const auto scene = imp.ReadFile(fname,
 									aiProcess_Triangulate
 										| aiProcess_JoinIdenticalVertices
 										| aiProcess_ConvertToLeftHanded
 										| aiProcess_GenNormals
 										| aiProcess_CalcTangentSpace);
+	if (m_Desc.Scale > _MDL_SCALE_THRESHOLD)
+	{
+		Msg("MODEL_DESCRIPTOR::Scale larger than _MDL_SCALE_THRESHOLD is likely to cause crashes! %f",
+			m_Desc.Scale);
+	}
 
 	if (scene == nullptr)
 	{
@@ -246,8 +257,9 @@ std::unique_ptr<engine::CMesh> engine::CModel::ParseMesh(CGraphicalOutput& _Gfx,
 
 	for (unsigned int i = 0; i < _Mesh.mNumVertices; i++)
 	{
+		aiVector3D vert = _Mesh.mVertices[i];
 		vbuf.EmplaceBack(
-			*reinterpret_cast<DirectX::XMFLOAT3*>(&_Mesh.mVertices[i]),
+			DirectX::XMFLOAT3{vert.x * m_Desc.Scale, vert.y * m_Desc.Scale, vert.z * m_Desc.Scale},
 			*reinterpret_cast<DirectX::XMFLOAT3*>(&_Mesh.mNormals[i]),
 			*reinterpret_cast<DirectX::XMFLOAT3*>(&_Mesh.mTangents[i]),
 			*reinterpret_cast<DirectX::XMFLOAT3*>(&_Mesh.mBitangents[i]),
@@ -260,7 +272,6 @@ std::unique_ptr<engine::CMesh> engine::CModel::ParseMesh(CGraphicalOutput& _Gfx,
 	{
 		const auto& face = _Mesh.mFaces[i];
 		assert(face.mNumIndices == 3);
-		std::printf("%i %i %i\n", face.mIndices[0], face.mIndices[1], face.mIndices[2]);
 		indices.push_back(face.mIndices[0]);
 		indices.push_back(face.mIndices[1]);
 		indices.push_back(face.mIndices[2]);
@@ -269,17 +280,22 @@ std::unique_ptr<engine::CMesh> engine::CModel::ParseMesh(CGraphicalOutput& _Gfx,
 	std::vector<std::shared_ptr<CBase_Bind>> bindablePtrs;
 
 	bool hasSpec = false;
+	bool hasDiffuse = false;
+	bool hasNormals = false;
 	float shininess = 35.0f;
 	if (_Mesh.mMaterialIndex >= 0)
 	{
 		using namespace std::string_literals;
 		auto& mat = *_Materials[_Mesh.mMaterialIndex];
-		const std::string base = "resources/model/urban_misc/"s;
+		const std::string base = "resources/model/goblin/"s;
 
 		aiString texFilename;
-		mat.GetTexture(aiTextureType_DIFFUSE, 0, &texFilename);
-		bindablePtrs.push_back(CCodex::Query<engine::CTexture>(_Gfx,
-															   _GETPATH(base + texFilename.C_Str())));
+		if (mat.GetTexture(aiTextureType_DIFFUSE, 0, &texFilename) == aiReturn_SUCCESS)
+		{
+			bindablePtrs.push_back(CCodex::Query<engine::CTexture>(_Gfx,
+																   _GETPATH(base + texFilename.C_Str())));
+			hasDiffuse = true;
+		}
 
 		if (mat.GetTexture(aiTextureType_SPECULAR, 0, &texFilename) == aiReturn_SUCCESS)
 		{
@@ -293,13 +309,27 @@ std::unique_ptr<engine::CMesh> engine::CModel::ParseMesh(CGraphicalOutput& _Gfx,
 			mat.Get(AI_MATKEY_SHININESS, shininess);
 		}
 
-		mat.GetTexture(aiTextureType_NORMALS, 0, &texFilename);
-		bindablePtrs.push_back(CCodex::Query<engine::CTexture>(_Gfx, _GETPATH(base + texFilename.C_Str()), 2u));
-		bindablePtrs.push_back(CCodex::Query<engine::CSampler>(_Gfx));
+		if (mat.GetTexture(aiTextureType_NORMALS, 0, &texFilename) == aiReturn_SUCCESS)
+		{
+			bindablePtrs.push_back(CCodex::Query<engine::CTexture>(_Gfx, _GETPATH(base + texFilename.C_Str()), 2u));
+			hasNormals = true;
+		}
+		
+		if (hasDiffuse || hasNormals || hasSpec)
+		{
+			bindablePtrs.push_back(CCodex::Query<engine::CSampler>(_Gfx));
+		}
+		
+	}
+
+	if (!hasDiffuse)
+	{
+		Msg("Mesh '%s' has no DIFFUSE textures! Falling back to missing50", _Mesh.mName.C_Str());
+		bindablePtrs.push_back(CCodex::Query<engine::CTexture>(_Gfx, _GETPATH("resources/textures/missing50.png"), 0u));
+		hasDiffuse = true;
 	}
 
 	bindablePtrs.push_back(CCodex::Query<engine::CVertexBuffer>(_Gfx, std::string(_Mesh.mName.C_Str()), vbuf));
-
 	bindablePtrs.push_back(CCodex::Query<engine::CIndexBuffer>(_Gfx, indices, std::string(_Mesh.mName.C_Str())));
 
 	if (hasSpec)
@@ -316,7 +346,7 @@ std::unique_ptr<engine::CMesh> engine::CModel::ParseMesh(CGraphicalOutput& _Gfx,
 		ptr->Update(_Gfx, pmc);
 		bindablePtrs.push_back(std::move(ptr));
 	}
-	else
+	else if (hasNormals)
 	{
 		std::wstring filename = MAKE_SHADER_RESOURCE("PhongNormalMap_PS.cso");
 		bindablePtrs.push_back(CCodex::Query<CPixelShader>(_Gfx, filename));
@@ -332,10 +362,10 @@ std::unique_ptr<engine::CMesh> engine::CModel::ParseMesh(CGraphicalOutput& _Gfx,
 		cpb->Update(_Gfx, pmc);
 		bindablePtrs.push_back(std::move(cpb));
 	}
+	std::shared_ptr<CVertexShader> vs = CCodex::Query<CVertexShader>(_Gfx, MAKE_SHADER_RESOURCE("Phong_VS.cso"));
 
-	auto pvs = CCodex::Query<engine::CVertexShader>(_Gfx, MAKE_SHADER_RESOURCE("Phong_VS.cso"));
-	auto pvsbc = pvs->GetBytecode();
-	bindablePtrs.push_back(std::move(pvs));
+	ID3DBlob* pvsbc = vs->GetBytecode();
+	bindablePtrs.push_back(std::move(vs));
 	bindablePtrs.push_back(CCodex::Query<engine::CInputLayout>(_Gfx, vbuf.Layout(), pvsbc));
 
 	return std::make_unique<CMesh>(_Gfx, std::move(bindablePtrs));
