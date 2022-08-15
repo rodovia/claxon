@@ -10,11 +10,13 @@ namespace hl2
 class DLLEXP CBase_Scene
 {
 	friend class CSceneManager;
-
 public:
 	CBase_Scene(std::shared_ptr<CWindow> _Window);
+	CBase_Scene(CBase_Scene& _Ref)
+		: m_Window(_Ref.m_Window)
+	{};
 	CBase_Scene() = default;
-	~CBase_Scene();
+	virtual ~CBase_Scene();
 	float CreateFrame() noexcept;
 	virtual void Start() 
 	{};
@@ -23,15 +25,11 @@ public:
 
 private:
 	hl2::CBasicTimer m_Timer;
+protected:
 	std::shared_ptr<CWindow> m_Window;
-	class CSceneManager* m_SceneManager;
-
-	void SetSceneManager(class CSceneManager* _Mgr) noexcept;
-
 protected:
 	virtual void Render(float _Dt) = 0;
 	std::shared_ptr<CWindow> GetWindow() const noexcept;
-	class CSceneManager* GetSceneManager() const noexcept;
 };
 
 }

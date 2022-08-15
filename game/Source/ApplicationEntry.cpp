@@ -18,14 +18,12 @@ engine::CGDIPlusManager gdi;
 
 hl2::CApplication::CApplication()
 {
-	m_ScnMgr = new CSceneManager;
-	m_Window = std::make_unique<CWindow>(800, 600, L"TAIKO NO TATSUJIN", engine::imgui::SetupImGui());
-	m_ScnMgr->SetScene(std::make_unique<CScn_MainMenu>(m_Window));
+	m_Window = std::make_shared<CWindow>(800, 600, L"TAIKO NO TATSUJIN", engine::imgui::SetupImGui());
+	CSceneManager::Instance().SetScene(std::make_shared<CScn_MainMenu>(m_Window));
 }
 
 hl2::CApplication::~CApplication()
 {
-	delete m_ScnMgr;
 }
 
 WPARAM hl2::CApplication::Main()
@@ -42,7 +40,7 @@ WPARAM hl2::CApplication::Main()
 
 void hl2::CApplication::FrameLoop()
 {
-	m_ScnMgr->ShowScene();
+	CSceneManager::Instance().ShowScene();
 }
 
 void hl2::CApplication::ShowRawMouseWindow()

@@ -1,9 +1,17 @@
 ﻿#include "GameScene.h"
 #include <engine_ui/Console.h>
 
+engine::CConVar mdl_name("mdl_name", "resources/model/goblin/goblinx.obj");
+
 void hl2::CScene_Game::Start()
 {
-	GetWindow()->Graphics().SetProjection(DirectX::XMMatrixPerspectiveLH(1.0f, 3.0f / 4.0f, 0.5f, 40.0f));
+	m_Wall.emplace(*GetWindow()->GetGraphicalOutput(), _GETPATH(mdl_name.GetString()));
+	GetWindow()->GetGraphicalOutput()->SetProjection(DirectX::XMMatrixPerspectiveLH(1.0f, 3.0f / 4.0f, 0.5f, 40.0f));
+}
+
+void hl2::CScene_Game::End()
+{
+	m_Wall = std::nullopt;
 }
 
 void hl2::CScene_Game::Render(float _Dt)
@@ -22,7 +30,7 @@ void hl2::CScene_Game::Render(float _Dt)
 	{
 		if (wnd->m_Keyboard.IsKeyPressed('W'))
 		{
-			m_Cam.Translate({ 0.0f, 0.0f, dt });
+			m_Cam.Translate({ 0.0f, 0.0f, dt }); 
 		}
 		if (wnd->m_Keyboard.IsKeyPressed('A'))
 		{
@@ -51,18 +59,16 @@ void hl2::CScene_Game::Render(float _Dt)
 		}
 	}
 
+	GetWindow()->GetGraphicalOutput()->SetCamera(m_Cam.GetMatrix());
+	m_Light.Bind(*GetWindow()->GetGraphicalOutput(), m_Cam.GetMatrix());
 
-	GetWindow()->Graphics().SetCamera(m_Cam.GetMatrix());
-	m_Light.Bind(GetWindow()->Graphics(), m_Cam.GetMatrix());
-
-	m_Wall.Draw(wnd->Graphics());
-	m_Light.Draw(wnd->Graphics());
+	m_Wall->Draw(*wnd->GetGraphicalOutput());
+	m_Light.Draw(*wnd->GetGraphicalOutput());
 
 	if (m_ShowDemoWindow)
 	{
 		m_Light.SpawnControlWindow();
 		m_Cam.SpawnControlWindow();
-		m_Wall.ShowDiagWindow("brick_wall.obj");
-		engine::CConsole::SpawnWindow();
+		m_Wall->ShowDiagWindow(*wnd->GetGraphicalOutput(), "brick_wall.obj");
 	}
 }

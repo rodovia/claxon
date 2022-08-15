@@ -10,13 +10,21 @@ namespace hl2
 class DLLEXP CSceneManager
 {
 public:
-	CSceneManager() = default;
+	static CSceneManager& Instance()
+	{
+		static CSceneManager mgr;
+		return mgr;
+	}
+
 	void ShowScene() const noexcept;
-	void SetScene(std::unique_ptr<CBase_Scene> _Scene) noexcept;
+	void SetScene(std::shared_ptr<CBase_Scene> _Scene) noexcept;
 	void SetReRender(bool _Flag) noexcept;
+
+	static void ReloadScene(std::vector<std::string>);
 private:
+	CSceneManager() = default;
 	bool m_ShouldReRender = true;
-	std::unique_ptr<CBase_Scene> m_CurrentScene;
+	std::shared_ptr<CBase_Scene> m_CurrentScene;
 };
 
 }

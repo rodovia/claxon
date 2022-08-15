@@ -15,15 +15,21 @@ cbuffer CLight : register(b0)
 
 cbuffer CObject : register(b10)
 {
+    bool EnableSpecular;
+    bool HasGloss;
+    float SpecularPowerConst;
+    // ^^^^^ Unused in this file, only for compat with PhongSpecular_PS.hlsl
+    
     float SpecularIntensity;
     float SpecularPower;
-    float _padding[2];
 };
 
 Texture2D g_Texture;
 SamplerState g_Sampler;
 
-float4 main(float3 _WorldPos : Position, float3 _Norm : Normal, float4 _Ignored : SV_Position, float2 _TexCoord : Texcoord) : SV_TARGET
+// TODO: change _WorldPos to _ViewPos so it won't be misleading
+// anymore.
+float4 main(float3 _WorldPos : Position, float3 _Norm : Normal, float2 _TexCoord : Texcoord, float4 _Pos : SV_Position) : SV_TARGET
 {
     // fragment to light vector data
     const float3 vToL = LightPos - _WorldPos;

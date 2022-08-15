@@ -10,6 +10,8 @@ engine::CTexture::CTexture(engine::CGraphicalOutput& _Gfx, const std::wstring& _
 {
 	const CSurface surf = engine::CSurface::FromFile(m_Name);
 
+	m_HasAlpha = surf.HasAlpha();
+
 	HRESULT hr;
 	D3D11_TEXTURE2D_DESC desc = {};
 	desc.Width = surf.GetWidth();
@@ -64,4 +66,9 @@ std::string engine::CTexture::Discriminate(const std::wstring& _Filename, unsign
 std::string engine::CTexture::GenerateDiscriminator() noexcept
 {
 	return this->Discriminate(m_Name, m_Slot);
+}
+
+bool engine::CTexture::HasAlpha() const noexcept
+{
+	return m_HasAlpha;
 }

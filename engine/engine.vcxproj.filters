@@ -248,10 +248,6 @@
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\Phong_PS.hlsl" />
-    <FxCompile Include="Shader\ColorBlend_PS.hlsl" />
-    <FxCompile Include="Shader\ColorBlend_VS.hlsl" />
-    <FxCompile Include="Shader\ColorIndex_PS.hlsl" />
-    <FxCompile Include="Shader\ColorIndex_VS.hlsl" />
     <FxCompile Include="Shader\Phong_VS.hlsl" />
     <FxCompile Include="Shader\Solid_PS.hlsl" />
     <FxCompile Include="Shader\Solid_VS.hlsl" />
@@ -262,6 +258,8 @@
     <FxCompile Include="Shader\PhongNormalMapOS_PS.hlsl" />
     <FxCompile Include="Shader\SolidTexture_PS.hlsl" />
     <FxCompile Include="Shader\SolidTexture_VS.hlsl" />
+    <FxCompile Include="Shader\PhongNormalMap_VS.hlsl" />
+    <FxCompile Include="Shader\PhongSpecular_SolidColor_PS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".clang-format" />

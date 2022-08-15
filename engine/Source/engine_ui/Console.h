@@ -3,10 +3,10 @@
 #include <engine_tier0/DLL.h>
 #include <imguihlp.h>
 
-#include <functional>
 #include <vector>
 #include <unordered_map>
 #include <string>
+#include <memory>
 
 // Size of console text input buffer
 #define _ENGINE_CONBUFFERSZ 256
@@ -15,17 +15,9 @@
 namespace engine
 {
 
-using CONCMDCALLBACK = std::function<void(std::vector<std::string>)>;
+typedef void (*CONCMDCALLBACK)(std::vector<std::string>);
 
-struct LogBufferMgr
-{
-	ImGuiTextBuffer Buffer;
-	bool ScrollToBottom;
-
-	void Clear();
-	void AddLog(const char* _Fmt, ...);
-	void Draw();
-};
+struct LogBufferMgr;
 
 class CConVar;
 class _ENGINE_DLLEXP CConCmd
@@ -49,6 +41,9 @@ public:
 		return con;
 	}
 
+	std::unordered_map<std::string, CConVar*> GetVars() const noexcept;
+	std::unordered_map<std::string, CConCmd*> GetCmds() const noexcept;
+
 	CConVar* QueryConVar(std::string _Name) const;
 	CConCmd* QueryConCmd(std::string _Name) const;
 
@@ -56,25 +51,23 @@ public:
 	void EmitMessage(const char* _Fmt, ...);
 	static void SpawnWindow();
 private:
-	void ExecuteCommand(std::string_view _Cmd);
-	std::unordered_map<std::string, std::shared_ptr<CConVar>> m_Vars;
-	std::unordered_map<std::string, std::shared_ptr<CConCmd>> m_Cmds;
-	LogBufferMgr m_LogMgr;
+	void ExecuteCommand(std::string _Cmd);
+	std::unordered_map<std::string, CConVar*> m_Vars;
+	std::unordered_map<std::string, CConCmd*> m_Cmds;
+	LogBufferMgr* m_LogMgr;
 
 	static char s_WndBuffer[_ENGINE_CONBUFFERSZ];
 
-	void AddConVar(std::string _Name, CConVar _Variable);
-	void AddConCmd(std::string _Name, CConCmd _ConsoleCommand);
-	CConsole()
-	{
-		std::memset(s_WndBuffer, 0, sizeof(s_WndBuffer));
-	};
+	void AddConVar(std::string _Name, CConVar* _Variable);
+	void AddConCmd(std::string _Name, CConCmd* _ConsoleCommand);
+	CConsole();
+	~CConsole();
 };
 
 class _ENGINE_DLLEXP CConVar
 {
 public:
-	CConVar(std::string _Name, std::string _Default = "");
+	CConVar(std::string _Name, std::string _Default = "", bool _FromCon = false);
 
 	std::string GetString() noexcept;
 	int64_t GetInteger();

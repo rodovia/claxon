@@ -17,6 +17,11 @@ public:
 	void Bind(CGraphicalOutput& _Gfx) noexcept override;
 	static std::string Discriminate(const std::wstring& _Name, unsigned int _Slot = 0) noexcept;
 	std::string GenerateDiscriminator() noexcept override;
+	bool HasAlpha() const noexcept;
+
+private:
+	bool m_HasAlpha;
+
 protected:
 	unsigned int m_Slot;
 	std::wstring m_Name;

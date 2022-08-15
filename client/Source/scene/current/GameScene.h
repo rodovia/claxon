@@ -14,9 +14,10 @@ public:
 	using CBase_Scene::CBase_Scene;
 
 	void Start() override;
+	void End() override;
 private:
 	engine::CCamera m_Cam;
-	engine::CModel m_Wall{ GetWindow()->Graphics(), _GETPATH("resources/model/goblin/goblinx.obj") };
+	std::optional<engine::CModel> m_Wall;
 	engine::CLightPoint m_Light{GetWindow()->Graphics()};
 	hl2::CBasicTimer m_Timer;
 	bool m_ShowDemoWindow = true;

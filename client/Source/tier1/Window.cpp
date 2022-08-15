@@ -115,7 +115,7 @@ hl2::CWindow::CWindow(int width, int height, const wchar_t* name, ImGuiContext* 
 	{
 		throw CREATE_WINDOWEXC(GetLastError());
 	}
-	m_Gfx = std::make_unique<engine::CGraphicalOutput>(m_hWnd, ctx);
+	m_Gfx = std::make_shared<engine::CGraphicalOutput>(m_hWnd, ctx);
 	ShowWindow(m_hWnd, SW_SHOWDEFAULT);
 	ImGui_ImplWin32_Init(m_hWnd);
 
@@ -153,6 +153,11 @@ engine::CGraphicalOutput& hl2::CWindow::Graphics()
 		throw CREATE_NOGFX_EXC();
 	}
 	return *m_Gfx;
+}
+
+std::shared_ptr<engine::CGraphicalOutput> hl2::CWindow::GetGraphicalOutput() const noexcept
+{
+	return m_Gfx;
 }
 
 std::optional<WPARAM> hl2::CWindow::ProcessMessage()

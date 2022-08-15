@@ -9,7 +9,7 @@
 
 // Create a CSurface from a mounted path
 #define MAKE_SURFACE_MOUNT(P) engine::CSurface::FromFile(_GETPATH( (P) ))
-#define MAKE_SHADER_RESOURCE(P) _GETPATH("resources/hlsl/" P)
+#define MAKE_SHADER_RESOURCE(P) _GETPATH(std::string("resources/hlsl/") + P)
 
 namespace engine
 {
@@ -104,18 +104,22 @@ public:
 	const CColor* GetBufferPointer() const noexcept;
 	const CColor* GetBufferPointerConst() const noexcept;
 	const wchar_t* GetFilename() const noexcept;
+	bool HasAlpha() const noexcept;
 
 	static CSurface FromFile(const std::wstring& _Filename);
 	void WriteToFile(std::wstring_view _Filename) const;
 	void Copy(const CSurface& _Src) noexcept;
+
 private:
 	CSurface(unsigned int _Width, unsigned int _Height, 
-		std::unique_ptr<CColor[]> _BufferPtr, const wchar_t* _Filename) noexcept;
+		std::unique_ptr<CColor[]> _BufferPtr, const wchar_t* _Filename, bool _HasAlpha) noexcept;
+
 private:
 	const wchar_t* m_Filename = nullptr;
 	std::unique_ptr<CColor[]> m_Buffer;
 	unsigned int m_Width;
 	unsigned int m_Height;
+	bool m_Alpha;
 };
 
 }

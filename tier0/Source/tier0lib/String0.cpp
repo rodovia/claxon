@@ -2,32 +2,64 @@
 #include "String0.h"
 #include "Win32.h"
 #include <locale.h>
+#include <sstream>
+#include <vector>
+#include <iterator>
 
 std::wstring tier0::ConvertToWideString(const std::string& _String)
 {
-    size_t sz = _mbstowcs_l(nullptr, _String.c_str(), _String.size() + 1, _get_current_locale());
-    if (sz < 0)
-    {
-        return L"";
-    }
+	size_t sz = _mbstowcs_l(nullptr, _String.c_str(), _String.size() + 1, _get_current_locale());
+	if (sz < 0)
+	{
+		return L"";
+	}
 
-    wchar_t* buffer = new wchar_t[sz + 1];
-    _mbstowcs_l(buffer, _String.c_str(), _String.size() + 1, _get_current_locale());
+	wchar_t* buffer = new wchar_t[sz + 1];
+	_mbstowcs_l(buffer, _String.c_str(), _String.size() + 1, _get_current_locale());
 
-    std::wstring neostr = buffer;
-    delete[] buffer;
-    return std::move(neostr);
+	std::wstring neostr = buffer;
+	delete[] buffer;
+	return std::move(neostr);
 }
 
 std::string tier0::ConvertToMultiByteString(const std::wstring& wstr)
 {
-    std::wstring cpy = wstr;
-    int num_chars = WideCharToMultiByte(CP_UTF8, 0, cpy.c_str(), cpy.length(), NULL, 0, NULL, NULL);
-    std::string strTo;
-    if (num_chars > 0)
-    {
-        strTo.resize(num_chars);
-        WideCharToMultiByte(CP_UTF8, 0, cpy.c_str(), cpy.length(), &strTo[0], num_chars, NULL, NULL);
-    }
-    return strTo;
+	std::wstring cpy = wstr;
+	int num_chars = WideCharToMultiByte(CP_UTF8, 0, cpy.c_str(), cpy.length(), NULL, 0, NULL, NULL);
+	std::string strTo;
+	if (num_chars > 0)
+	{
+		strTo.resize(num_chars);
+		WideCharToMultiByte(CP_UTF8, 0, cpy.c_str(), cpy.length(), &strTo[0], num_chars, NULL, NULL);
+	}
+	return strTo;
+}
+
+template<class _Ty_Chr = char, class _Ty_Out>
+static void Split0(const std::basic_string<_Ty_Chr>& _String, _Ty_Chr _Delim, _Ty_Out _Result)
+{
+	using _Ty_String = std::basic_string<_Ty_Chr>;
+
+	std::basic_istringstream<_Ty_Chr> iss(_String);
+	_Ty_String item;
+	while (std::getline(iss, item, _Delim))
+	{
+		*_Result++ = item;
+	}
+}
+
+std::vector<std::string> 
+tier0::SplitStr(std::string _String, char _Delim) noexcept
+{
+	std::vector<std::string> elems;
+	Split0(_String, _Delim, std::back_inserter(elems));
+	return std::move(elems);
+}
+
+std::vector<std::wstring>
+tier0::SplitStr(std::wstring _String, wchar_t _Delim) noexcept
+{
+	std::vector<std::wstring> elems;
+	Split0(_String, _Delim, std::back_inserter(elems));
+	return std::move(elems);
 }

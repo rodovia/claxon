@@ -1,4 +1,3 @@
-
 cbuffer CLight : register(b0)
 {
 	float3 LightPos;
@@ -12,20 +11,25 @@ cbuffer CLight : register(b0)
 
 cbuffer CObject : register(b10)
 {
-	float SpecularIntensity;
 	float SpecularPower;
+    float3 SpecularColor;
+    float SpecularMapWeight;
 	bool EnableNormalMap;
-	float _padding[1];
+    bool EnableSpecularMap;
+    bool HasGloss;
+    float SpecularIntensity;
 };
 
 // Slot 0 - Diff. Texture
 // Slot 1 - Specular Texture
 // Slot 2 - Normal map Texture
 Texture2D g_Texture;
+Texture2D g_Specular;
 Texture2D g_NormalMap : register(t2);
 SamplerState g_Sampler;
 
-float4 main(float3 _WorldPos : Position, float3 _Norm : Normal, float3 _Tan : Tangent, float3 _Bit : Bitangent, float4 _Ignored : SV_Position, float2 _TexCoord : Texcoord) : SV_TARGET
+float4 main(float3 _WorldPos : Position, float3 _Norm : Normal, float3 _Tan : Tangent, 
+				float3 _Bit : Bitangent, float2 _TexCoord : Texcoord, float4 _Pos : SV_Position) : SV_TARGET
 {
 	if (EnableNormalMap)
 	{
@@ -35,9 +39,8 @@ float4 main(float3 _WorldPos : Position, float3 _Norm : Normal, float3 _Tan : Ta
 			normalize(_Norm)
 		);
         const float3 normalSample = g_NormalMap.Sample(g_Sampler, _TexCoord).xyz;
-        _Norm.x = normalSample.x * 2.0f - 1.0f;
-        _Norm.y = -normalSample.y * 2.0f + 1.0f;
-        _Norm.z = -normalSample.z;
+        _Norm = normalSample * 2.0f - 1.0f;
+        _Norm.y = -_Norm.y;
         //_Norm = mul(_Norm, (float3x3) ModelView);
         _Norm = mul(_Norm, tanview);
     }
@@ -48,10 +51,27 @@ float4 main(float3 _WorldPos : Position, float3 _Norm : Normal, float3 _Tan : Ta
 	const float3 dirToL = vToL / distToL;
 	const float att = 1.0f / (AttConst + AttLin * distToL + AttQuad * (distToL * distToL));
 
+    float3 specularReflectionColor;
+    float specularPower = SpecularPower;
+	if (EnableSpecularMap)
+    {
+        const float4 specularSample = g_Specular.Sample(g_Sampler, _TexCoord);
+        specularReflectionColor = specularSample.rgb * SpecularMapWeight;
+        if (HasGloss)
+        {
+            specularPower = pow(2.0f, specularSample.a * 13.0f);
+        }
+    }
+	else
+    {
+        specularReflectionColor = SpecularColor;
+    }
+	
 	const float3 diffuse = DiffColor * DiffIntensity * att * max(0.0f, dot(dirToL, _Norm));
 	const float3 w = _Norm * dot(vToL, _Norm);
 	const float3 r = w * 2.0f - vToL;
 	const float3 specular = att * (DiffColor * DiffIntensity) * SpecularIntensity * pow(max(0.0f, dot(normalize(-r), normalize(_WorldPos))), SpecularPower);
 
-	return float4(saturate((diffuse + Ambient) * g_Texture.Sample(g_Sampler, _TexCoord).rgb + specular), 1.0f);
+	return float4(saturate((diffuse + Ambient) * g_Texture.Sample(g_Sampler, _TexCoord).rgb 
+					+ specular * specularReflectionColor), 1.0f);
 }

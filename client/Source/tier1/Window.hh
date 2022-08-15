@@ -63,7 +63,8 @@ public:
 	CWindow& operator=(const CWindow&) = delete;
 	void SetTitle(std::wstring _NewTitle);
 	void SetIcon(HICON icon, HICON iconSm = nullptr);
-	engine::CGraphicalOutput& Graphics();
+	[[deprecated]] [[nodiscard]] engine::CGraphicalOutput& Graphics();
+	[[nodiscard]] std::shared_ptr<engine::CGraphicalOutput> GetGraphicalOutput() const noexcept;
 
 	static std::optional<WPARAM> ProcessMessage();
 	void ToggleCursorDisplay(bool _AlsoConfine = true);
@@ -88,7 +89,7 @@ private:
 	bool m_IsSubwindow;
 	bool m_CursorEnabl;
 	std::vector<char> m_RawInputBuffer;
-	std::unique_ptr<engine::CGraphicalOutput> m_Gfx;
+	std::shared_ptr<engine::CGraphicalOutput> m_Gfx;
 };
 
 } // namespace hl2

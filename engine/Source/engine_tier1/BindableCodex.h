@@ -35,6 +35,7 @@ public:
 		}
 		catch (const std::out_of_range& ignored)
 		{
+			UNREFERENCED_PARAMETER(ignored);
 			return std::shared_ptr<_Ty>();
 		}
 

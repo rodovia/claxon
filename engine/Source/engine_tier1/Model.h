@@ -7,9 +7,32 @@
 #include <assimp/material.h>
 #include <assimp/mesh.h>
 #include "dxprim/draw/BaseDraw.h"
+#include <variant>
 
 namespace engine
 {
+
+__declspec(align(16)) struct PSMaterialConstant
+{
+	float SpecularPower = 3.1f;
+	DirectX::XMFLOAT3 SpecularColor = { 0.75f, 0.75f, 0.75f };
+	float SpecularMapWeight = 0.671f;
+	BOOL EnableNormalMap = TRUE,
+		EnableSpecularMap = TRUE,
+		HasGloss;
+	float padding[4];
+};
+
+__declspec(align(16)) struct PSSolidColorConstant
+{
+	DirectX::XMFLOAT4A MaterialColor = { 0.447970f, 0.327254f, 0.176283f, 1.0f };
+	BOOL EnableSpecular = TRUE;
+	BOOL HasGloss;
+	float SpecularPowerConst;
+	float SpecularIntensity = 0.0f;
+	float SpecularPower = 120.0f;
+	float padd;
+};
 
 struct MODEL_DESCRIPTOR
 {
@@ -23,6 +46,7 @@ public:
 	CMesh(CGraphicalOutput& _Gfx, std::vector<std::shared_ptr<CBase_Bind>> _BindPtrs);
 	void Draw(CGraphicalOutput& _Gfx, DirectX::FXMMATRIX _AccumTransform) noexcept;
 	DirectX::XMMATRIX GetTransformMatrix() const noexcept override;
+
 private:
 	mutable DirectX::XMFLOAT4X4 m_Transform;
 };
@@ -31,14 +55,20 @@ class CNode
 {
 	friend class CModel;
 	friend class CModelDiagWindow;
+
 public:
 	CNode(int _Id, const std::string& _Name, std::vector<CMesh*> _Meshptrs, const DirectX::XMMATRIX& _Transform) noexcept;
 	void Draw(CGraphicalOutput& _Gfx, DirectX::FXMMATRIX _AccumTransform) noexcept;
 	void SetAppliedTransform(DirectX::FXMMATRIX _Transform) noexcept;
 	int GetId() const noexcept;
+
 private:
+	void RenderExtendedCtl(CGraphicalOutput& _Gfx, PSMaterialConstant& _Pmc);
+	void RenderExtendedCtl(CGraphicalOutput& _Gfx, PSSolidColorConstant& _Pmc);
+
 	void RenderTree(CNode*& _Node) const noexcept;
 	void AddChild(std::unique_ptr<CNode> _Child) noexcept;
+
 private:
 	int m_Id;
 	std::string m_Name;
@@ -51,15 +81,16 @@ private:
 class _ENGINE_DLLEXP CModel
 {
 public:
-	/* 
-	* Even though assimp does not accept a wchar_t,
-	* I want to make my life easier by not having to call
-	* tier0::ConvertToMultiByteString explicitly everytime I use _GETPATH. 
-	*/
+	/*
+	 * Even though assimp does not accept a wchar_t,
+	 * I want to make my life easier by not having to call
+	 * tier0::ConvertToMultiByteString explicitly everytime I use _GETPATH.
+	 */
 	CModel(CGraphicalOutput& _Gfx, std::wstring _Filename, MODEL_DESCRIPTOR _Options = {});
 	void Draw(CGraphicalOutput& _Gfx) const;
-	void ShowDiagWindow(const char* _Name);
+	void ShowDiagWindow(CGraphicalOutput& _Gfx, const char* _Name);
 	~CModel() noexcept;
+
 private:
 	std::unique_ptr<CMesh> ParseMesh(CGraphicalOutput& _Gfx, const aiMesh& _Mesh, const aiMaterial* const* _Materials);
 	std::unique_ptr<CNode> ParseNode(int& _NextId, const aiNode& _Node);
@@ -70,4 +101,4 @@ private:
 	std::unique_ptr<class CModelDiagWindow> m_ModelWindow;
 };
 
-}
+} // namespace engine

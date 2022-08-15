@@ -5,7 +5,7 @@
 #include <string>
 #include <vector>
 
-#define _GETPATH(P) gamepaths::CMountedPaths::GetInstance().GetPath((P))
+#define _GETPATH gamepaths::CMountedPaths::GetInstance().GetPath
 
 namespace gamepaths
 {

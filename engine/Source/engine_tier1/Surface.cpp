@@ -1,9 +1,9 @@
 #include <algorithm>
 namespace Gdiplus
 {
-	using std::min;
-	using std::max;
-}
+using std::min;
+using std::max;
+} // namespace Gdiplus
 
 #include <assert.h>
 #include <sstream>
@@ -19,8 +19,8 @@ namespace Gdiplus
 
 static void GetEncoderCLSID(const WCHAR* _Format, CLSID* _Clsid)
 {
-	UINT num = 0;			// number of img encoders
-	UINT size = 0;			// size of image encoder array in bytes
+	UINT num = 0;  // number of img encoders
+	UINT size = 0; // size of image encoder array in bytes
 
 	Gdiplus::ImageCodecInfo* ici = nullptr;
 	Gdiplus::GetImageEncodersSize(&num, &size);
@@ -45,13 +45,15 @@ engine::CSurface::CSurface(unsigned int _Width, unsigned int _Height) noexcept
 	: m_Buffer(std::make_unique<engine::CColor[]>(_Width * _Height)),
 	  m_Width(_Width),
 	  m_Height(_Height)
-{}
+{
+}
 
 engine::CSurface::CSurface(engine::CSurface&& _Source) noexcept
 	: m_Buffer(std::move(_Source.m_Buffer)),
 	  m_Width(_Source.m_Width),
 	  m_Height(_Source.m_Height)
-{}
+{
+}
 
 engine::CSurface& engine::CSurface::operator=(engine::CSurface&& _Donor) noexcept
 {
@@ -63,7 +65,8 @@ engine::CSurface& engine::CSurface::operator=(engine::CSurface&& _Donor) noexcep
 }
 
 engine::CSurface::~CSurface()
-{}
+{
+}
 
 void engine::CSurface::Clear(engine::CColor _FillValue) noexcept
 {
@@ -133,6 +136,7 @@ engine::CSurface engine::CSurface::FromFile(const std::wstring& _FileName)
 	height = bitm.GetHeight();
 	buffer = std::make_unique<engine::CColor[]>(width * height);
 
+	bool alpha = false;
 	for (unsigned int y = 0; y < height; y++)
 	{
 		for (unsigned int x = 0; x < width; x++)
@@ -140,10 +144,14 @@ engine::CSurface engine::CSurface::FromFile(const std::wstring& _FileName)
 			Gdiplus::Color c;
 			bitm.GetPixel(x, y, &c);
 			buffer[y * width + x] = c.GetValue();
+			if (c.GetAlpha() != 255)
+			{
+				alpha = true;
+			}
 		}
 	}
 
-	return CSurface(width, height, std::move(buffer), _FileName.c_str());
+	return CSurface(width, height, std::move(buffer), _FileName.c_str(), alpha);
 }
 
 void engine::CSurface::WriteToFile(std::wstring_view _Filename) const
@@ -151,8 +159,8 @@ void engine::CSurface::WriteToFile(std::wstring_view _Filename) const
 	CLSID bmpid;
 	GetEncoderCLSID(L"image/bmp", &bmpid);
 
-	Gdiplus::Bitmap bitmap(m_Width, m_Height, m_Width * sizeof(CColor), 
-		PixelFormat32bppARGB, (BYTE*) m_Buffer.get());
+	Gdiplus::Bitmap bitmap(m_Width, m_Height, m_Width * sizeof(CColor),
+						   PixelFormat32bppARGB, (BYTE*)m_Buffer.get());
 
 	bitmap.Save(_Filename.data(), &bmpid);
 }
@@ -169,12 +177,17 @@ const wchar_t* engine::CSurface::GetFilename() const noexcept
 	return m_Filename;
 }
 
-engine::CSurface::CSurface(unsigned int _Width, unsigned int _Height, 
-	std::unique_ptr<CColor[]> _BufferPtr, const wchar_t* _Filename) noexcept
+engine::CSurface::CSurface(unsigned int _Width, unsigned int _Height,
+						   std::unique_ptr<CColor[]> _BufferPtr, const wchar_t* _Filename, bool _Alpha) noexcept
 	: m_Height(_Height),
 	  m_Width(_Width),
 	  m_Buffer(std::move(_BufferPtr)),
-	m_Filename(_Filename)
+	  m_Alpha(_Alpha),
+	  m_Filename(_Filename)
 {
+}
 
+bool engine::CSurface::HasAlpha() const noexcept
+{
+	return m_Alpha;
 }

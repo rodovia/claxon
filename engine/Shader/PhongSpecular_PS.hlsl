@@ -13,13 +13,19 @@ cbuffer CLight : register(b0)
     float AttQuad;
 };
 
+cbuffer CObject
+{
+    bool EnableSpecular;
+    bool HasGloss;
+    float SpecularPowerConst;
+};
+
 Texture2D g_Texture;
 Texture2D g_Specular;
 SamplerState g_Sampler;
 
-float4 main(float3 _WorldPos : Position, float3 _Norm : Normal, float4 _Ignored : SV_Position, float2 _TexCoord : Texcoord) : SV_TARGET
-{
-    // fragment to light vector data
+float4 main(float3 _WorldPos : Position, float3 _Norm : Normal, float2 _TexCoord : Texcoord) : SV_TARGET
+{    
     const float3 vToL = LightPos - _WorldPos;
     const float distToL = length(vToL);
     const float3 dirToL = vToL / distToL;
@@ -32,7 +38,15 @@ float4 main(float3 _WorldPos : Position, float3 _Norm : Normal, float4 _Ignored 
     
     const float4 specularSample = g_Specular.Sample(g_Sampler, _TexCoord);
     const float3 specularReflectionColor = specularSample.rgb;
-    const float specularPower = pow(2.0f, specularSample.a * 13.0f);
+    float specularPower;
+    if (HasGloss)
+    {
+        specularPower = pow(2.0f, specularSample.a * 13.0f);
+    }
+    else
+    {
+        specularPower = SpecularPowerConst;
+    }
     const float3 specular = att * (DiffColor * DiffIntensity) * pow(max(0.0f, dot(normalize(-r), normalize(_WorldPos))), specularPower);
 
     return float4(saturate((diffuse + Ambient) * g_Texture.Sample(g_Sampler, _TexCoord).rgb + specular * specularReflectionColor), 1.0f);

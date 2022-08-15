@@ -1,13 +1,11 @@
+#include "tier0lib/Win32.h"
+
 #include <string>
 #include <sstream>
-
 #include <resource.h>
 #include <libconfig.h++>
-
 #include <imguihlp.h>
 #include <engine_tier0/Exceptions.h>
-
-#include "tier0lib/Win32.h"
 #include <tier1/Window.hh>
 #include "ApplicationEntry.h"
 
@@ -17,6 +15,8 @@ int WINAPI WinMain(
 	PSTR pCmdLine,
 	int nCmdShow)
 {
+	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_MODE_DEBUG | _CRTDBG_LEAK_CHECK_DF | _CRTDBG_DELAY_FREE_MEM_DF);
+
 	WPARAM retval = 0;
 	try
 	{

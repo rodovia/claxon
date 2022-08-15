@@ -1,7 +1,43 @@
 #include "Console.h"
 #include <imguihlp.h>
+#include <tier0lib/String0.h>
+
+static void Help([[maybe_unused]] std::vector<std::string>)
+{
+	engine::CConsole& con = engine::CConsole::Instance();
+	con.EmitMessage("Cmds:");
+	for (auto cmd : con.GetCmds())
+	{
+		con.EmitMessage("%s", cmd.first.c_str());
+	}
+
+	con.EmitMessage(""); // empty newline
+
+	con.EmitMessage("Vars:");
+	for (auto cmd : con.GetVars())
+	{
+		con.EmitMessage("%s", cmd.first.c_str());
+	}
+}
+
+engine::CConCmd help("help", Help);
 
 char engine::CConsole::s_WndBuffer[_ENGINE_CONBUFFERSZ];
+
+#pragma region LogBufferMgr
+
+namespace engine
+{
+struct LogBufferMgr
+{
+	ImGuiTextBuffer Buffer;
+	bool ScrollToBottom;
+
+	void Clear();
+	void AddLog(const char* _Fmt, ...);
+	void Draw();
+};
+} // namespace engine
 
 void engine::LogBufferMgr::AddLog(const char* _Fmt, ...)
 {
@@ -34,38 +70,31 @@ void engine::LogBufferMgr::Draw()
 
 	ImGui::BeginChild("scrolling");
 	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0, 1));
-	if (cpy) 
-	{ 
+	if (cpy)
+	{
 		ImGui::LogToClipboard();
 	}
 
 	ImGui::TextUnformatted(Buffer.begin());
-
 	ScrollToBottom = false;
 	ImGui::PopStyleVar();
 	ImGui::EndChild();
 }
 
-constexpr static std::vector<std::string> 
-SplitStr(std::string_view _String, std::string_view _Delim)
-{
-	std::string token, strcpy = std::string(_String);
-	std::vector<std::string> vecs;
+#pragma endregion LogBufferMgr
 
-	while (token != _String)
-	{
-		token = strcpy.substr(0, strcpy.find_first_of(_Delim));
-		strcpy = strcpy.substr(strcpy.find_first_of(_Delim) + 1);
-		vecs.push_back(token);
-	}
+#pragma region ConVar
 
-	return std::move(vecs);
-}
-
-engine::CConVar::CConVar(std::string _Name, std::string _Default)
+engine::CConVar::CConVar(std::string _Name, std::string _Default, bool _FromCon)
 	: m_Value(_Default)
 {
-	CConsole::Instance().AddConVar(_Name, *this);
+	/* TODO: Remove this if-guard (as CConsole::AddConVar does not recursively
+	 *  calls this ctor anymore.
+	 */
+	if (!_FromCon)
+	{
+		CConsole::Instance().AddConVar(_Name, this);
+	}
 }
 
 std::string engine::CConVar::GetString() noexcept
@@ -93,19 +122,40 @@ void engine::CConVar::SetValue(std::string _Value)
 	m_Value = _Value;
 }
 
-// engine::CConVar ^^^^^ // engine::CConsole vvvvv
+#pragma endregion ConVar
 
-void engine::CConsole::AddConVar(std::string _Name, CConVar _Variable)
+#pragma region Console
+
+engine::CConsole::CConsole()
+{
+	std::memset(s_WndBuffer, 0, sizeof(s_WndBuffer));
+	m_LogMgr = new LogBufferMgr;
+}
+
+engine::CConsole::~CConsole()
+{
+	/* "Why shouldn't m_Vars and m_Cmds be freed right here?" One may ask.
+	 *  Well, engine::CConVar and engine::CConCmd are meant to be created as global
+	 *  variables, therefore, the lifetime of these pointers are static. They are
+	 *  managed by the CRT. And these ptrs are retrieved from the class' *this* ptr.
+	 *
+	 *  (See: CConVar and CConCmd ctors)
+	 */
+
+	delete m_LogMgr;
+}
+
+void engine::CConsole::AddConVar(std::string _Name, CConVar* _Variable)
 {
 	if (this->QueryConVar(_Name) != nullptr)
 	{
 		return;
 	}
 
-	m_Vars.emplace(_Name, std::make_shared<engine::CConVar>(_Variable.GetString()));
+	m_Vars.emplace(_Name, _Variable);
 }
 
-void engine::CConsole::AddConCmd(std::string _Name, CConCmd _Variable)
+void engine::CConsole::AddConCmd(std::string _Name, CConCmd* _Variable)
 {
 	if (this->QueryConCmd(_Name) != nullptr)
 	{
@@ -113,11 +163,7 @@ void engine::CConsole::AddConCmd(std::string _Name, CConCmd _Variable)
 	}
 
 	m_Cmds.insert(
-		std::make_pair(
-			_Name, 
-			std::make_shared<engine::CConCmd>(_Name, _Variable.m_Routine, true)
-		)
-	);
+		std::make_pair(_Name, _Variable));
 }
 
 engine::CConVar* engine::CConsole::QueryConVar(std::string _Name) const
@@ -125,7 +171,7 @@ engine::CConVar* engine::CConsole::QueryConVar(std::string _Name) const
 	auto c = m_Vars.find(_Name);
 	if (c != m_Vars.end())
 	{
-		return c->second.get();
+		return c->second;
 	}
 	return nullptr;
 }
@@ -135,7 +181,7 @@ engine::CConCmd* engine::CConsole::QueryConCmd(std::string _Name) const
 	auto c = m_Cmds.find(_Name);
 	if (c != m_Cmds.end())
 	{
-		return c->second.get();
+		return c->second;
 	}
 	return nullptr;
 }
@@ -158,25 +204,26 @@ void engine::CConsole::SpawnWindow()
 
 		int flags = ImGuiInputTextFlags_EnterReturnsTrue;
 		if (ImGui::InputText("Entrada", s_WndBuffer, _ENGINE_CONBUFFERSZ,
-			flags))
+							 flags))
 		{
-			std::vector<std::string> cmds = SplitStr(s_WndBuffer, ";");
+			std::vector<std::string> cmds = tier0::SplitStr(s_WndBuffer, ';');
 			for (const std::string& cmd : cmds)
 			{
 				con.ExecuteCommand(cmd);
 			}
 		}
 
-		con.m_LogMgr.Draw();
+		con.m_LogMgr->Draw();
 	}
 
 	ImGui::End();
 }
 
-void engine::CConsole::ExecuteCommand(std::string_view _Cmd)
+void engine::CConsole::ExecuteCommand(std::string _Cmd)
 {
-	this->EmitMessage("] %s", _Cmd.data());
-	std::vector<std::string> args = SplitStr(_Cmd, " ");
+	this->EmitMessage("] %s", _Cmd.c_str());
+	std::string cmdcpy = std::string(_Cmd);
+	std::vector<std::string> args = tier0::SplitStr(cmdcpy, ' ');
 	std::string name = args[0];
 	CConCmd* cmd = this->QueryConCmd(name);
 	CConVar* var = this->QueryConVar(name);
@@ -193,27 +240,54 @@ void engine::CConsole::ExecuteCommand(std::string_view _Cmd)
 		return;
 	}
 
-	var->SetValue(args[1]);
+	// It's a convar
+	__assume(args.size() > 0);
+	if (args.size() == 1)
+	{
+		this->EmitMessage("%s = %s", name.c_str(), var->GetString().c_str());
+	}
+
+	if (args.size() >= 1)
+	{
+		var->SetValue(args[1]);
+	}
 }
 
 void engine::CConsole::EmitMessage(const char* _Fmt, ...)
 {
 	va_list argl;
 	va_start(argl, _Fmt);
-	m_LogMgr.AddLog(_Fmt, argl);
+	m_LogMgr->AddLog(_Fmt, argl);
 	va_end(argl);
 }
 
-// engine::CConsole ^^^^^ // engine::CConCmd vvvvv
+std::unordered_map<std::string, engine::CConCmd*> engine::CConsole::GetCmds() const noexcept
+{
+	return m_Cmds;
+}
+
+std::unordered_map<std::string, engine::CConVar*> engine::CConsole::GetVars() const noexcept
+{
+	return m_Vars;
+}
+
+#pragma endregion Console
+
+#pragma region ConCmd
 
 engine::CConCmd::CConCmd(std::string _Name, engine::CONCMDCALLBACK _Callback, bool _FromCon)
 	: m_Routine(_Callback)
 {
+	/* TODO: Remove this if-guard (as CConsole::AddConCmd does not recursively
+	 *  calls this ctor anymore.
+	 */
 	if (!_FromCon)
-		engine::CConsole::Instance().AddConCmd(_Name, *this);
+		engine::CConsole::Instance().AddConCmd(_Name, this);
 }
 
 void engine::CConCmd::Execute(std::vector<std::string> _Args) const
 {
 	m_Routine(_Args);
 }
+
+#pragma endregion ConCmd
