@@ -19,7 +19,8 @@ hl2::CBase_Scene::~CBase_Scene()
 float hl2::CBase_Scene::CreateFrame() noexcept
 {
 	float start = m_Timer.Mark().count();
-	std::shared_ptr<engine::CGraphicalOutput> gr = this->GetWindow()->GetGraphicalOutput();
+	std::shared_ptr<hl2::CWindow> wn = this->GetWindow();
+	std::shared_ptr<engine::CGraphicalOutput> gr = wn->GetGraphicalOutput();
 
 	gr->BeginFrame(render_bg_r.GetFloat(),
 		render_bg_g.GetFloat(),

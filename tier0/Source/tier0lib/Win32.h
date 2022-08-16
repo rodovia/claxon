@@ -5,7 +5,7 @@
 *	Windows.h may get included by indirection.
 */
 #ifndef _WIN32_WINNT
-#define _WIN32_WINNT 0x0601 // WIN7
+#define _WIN32_WINNT 0x602 // WIN8
 #endif
 #include <sdkddkver.h>
 

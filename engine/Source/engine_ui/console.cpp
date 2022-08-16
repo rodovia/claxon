@@ -16,7 +16,7 @@ static void Help([[maybe_unused]] std::vector<std::string>)
 	con.EmitMessage("Vars:");
 	for (auto cmd : con.GetVars())
 	{
-		con.EmitMessage("%s", cmd.first.c_str());
+		con.EmitMessage("%s = %s", cmd.first.c_str(), cmd.second->GetString().c_str());
 	}
 }
 
@@ -25,31 +25,6 @@ engine::CConCmd help("help", Help);
 char engine::CConsole::s_WndBuffer[_ENGINE_CONBUFFERSZ];
 
 #pragma region LogBufferMgr
-
-namespace engine
-{
-struct LogBufferMgr
-{
-	ImGuiTextBuffer Buffer;
-	bool ScrollToBottom;
-
-	void Clear();
-	void AddLog(const char* _Fmt, ...);
-	void Draw();
-};
-} // namespace engine
-
-void engine::LogBufferMgr::AddLog(const char* _Fmt, ...)
-{
-	int oldS = Buffer.size();
-	va_list argl;
-	va_start(argl, _Fmt);
-	Buffer.appendfv(_Fmt, argl);
-	Buffer.append("\n");
-	va_end(argl);
-
-	ScrollToBottom = true;
-}
 
 void engine::LogBufferMgr::Clear()
 {
@@ -242,23 +217,14 @@ void engine::CConsole::ExecuteCommand(std::string _Cmd)
 
 	// It's a convar
 	__assume(args.size() > 0);
-	if (args.size() == 1)
-	{
-		this->EmitMessage("%s = %s", name.c_str(), var->GetString().c_str());
-	}
-
-	if (args.size() >= 1)
+	if (args.size() > 1)
 	{
 		var->SetValue(args[1]);
+		return;
 	}
-}
 
-void engine::CConsole::EmitMessage(const char* _Fmt, ...)
-{
-	va_list argl;
-	va_start(argl, _Fmt);
-	m_LogMgr->AddLog(_Fmt, argl);
-	va_end(argl);
+	// args.size() == 1
+	this->EmitMessage("%s = %s", args[0].c_str(), var->GetString().c_str());
 }
 
 std::unordered_map<std::string, engine::CConCmd*> engine::CConsole::GetCmds() const noexcept

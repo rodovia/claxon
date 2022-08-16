@@ -17,7 +17,22 @@ namespace engine
 
 typedef void (*CONCMDCALLBACK)(std::vector<std::string>);
 
-struct LogBufferMgr;
+struct LogBufferMgr
+{
+	ImGuiTextBuffer Buffer;
+	bool ScrollToBottom;
+
+	void Clear();
+	template <typename... _Ty>
+	void AddLog(const char* _Fmt, _Ty&&... _Extra)
+	{
+		Buffer.appendf(_Fmt, _Extra...);
+		Buffer.append("\n");
+
+		ScrollToBottom = true;
+	};
+	void Draw();
+};
 
 class CConVar;
 class _ENGINE_DLLEXP CConCmd
@@ -48,7 +63,11 @@ public:
 	CConCmd* QueryConCmd(std::string _Name) const;
 
 	void CallConCmd(std::string _Name, std::vector<std::string> _Args) const;
-	void EmitMessage(const char* _Fmt, ...);
+	template<class... _Ty_Args>
+	void EmitMessage(const char* _Fmt, _Ty_Args&&... _Args)
+	{
+		m_LogMgr->AddLog(_Fmt, _Args...);
+	};
 	static void SpawnWindow();
 private:
 	void ExecuteCommand(std::string _Cmd);
@@ -79,5 +98,21 @@ private:
 	std::string m_Value;
 };
 
+struct ConInput
+{
+	union
+	{
+		CConVar ConVar;
+		CConCmd ConCmd;
+	};
+
+	bool IsVar;
+};
+
+class IConInputCompletion
+{
+public:
+	virtual void CommandComplete(std::pair<std::string, ConInput>) = 0;
+};
 
 }

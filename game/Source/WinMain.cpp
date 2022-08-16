@@ -15,7 +15,7 @@ int WINAPI WinMain(
 	PSTR pCmdLine,
 	int nCmdShow)
 {
-	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_MODE_DEBUG | _CRTDBG_LEAK_CHECK_DF | _CRTDBG_DELAY_FREE_MEM_DF);
+	CoInitializeEx(nullptr, COINIT_MULTITHREADED);
 
 	WPARAM retval = 0;
 	try
@@ -45,5 +45,7 @@ int WINAPI WinMain(
 	{
 		MessageBoxA(nullptr, "Unknown", "Engine Error", MB_OK | MB_ICONERROR);
 	}
+
+	CoUninitialize();
 	return (int)retval;
 }

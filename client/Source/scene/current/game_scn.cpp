@@ -1,12 +1,14 @@
 ﻿#include "GameScene.h"
 #include <engine_ui/Console.h>
 
-engine::CConVar mdl_name("mdl_name", "resources/model/goblin/goblinx.obj");
+engine::CConVar mdl_name("mdl_name", "resources/model/sponza/sponza.obj");
 
 void hl2::CScene_Game::Start()
 {
-	m_Wall.emplace(*GetWindow()->GetGraphicalOutput(), _GETPATH(mdl_name.GetString()));
-	GetWindow()->GetGraphicalOutput()->SetProjection(DirectX::XMMatrixPerspectiveLH(1.0f, 3.0f / 4.0f, 0.5f, 40.0f));
+	engine::MODEL_DESCRIPTOR mdldesc = {0};
+	mdldesc.Scale = 0.5f;
+	m_Wall.emplace(*GetWindow()->GetGraphicalOutput(), _GetPath(mdl_name.GetString()), mdldesc);
+	GetWindow()->GetGraphicalOutput()->SetProjection(DirectX::XMMatrixPerspectiveLH(1.0f, 3.0f / 4.0f, 0.5f, 400.0f));
 }
 
 void hl2::CScene_Game::End()
