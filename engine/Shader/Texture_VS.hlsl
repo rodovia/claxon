@@ -12,7 +12,7 @@ struct VSInput
 struct VSOut
 {
 	float2 tex : TexCoord;
-	float4 pos : SV_POSITION;
+	float4 pos : Position;
 };
 
 VSOut main(VSInput input)

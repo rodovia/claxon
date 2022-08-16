@@ -14,8 +14,18 @@ namespace engine
 
 template <class T> T WrapAngle(T _Theta)
 {
-	const T modded = fmod(_Theta, (T)2.0 * PI);
-	return (modded > (T)PI) ? (modded - (T)2.0 * PI) : modded;
+	constexpr T twop = (T)2 * (T)PI;
+	const T mod = fmod(_Theta, twop);
+	if (mod > (T)PI)
+	{
+		return mod - twop;
+	}
+	else if (mod < (T)PI)
+	{
+		return mod + twop;
+	}
+
+	return mod;
 }
 
 template <class T>

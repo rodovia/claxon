@@ -8,6 +8,7 @@
 #include <assimp/mesh.h>
 #include "dxprim/draw/BaseDraw.h"
 #include <variant>
+#include <filesystem>
 
 namespace engine
 {
@@ -15,21 +16,21 @@ namespace engine
 __declspec(align(16)) struct PSMaterialConstant
 {
 	float SpecularPower = 3.1f;
-	DirectX::XMFLOAT3 SpecularColor = { 0.75f, 0.75f, 0.75f };
+	DirectX::XMFLOAT3 SpecularColor = {0.75f, 0.75f, 0.75f};
 	float SpecularMapWeight = 0.671f;
 	BOOL EnableNormalMap = TRUE,
-		EnableSpecularMap = TRUE,
-		HasGloss;
+		 EnableSpecularMap = TRUE,
+		 HasGloss;
 	float padding[4];
 };
 
 __declspec(align(16)) struct PSSolidColorConstant
 {
-	DirectX::XMFLOAT4A MaterialColor = { 0.447970f, 0.327254f, 0.176283f, 1.0f };
+	DirectX::XMFLOAT4A MaterialColor = {0.447970f, 0.327254f, 0.176283f, 1.0f};
 	BOOL EnableSpecular = TRUE;
 	BOOL HasGloss;
 	float SpecularPowerConst;
-	float SpecularIntensity = 0.0f;
+	DirectX::XMFLOAT4A SpecularColor;
 	float SpecularPower = 120.0f;
 	float padd;
 };
@@ -37,7 +38,12 @@ __declspec(align(16)) struct PSSolidColorConstant
 struct MODEL_DESCRIPTOR
 {
 	float Scale = 1.0f;
-	bool AffectedByLight = true;
+	bool AffectedByLight = true; // TODO: implement
+	enum
+	{
+		NORMSPC_TANGENT = 0x100,
+		NORMSPC_OBJECT
+	} NormalMapSpace = NORMSPC_TANGENT; // TODO: implement
 };
 
 class CMesh : public CBase_Draw
@@ -57,9 +63,12 @@ class CNode
 	friend class CModelDiagWindow;
 
 public:
-	CNode(int _Id, const std::string& _Name, std::vector<CMesh*> _Meshptrs, const DirectX::XMMATRIX& _Transform) noexcept;
+	CNode(int _Id, const std::string& _Name,
+		  std::vector<CMesh*> _Meshptrs,
+		  const DirectX::XMMATRIX& _Transform) noexcept;
 	void Draw(CGraphicalOutput& _Gfx, DirectX::FXMMATRIX _AccumTransform) noexcept;
 	void SetAppliedTransform(DirectX::FXMMATRIX _Transform) noexcept;
+	const DirectX::XMFLOAT4X4& GetAppliedTransform() const noexcept;
 	int GetId() const noexcept;
 
 private:
@@ -92,7 +101,8 @@ public:
 	~CModel() noexcept;
 
 private:
-	std::unique_ptr<CMesh> ParseMesh(CGraphicalOutput& _Gfx, const aiMesh& _Mesh, const aiMaterial* const* _Materials);
+	std::unique_ptr<CMesh> ParseMesh(CGraphicalOutput& _Gfx, const aiMesh& _Mesh,
+									 const aiMaterial* const* _Materials, const std::filesystem::path& _Path);
 	std::unique_ptr<CNode> ParseNode(int& _NextId, const aiNode& _Node);
 
 	std::unique_ptr<CNode> m_Root;

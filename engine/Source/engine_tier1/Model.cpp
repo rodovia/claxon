@@ -20,6 +20,7 @@
 #include "dxprim/Sampler.h"
 #include "BindableCodex.h"
 #include "Surface.h"
+#include "matrix.h"
 #include <engine_ui/Console.h>
 
 #include <tier0lib/String0.h>
@@ -28,6 +29,7 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 
+#include <filesystem>
 #include <type_traits>
 #include <unordered_map>
 
@@ -44,8 +46,6 @@ engine::CConVar mdl_model_scale_warn_limit(
 engine::CConVar mat_mapw_min("mat_mapw_min", "0.0");
 
 engine::CConVar mat_mapw_max("mat_mapw_max", "1000.0");
-
-engine::CConVar mdl_base_dir("mdl_base_dir", "resources/model/goblin/");
 
 #pragma region CModelDiagWindow
 
@@ -88,8 +88,26 @@ void CModelDiagWindow::Show(CGraphicalOutput& _Gfx, const char* _Name, const eng
 		ImGui::NextColumn();
 		if (m_SelectedNode != nullptr)
 		{
-			TransformParams& transform = m_Transforms[m_SelectedNode->GetId()];
+			const int id = m_SelectedNode->GetId();
+			std::unordered_map<int, TransformParams>::const_iterator trf = m_Transforms.find(id);
+			if (trf == m_Transforms.end())
+			{
+				const DirectX::XMFLOAT4X4& appl = m_SelectedNode->GetAppliedTransform();
+				const DirectX::XMFLOAT3 angl = engine::ExtractEulerAngles(appl);
+				const DirectX::XMFLOAT3 transl = engine::ExtractTranslation(appl);
+
+				TransformParams tp;
+				tp.Roll = angl.z;
+				tp.Pitch = angl.x;
+				tp.Yaw = angl.y;
+				tp.X = transl.x;
+				tp.Y = transl.y;
+				tp.Z = transl.z;
+				std::tie(trf, std::ignore) = m_Transforms.insert({id, tp});
+			}
+			TransformParams transform = trf->second;
 			ImGui::Text("Orientation");
+
 			ImGui::SliderAngle("Pitch", &transform.Pitch, -180.0f, 180.0f);
 			ImGui::SliderAngle("Yaw", &transform.Yaw, -180.0f, 180.0f);
 			ImGui::SliderAngle("Roll", &transform.Roll, -180.0f, 180.0f);
@@ -211,6 +229,11 @@ void engine::CNode::RenderTree(engine::CNode*& _SelectedNode) const noexcept
 	}
 }
 
+const DirectX::XMFLOAT4X4& engine::CNode::GetAppliedTransform() const noexcept
+{
+	return m_ApplTransform;
+}
+
 void engine::CNode::RenderExtendedCtl(CGraphicalOutput& _Gfx, PSMaterialConstant& _Pmc)
 {
 	if (m_MeshPtrs.empty())
@@ -251,7 +274,6 @@ void engine::CNode::RenderExtendedCtl(CGraphicalOutput& _Gfx, PSSolidColorConsta
 	if (auto pcb = CCodex::QueryExistent<CConstantPixelBuffer<PSSolidColorConstant>>())
 	{
 		ImGui::Text("Material (solid color)");
-		ImGui::SliderFloat("Spec Int.", &_Pmc.SpecularIntensity, mat_mapw_min.GetFloat(), mat_mapw_max.GetFloat());
 		ImGui::SliderFloat("Spec Pow.", &_Pmc.SpecularPower, mat_mapw_min.GetFloat(), mat_mapw_max.GetFloat());
 		ImGui::ColorPicker3("Diffuse Color", reinterpret_cast<float*>(&_Pmc.MaterialColor));
 		pcb->Update(_Gfx, _Pmc);
@@ -289,7 +311,7 @@ engine::CModel::CModel(CGraphicalOutput& _Gfx, const std::wstring _Filename,
 
 	for (size_t i = 0; i < scene->mNumMeshes; i++)
 	{
-		m_MeshPtrs.push_back(this->ParseMesh(_Gfx, *scene->mMeshes[i], scene->mMaterials));
+		m_MeshPtrs.push_back(this->ParseMesh(_Gfx, *scene->mMeshes[i], scene->mMaterials, _Filename));
 	}
 
 	int discrim = 0;
@@ -310,7 +332,10 @@ void engine::CModel::Draw(CGraphicalOutput& _Gfx) const
 	m_Root->Draw(_Gfx, DirectX::XMMatrixIdentity());
 }
 
-std::unique_ptr<engine::CMesh> engine::CModel::ParseMesh(CGraphicalOutput& _Gfx, const aiMesh& _Mesh, const aiMaterial* const* _Materials)
+std::unique_ptr<engine::CMesh> engine::CModel::ParseMesh(CGraphicalOutput& _Gfx,
+														 const aiMesh& _Mesh,
+														 const aiMaterial* const* _Materials,
+														 const std::filesystem::path& _Path)
 {
 	std::vector<unsigned short> indices;
 	indices.reserve(_Mesh.mNumFaces * 3);
@@ -337,7 +362,7 @@ std::unique_ptr<engine::CMesh> engine::CModel::ParseMesh(CGraphicalOutput& _Gfx,
 	{
 		using namespace std::string_literals;
 		auto& mat = *_Materials[_Mesh.mMaterialIndex];
-		const std::string base = mdl_base_dir.GetString();
+		const std::string base = _Path.parent_path().string() + "\\";
 
 		aiString texFilename;
 		if (mat.GetTexture(aiTextureType_DIFFUSE, 0, &texFilename) == aiReturn_SUCCESS)
@@ -348,9 +373,11 @@ std::unique_ptr<engine::CMesh> engine::CModel::ParseMesh(CGraphicalOutput& _Gfx,
 		}
 		else
 		{
-			if (!mdl_missing50_when_missing_diffuse.GetBool() && mat.Get(AI_MATKEY_COLOR_DIFFUSE, reinterpret_cast<aiColor3D&>(diffuseColor)) == aiReturn_SUCCESS)
+			if (!mdl_missing50_when_missing_diffuse.GetBool()
+				&& mat.Get(AI_MATKEY_COLOR_DIFFUSE,
+						   reinterpret_cast<aiColor3D&>(diffuseColor))
+					   == aiReturn_SUCCESS)
 			{
-				hasDiffuse = true; // Needs to be true, so it won't bind missing50.
 				hasColorDiffuse = true;
 			}
 		}
@@ -386,7 +413,7 @@ std::unique_ptr<engine::CMesh> engine::CModel::ParseMesh(CGraphicalOutput& _Gfx,
 		}
 	}
 
-	if (!hasDiffuse)
+	if (!hasDiffuse && !hasColorDiffuse)
 	{
 		Msg("Mesh '%s' has no DIFFUSE textures! Falling back to missing50", _Mesh.mName.C_Str());
 		bindablePtrs.push_back(CCodex::Query<engine::CTexture>(_Gfx, _GETPATH("resources/textures/missing50.png"), 0u));
@@ -394,6 +421,36 @@ std::unique_ptr<engine::CMesh> engine::CModel::ParseMesh(CGraphicalOutput& _Gfx,
 	}
 
 	std::shared_ptr<CVertexShader> vs{};
+	if (!m_Desc.AffectedByLight)
+	{
+		layout::CVertexBuffer vbuf(
+			std::move(layout::CVertexLayout{}
+						  .Append(layout::Position3D)
+						  .Append(layout::Texture2D)));
+
+		for (unsigned int i = 0; i < _Mesh.mNumVertices; i++)
+		{
+			aiVector3D vert = _Mesh.mVertices[i];
+			vbuf.EmplaceBack(
+				DirectX::XMFLOAT3{vert.x * m_Desc.Scale, vert.y * m_Desc.Scale, vert.z * m_Desc.Scale},
+				*reinterpret_cast<DirectX::XMFLOAT2*>(&_Mesh.mTextureCoords[0][i]));
+		}
+
+		bindablePtrs.push_back(CCodex::Query<engine::CPixelShader>(_Gfx, MAKE_SHADER_RESOURCE("Texture_PS.cso")));
+		vs = CCodex::Query<engine::CVertexShader>(_Gfx, MAKE_SHADER_RESOURCE("Texture_VS.cso"));
+		ID3DBlob* blob = vs->GetBytecode();
+		bindablePtrs.push_back(std::move(vs));
+
+		bindablePtrs.push_back(CCodex::Query<engine::CVertexBuffer>(_Gfx, std::string(_Mesh.mName.C_Str()), vbuf));
+		bindablePtrs.push_back(CCodex::Query<engine::CInputLayout>(_Gfx, vbuf.Layout(), blob));
+
+		// So the below checks won't be ran.
+		hasDiffuse = false;
+		hasSpec = false;
+		hasNormals = false;
+	}
+
+
 	if (hasDiffuse && hasSpec && hasNormals)
 	{
 		layout::CVertexBuffer vbuf(std::move(
@@ -415,7 +472,13 @@ std::unique_ptr<engine::CMesh> engine::CModel::ParseMesh(CGraphicalOutput& _Gfx,
 				*reinterpret_cast<DirectX::XMFLOAT2*>(&_Mesh.mTextureCoords[0][i]));
 		}
 
-		std::wstring filename = MAKE_SHADER_RESOURCE("PhongNormalMap_PS.cso");
+		std::string fs = "PhongNormalMap_PS.cso";
+		if (m_Desc.NormalMapSpace == MODEL_DESCRIPTOR::NORMSPC_OBJECT)
+		{
+			fs = "PhongNormalMapOS_PS.cso";
+		}
+
+		std::wstring filename = MAKE_SHADER_RESOURCE(fs);
 		bindablePtrs.push_back(CCodex::Query<CPixelShader>(_Gfx, filename));
 		PSMaterialConstant pmc;
 		pmc.SpecularPower = shininess;
@@ -454,7 +517,7 @@ std::unique_ptr<engine::CMesh> engine::CModel::ParseMesh(CGraphicalOutput& _Gfx,
 
 		PSSolidColorConstant pmc;
 		pmc.SpecularPowerConst = shininess;
-		pmc.SpecularIntensity = (specularColor.x + specularColor.y + specularColor.z) / 3.0f;
+		pmc.SpecularColor = DirectX::XMFLOAT4A{specularColor.x, specularColor.y, specularColor.z, specularColor.w};
 		pmc.MaterialColor = DirectX::XMFLOAT4A{diffuseColor.x, diffuseColor.y, diffuseColor.z, diffuseColor.w};
 		pmc.HasGloss = hasAlphaGloss ? TRUE : FALSE;
 

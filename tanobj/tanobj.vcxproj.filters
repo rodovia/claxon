@@ -15,39 +15,16 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Source\tier0lib\Win32.h">
-      <Filter>Arquivos de Cabeçalho</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\tier0lib\dxerr.h">
-      <Filter>Arquivos de Cabeçalho</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\tier0lib\String0.h">
-      <Filter>Arquivos de Cabeçalho</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\tier0lib\CommandLine.h">
-      <Filter>Arquivos de Cabeçalho</Filter>
-    </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="Source\dxerr\dxerr.cpp">
+    <ClCompile Include="Source\main.cpp">
       <Filter>Arquivos de Origem</Filter>
     </ClCompile>
-    <ClCompile Include="Source\tier0lib\String0.cpp">
-      <Filter>Arquivos de Origem</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\tier0lib\cmd_line.cpp">
+    <ClCompile Include="Source\color_transform.cpp">
       <Filter>Arquivos de Origem</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Source\dxerr\DXGetErrorString.inl">
+    <ClInclude Include="Source\ColorTransform.h">
       <Filter>Arquivos de Cabeçalho</Filter>
-    </None>
-    <None Include="Source\dxerr\DXGetErrorDescription.inl">
-      <Filter>Arquivos de Cabeçalho</Filter>
-    </None>
-    <None Include="Source\dxerr\DXTrace.inl">
-      <Filter>Arquivos de Cabeçalho</Filter>
-    </None>
+    </ClInclude>
   </ItemGroup>
 </Project>

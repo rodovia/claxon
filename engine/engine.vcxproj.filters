@@ -111,6 +111,9 @@
     <ClCompile Include="Source\engine_tier1\dxprim\trans_const_pbuffer.cpp">
       <Filter>Arquivos de Origem</Filter>
     </ClCompile>
+    <ClCompile Include="Source\engine_tier1\matrix.cpp">
+      <Filter>Arquivos de Origem</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\engine_tier0\BaseBind.h">
@@ -245,23 +248,27 @@
     <ClInclude Include="Source\engine_tier1\dxprim\TransformConstPixelBuffer.h">
       <Filter>Arquivos de Cabeçalho</Filter>
     </ClInclude>
+    <ClInclude Include="Source\engine_tier1\matrix.h">
+      <Filter>Arquivos de Cabeçalho</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="Shader\Phong_PS.hlsl" />
-    <FxCompile Include="Shader\Phong_VS.hlsl" />
+    <FxCompile Include="Shader\phong\Phong_PS.hlsl" />
+    <FxCompile Include="Shader\phong\Phong_VS.hlsl" />
     <FxCompile Include="Shader\Solid_PS.hlsl" />
     <FxCompile Include="Shader\Solid_VS.hlsl" />
     <FxCompile Include="Shader\Texture_PS.hlsl" />
     <FxCompile Include="Shader\Texture_VS.hlsl" />
-    <FxCompile Include="Shader\PhongSpecular_PS.hlsl" />
-    <FxCompile Include="Shader\PhongNormalMap_PS.hlsl" />
-    <FxCompile Include="Shader\PhongNormalMapOS_PS.hlsl" />
+    <FxCompile Include="Shader\phong\PhongSpecular_PS.hlsl" />
+    <FxCompile Include="Shader\phong\PhongNormalMap_PS.hlsl" />
+    <FxCompile Include="Shader\phong\PhongNormalMapOS_PS.hlsl" />
     <FxCompile Include="Shader\SolidTexture_PS.hlsl" />
     <FxCompile Include="Shader\SolidTexture_VS.hlsl" />
-    <FxCompile Include="Shader\PhongNormalMap_VS.hlsl" />
-    <FxCompile Include="Shader\PhongSpecular_SolidColor_PS.hlsl" />
+    <FxCompile Include="Shader\phong\PhongNormalMap_VS.hlsl" />
+    <FxCompile Include="Shader\phong\PhongSpecular_SolidColor_PS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".clang-format" />
+    <None Include="Shader\phong\PhongBase.hlsli" />
   </ItemGroup>
 </Project>

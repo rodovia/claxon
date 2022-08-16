@@ -20,6 +20,8 @@ cbuffer CObject : register(b10)
     float SpecularIntensity;
 };
 
+#include "PhongBase.hlsli"
+
 // Slot 0 - Diff. Texture
 // Slot 1 - Specular Texture
 // Slot 2 - Normal map Texture
@@ -33,23 +35,14 @@ float4 main(float3 _WorldPos : Position, float3 _Norm : Normal, float3 _Tan : Ta
 {
 	if (EnableNormalMap)
 	{
-        const float3x3 tanview = float3x3(
-			normalize(_Tan),
-			normalize(_Bit),
-			normalize(_Norm)
-		);
-        const float3 normalSample = g_NormalMap.Sample(g_Sampler, _TexCoord).xyz;
-        _Norm = normalSample * 2.0f - 1.0f;
-        _Norm.y = -_Norm.y;
-        //_Norm = mul(_Norm, (float3x3) ModelView);
-        _Norm = mul(_Norm, tanview);
+        _Norm = CalcMapNormalViewSpace(_Tan, _Bit, _Norm, _TexCoord, g_NormalMap, g_Sampler);
     }
 	
 	// fragment to light vector data
 	const float3 vToL = LightPos - _WorldPos;
 	const float distToL = length(vToL);
 	const float3 dirToL = vToL / distToL;
-	const float att = 1.0f / (AttConst + AttLin * distToL + AttQuad * (distToL * distToL));
+	const float att = Attenuate(distToL, AttConst, AttLin, AttQuad);
 
     float3 specularReflectionColor;
     float specularPower = SpecularPower;
@@ -66,12 +59,10 @@ float4 main(float3 _WorldPos : Position, float3 _Norm : Normal, float3 _Tan : Ta
     {
         specularReflectionColor = SpecularColor;
     }
-	
-	const float3 diffuse = DiffColor * DiffIntensity * att * max(0.0f, dot(dirToL, _Norm));
-	const float3 w = _Norm * dot(vToL, _Norm);
-	const float3 r = w * 2.0f - vToL;
-	const float3 specular = att * (DiffColor * DiffIntensity) * SpecularIntensity * pow(max(0.0f, dot(normalize(-r), normalize(_WorldPos))), SpecularPower);
 
+    const float3 diffuse = Diffuse(_Norm, dirToL, att, DiffColor, DiffIntensity);
+    const float3 specular = Speculate(_Norm, vToL, att, _WorldPos, specularPower, 
+                                        DiffColor, DiffIntensity, SpecularIntensity);
 	return float4(saturate((diffuse + Ambient) * g_Texture.Sample(g_Sampler, _TexCoord).rgb 
 					+ specular * specularReflectionColor), 1.0f);
 }
