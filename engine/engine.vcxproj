@@ -185,6 +185,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\engine_audio\sound_outp.cpp" />
     <ClCompile Include="Source\engine_tier0\BaseBind.cpp" />
     <ClCompile Include="Source\engine_tier0\DXGIInfoManager.cpp" />
     <ClCompile Include="Source\engine_tier0\Exceptions.cpp" />
@@ -220,6 +221,7 @@
     <ClCompile Include="Source\imgui\imgui_widgets.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\engine_audio\SoundOutput.h" />
     <ClInclude Include="Source\engine_tier0\BaseBind.h" />
     <ClInclude Include="Source\engine_tier0\BasePrimitiveObject.h" />
     <ClInclude Include="Source\engine_tier0\ComPtr.h" />
