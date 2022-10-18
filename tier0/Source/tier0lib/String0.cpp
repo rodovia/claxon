@@ -48,7 +48,7 @@ static void Split0(const std::basic_string<_Ty_Chr>& _String, _Ty_Chr _Delim, _T
 	}
 }
 
-std::vector<std::string> 
+std::vector<std::string>
 tier0::SplitStr(std::string _String, char _Delim) noexcept
 {
 	std::vector<std::string> elems;
@@ -62,4 +62,36 @@ tier0::SplitStr(std::wstring _String, wchar_t _Delim) noexcept
 	std::vector<std::wstring> elems;
 	Split0(_String, _Delim, std::back_inserter(elems));
 	return std::move(elems);
+}
+
+std::string
+tier0::JoinStr(std::vector<std::string> _String, char _Joiner) noexcept
+{
+	std::string ret;
+	for (const auto& i : _String)
+	{
+		ret += _Joiner;
+	}
+
+	return std::move(ret);
+}
+
+std::string
+tier0::ReplaceStr(std::string _String, char _Org, char _Repl) noexcept
+{
+	std::string neo;
+	neo.reserve(_String.length());
+
+	std::string::size_type lastPos = 0, 
+		findPos;
+
+	while ((findPos = _String.find(_Org, lastPos)) != std::string::npos)
+	{
+		neo.append(_String, lastPos, findPos - lastPos);
+		neo += _Repl;
+		lastPos = findPos;
+	}
+
+	neo += _String.substr(lastPos);
+	return std::move(neo);
 }

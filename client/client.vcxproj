@@ -75,7 +75,7 @@
     <TargetName>client</TargetName>
     <OutDir>$(SolutionDir)Output\$(Configuration)\$(Platform)\</OutDir>
     <IntDir>$(SolutionDir)Output\$(Configuration)\$(Platform)\$(ProjectName)\</IntDir>
-    <IncludePath>$(solutiondir)3rdparty\assimp\include;$(solutiondir)3rdparty\libconfig\include\libconfig;$(solutiondir)tier0\Source;$(solutiondir)gamepaths\Source;$(ProjectDir)Resource;$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)tier0\Source;$(SolutionDir)engine\Source;$(ProjectDir)Source</IncludePath>
+    <IncludePath>$(solutiondir)3rdparty\irrklang\include;$(solutiondir)3rdparty\assimp\include;$(solutiondir)3rdparty\libconfig\include\libconfig;$(solutiondir)tier0\Source;$(solutiondir)gamepaths\Source;$(ProjectDir)Resource;$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)tier0\Source;$(SolutionDir)engine\Source;$(ProjectDir)Source</IncludePath>
     <PublicIncludeDirectories>$(ProjectDir)Source</PublicIncludeDirectories>
     <LibraryPath>$(solutiondir)3rdparty\assimp\lib\$(Configuration);$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);$(OutDir)</LibraryPath>
   </PropertyGroup>
@@ -84,7 +84,7 @@
     <TargetName>client</TargetName>
     <OutDir>$(SolutionDir)Output\$(Configuration)\$(Platform)\</OutDir>
     <IntDir>$(SolutionDir)Output\$(Configuration)\$(Platform)\$(ProjectName)\</IntDir>
-    <IncludePath>$(solutiondir)3rdparty\assimp\include;$(solutiondir)3rdparty\libconfig\include\libconfig;$(solutiondir)tier0\Source;$(solutiondir)gamepaths\Source;$(ProjectDir)Resource;$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)tier0\Source;$(SolutionDir)engine\Source;$(ProjectDir)Source</IncludePath>
+    <IncludePath>$(solutiondir)3rdparty\irrklang\include;$(solutiondir)3rdparty\assimp\include;$(solutiondir)3rdparty\libconfig\include\libconfig;$(solutiondir)tier0\Source;$(solutiondir)gamepaths\Source;$(ProjectDir)Resource;$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)tier0\Source;$(SolutionDir)engine\Source;$(ProjectDir)Source</IncludePath>
     <PublicIncludeDirectories>$(ProjectDir)Source</PublicIncludeDirectories>
     <LibraryPath>$(solutiondir)3rdparty\assimp\lib\$(Configuration);$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);$(OutDir)</LibraryPath>
   </PropertyGroup>
@@ -93,7 +93,7 @@
     <TargetName>client</TargetName>
     <OutDir>$(SolutionDir)Output\$(Configuration)\$(Platform)\</OutDir>
     <IntDir>$(SolutionDir)Output\$(Configuration)\$(Platform)\$(ProjectName)\</IntDir>
-    <IncludePath>$(solutiondir)3rdparty\assimp\include;$(solutiondir)3rdparty\libconfig\include\libconfig;$(solutiondir)tier0\Source;$(solutiondir)gamepaths\Source;$(ProjectDir)Resource;$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)tier0\Source;$(SolutionDir)engine\Source;$(ProjectDir)Source</IncludePath>
+    <IncludePath>$(solutiondir)3rdparty\irrklang\include;$(solutiondir)3rdparty\assimp\include;$(solutiondir)3rdparty\libconfig\include\libconfig;$(solutiondir)tier0\Source;$(solutiondir)gamepaths\Source;$(ProjectDir)Resource;$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)tier0\Source;$(SolutionDir)engine\Source;$(ProjectDir)Source</IncludePath>
     <PublicIncludeDirectories>$(ProjectDir)Source</PublicIncludeDirectories>
     <LibraryPath>$(solutiondir)3rdparty\assimp\lib\$(Configuration);$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(OutDir)</LibraryPath>
   </PropertyGroup>
@@ -102,7 +102,7 @@
     <TargetName>client</TargetName>
     <OutDir>$(SolutionDir)Output\$(Configuration)\$(Platform)\</OutDir>
     <IntDir>$(SolutionDir)Output\$(Configuration)\$(Platform)\$(ProjectName)\</IntDir>
-    <IncludePath>$(solutiondir)3rdparty\assimp\include;$(solutiondir)3rdparty\libconfig\include\libconfig;$(solutiondir)tier0\Source;$(solutiondir)gamepaths\Source;$(ProjectDir)Resource;$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)tier0\Source;$(SolutionDir)engine\Source;$(ProjectDir)Source</IncludePath>
+    <IncludePath>$(solutiondir)3rdparty\irrklang\include;$(solutiondir)3rdparty\assimp\include;$(solutiondir)3rdparty\libconfig\include\libconfig;$(solutiondir)tier0\Source;$(solutiondir)gamepaths\Source;$(ProjectDir)Resource;$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)tier0\Source;$(SolutionDir)engine\Source;$(ProjectDir)Source</IncludePath>
     <PublicIncludeDirectories>$(ProjectDir)Source</PublicIncludeDirectories>
     <LibraryPath>$(solutiondir)3rdparty\assimp\lib\$(Configuration);$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(OutDir)</LibraryPath>
   </PropertyGroup>
@@ -186,6 +186,7 @@
     <ClInclude Include="Resource\resource.h" />
     <ClInclude Include="Source\dx\Bindable.h" />
     <ClInclude Include="Source\scene\BaseScene.h" />
+    <ClInclude Include="Source\scene\current\FrogScene.h" />
     <ClInclude Include="Source\scene\current\GameScene.h" />
     <ClInclude Include="Source\scene\current\MainMenuScene.h" />
     <ClInclude Include="Source\scene\SceneManager.h" />
@@ -199,6 +200,7 @@
     <ClInclude Include="Source\tier1\Window.hh" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\scene\current\frog.cpp" />
     <ClCompile Include="Source\scene\current\game_scn.cpp" />
     <ClCompile Include="Source\scene\current\main_menu_scn.cpp" />
     <ClCompile Include="Source\scene\scene.cpp" />

@@ -3,6 +3,7 @@
 #include <tier0lib/Win32.h>
 #include <stdexcept>
 #include <string>
+#include <format>
 
 #include "DXGIInfoManager.h"
 #include "DLL.h"
@@ -25,6 +26,12 @@
 		}                                                                 \
 	} while (0)
 
+#if defined(__hl2_want_crt_assert)
+#define FailIf(E) assert(E)
+#else
+#define FailIf(E) do { if (!E) engine::FastFailEx(nullptr, "**{}** was {}", #E ## , (E)) } while(0) //clang-format: keep
+#endif
+
 namespace engine
 {
 
@@ -33,6 +40,18 @@ enum class EFM_Type
 	WIN32_EXCEPTION = 0x100,
 	DIRECTX_EXCEPTION = 0x101
 };
+
+void _ENGINE_DLLEXP FastFail(const char* _Msg = nullptr,
+							 HWND _Wnd = nullptr) noexcept;
+
+template<class..._Ty_Args>
+void FastFailEx(HWND _Wnd, char* _Msg, _Ty_Args&&..._Args) noexcept
+{
+	std::string cns = _Msg;
+	cns = std::format(cns, _Args...);
+	FastFail(cns.c_str(), _Wnd);
+}
+
 
 // _Buffer param must have this size
 #define _ENGINE_EFM_BUFFER_SIZE 512

@@ -10,6 +10,7 @@
 #include <d3d11.h>
 #include <DirectXMath.h>
 #include <engine_tier0/ComPtr.h>
+#include <engine_tier1/Camera.h>
 
 template<class T>
 using ComPtr [[deprecated]] = engine::CUtl_ComPtr<T>;
@@ -37,8 +38,8 @@ public:
 
 	DirectX::XMMATRIX GetProjection() const noexcept;
 	void SetProjection(DirectX::FXMMATRIX _Proj) noexcept;
-	DirectX::XMMATRIX GetCamera() const noexcept;
-	void SetCamera(DirectX::FXMMATRIX _Cam) noexcept;
+	CCamera& GetCamera() noexcept;
+	void SetCamera(engine::CCamera _Cam) noexcept;
 	D3D_FEATURE_LEVEL GetFeatureLevel() const noexcept;
 private:
 	bool m_HasImGui = true;
@@ -50,7 +51,7 @@ private:
 	CUtl_ComPtr<ID3D11RenderTargetView> m_Target;
 	CUtl_ComPtr<ID3D11DepthStencilView> m_DepthStencil;
 	DirectX::XMMATRIX m_Projection;
-	DirectX::XMMATRIX m_Camera;
+	engine::CCamera m_Camera;
 	D3D_FEATURE_LEVEL m_FeatLevel;
 	engine::CDXGIInfoManager m_InfoQueue;
 };

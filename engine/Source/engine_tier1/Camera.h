@@ -2,10 +2,16 @@
 #pragma once
 
 #include <engine_tier0/DLL.h>
-#include "GraphicalOutput.h"
+#include <d3d11.h>
+#include <DirectXMath.h>
 
 namespace engine
 {
+
+struct _Pair
+{
+	float x, y;
+};
 
 class _ENGINE_DLLEXP CCamera
 {
@@ -16,6 +22,9 @@ public:
 	void Reset();
 	void Rotate(float _DeltaX, float _DeltaY) noexcept;
 	void Translate(DirectX::XMFLOAT3 _Position) noexcept;
+	_Pair GetPitchYaw() const noexcept;
+	DirectX::XMFLOAT3 GetPosition() const noexcept;
+
 private:
 	DirectX::XMFLOAT3 m_Position;
 	float m_Pitch, m_Yaw;

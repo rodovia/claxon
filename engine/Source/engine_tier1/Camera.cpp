@@ -69,3 +69,13 @@ void engine::CCamera::Translate(DirectX::XMFLOAT3 _Position) noexcept
 		m_Position.z + _Position.z,
 	};
 }
+
+struct engine::_Pair engine::CCamera::GetPitchYaw() const noexcept
+{
+	return { m_Pitch, m_Yaw };
+}
+
+DirectX::XMFLOAT3 engine::CCamera::GetPosition() const noexcept
+{
+	return m_Position;
+}

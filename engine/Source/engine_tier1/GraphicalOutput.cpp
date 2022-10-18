@@ -51,12 +51,6 @@ engine::CGraphicalOutput::CGraphicalOutput(HWND hWnd, ImGuiContext* _Ctx)
 	swapCreateFlags |= D3D11_CREATE_DEVICE_DEBUG;
 #endif
 
-	// TODO: Adicionar um argumento de linha de comando 
-	//	para que D3D11CreateDeviceAndSwapChain possa criar um dispositivo
-	//	D3D_FEATURE_LEVEL_11_1.
-	// CONTEXTO AO CIDADÃO: Por algum motivo, se especificar D3D_FEATURE_LEVEL_11_1
-	// e o driver não for compatível com o nível, a função irá falhar. Independente
-	// se fLevels especificar algum nível após o 11_1.
 	const D3D_FEATURE_LEVEL fLevels[] =
 	{
 		D3D_FEATURE_LEVEL_11_0,
@@ -205,12 +199,12 @@ void engine::CGraphicalOutput::SetProjection(DirectX::FXMMATRIX _Proj) noexcept
 	m_Projection = _Proj;
 }
 
-DirectX::XMMATRIX engine::CGraphicalOutput::GetCamera() const noexcept
+engine::CCamera& engine::CGraphicalOutput::GetCamera() noexcept
 {
 	return m_Camera;
 }
 
-void engine::CGraphicalOutput::SetCamera(DirectX::FXMMATRIX _Cam) noexcept
+void engine::CGraphicalOutput::SetCamera(engine::CCamera _Cam) noexcept
 {
 	m_Camera = _Cam;
 }

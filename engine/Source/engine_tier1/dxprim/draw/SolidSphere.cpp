@@ -1,13 +1,7 @@
 #include "SolidSphere.h"
 
 #include <engine_tier1/dxprim/geometry/Sphere.h>
-#include <engine_tier1/dxprim/VertexBuffer.h>
-#include <engine_tier1/dxprim/TransformConstBuffer.h>
-#include <engine_tier1/dxprim/InputLayout.h>
-#include <engine_tier1/dxprim/Shaders.h>
-#include <engine_tier1/dxprim/Topology.h>
-#include <engine_tier1/dxprim/ConstantBuffer.h>
-#include <engine_tier1/dxprim/IndexBuffer.h>
+#include <engine_tier1/dxprim/fwd.h>
 #include <engine_tier1/Surface.h>
 #include <engine_tier1/VertexLayout.h>
 
@@ -39,7 +33,9 @@ engine::CSolidSphere::CSolidSphere(CGraphicalOutput& _Gfx, float _Radius)
 	this->AddBind(CCodex::Query<engine::CInputLayout>(_Gfx, model.m_Vertices.Layout(), pvsbc));
 	this->AddBind(CCodex::Query<engine::CPrim_Topology>(_Gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST));
 
-	this->AddBind(std::make_unique<engine::CTransformConstantBuffer>(_Gfx, *this));
+	this->AddBind(std::make_unique<engine::CTransformConstantBuffer>(_Gfx, this));
+	this->AddBind(CCodex::Query<engine::CBlender>(_Gfx, false, std::nullopt));
+	this->AddBind(CCodex::Query<engine::CRasterizer>(_Gfx, false));
 }
 
 void engine::CSolidSphere::SetPos(DirectX::XMFLOAT3 _Pos) noexcept
@@ -47,7 +43,7 @@ void engine::CSolidSphere::SetPos(DirectX::XMFLOAT3 _Pos) noexcept
 	m_Pos = _Pos;
 }
 
-DirectX::XMMATRIX engine::CSolidSphere::GetTransformMatrix() const noexcept
+DirectX::XMMATRIX engine::CSolidSphere::GetTransformMatrix(const CCamera&) const noexcept
 {
 	return DirectX::XMMatrixTranslation(m_Pos.x, m_Pos.y, m_Pos.z);
 }

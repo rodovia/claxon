@@ -33,6 +33,16 @@ SamplerState g_Sampler;
 float4 main(float3 _WorldPos : Position, float3 _Norm : Normal, float3 _Tan : Tangent, 
 				float3 _Bit : Bitangent, float2 _TexCoord : Texcoord, float4 _Pos : SV_Position) : SV_TARGET
 {
+    float4 txtsmp = g_Texture.Sample(g_Sampler, _TexCoord);
+    
+#ifdef __hl2_want_ALPHA_CLIPPING 
+    clip(txtsmp.a < 0.1f ? -1 : 1);
+    if (dot(_Norm, _WorldPos) >= 0)
+    {
+        _Norm = -_Norm;
+    }
+#endif
+    _Norm = normalize(_Norm);
 	if (EnableNormalMap)
 	{
         _Norm = CalcMapNormalViewSpace(_Tan, _Bit, _Norm, _TexCoord, g_NormalMap, g_Sampler);
@@ -63,6 +73,6 @@ float4 main(float3 _WorldPos : Position, float3 _Norm : Normal, float3 _Tan : Ta
     const float3 diffuse = Diffuse(_Norm, dirToL, att, DiffColor, DiffIntensity);
     const float3 specular = Speculate(_Norm, vToL, att, _WorldPos, specularPower, 
                                         DiffColor, DiffIntensity, SpecularIntensity);
-	return float4(saturate((diffuse + Ambient) * g_Texture.Sample(g_Sampler, _TexCoord).rgb 
-					+ specular * specularReflectionColor), 1.0f);
+	return float4(saturate((diffuse + Ambient) * txtsmp.rgb
+					+ specular * specularReflectionColor), txtsmp.a);
 }

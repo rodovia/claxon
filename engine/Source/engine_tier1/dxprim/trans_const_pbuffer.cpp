@@ -1,7 +1,7 @@
 ﻿#include "TransformConstPixelBuffer.h"
 
 engine::CTransformConstantPixelBuffer::CTransformConstantPixelBuffer(CGraphicalOutput& _Gfx,
-																	 const CBase_Draw& _Parent,
+																	 const CBase_Draw* _Parent,
 																	 UINT _VS_Slot,
 																	 UINT _PS_Slot) noexcept
 	: CTransformConstantBuffer(_Gfx, _Parent, _PS_Slot)

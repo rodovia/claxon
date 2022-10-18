@@ -78,33 +78,33 @@
     <OutDir>$(SolutionDir)Output\$(Configuration)\$(Platform)\</OutDir>
     <IntDir>$(SolutionDir)Output\$(Configuration)\$(Platform)\$(ProjectName)\</IntDir>
     <IncludePath>$(projectdir)Source;$(solutiondir)gamepaths\Source;$(solutiondir)tier0\Source;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
-    <LibraryPath>$(solutiondir)3rdparty\assimp\lib\$(Configuration);$(outdir);$(solutiondir)3rdparty\libconfig\lib\$(configuration);$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86)</LibraryPath>
+    <LibraryPath>$(solutiondir)3rdparty\irrklang;$(solutiondir)3rdparty\assimp\lib\$(Configuration);$(outdir);$(solutiondir)3rdparty\libconfig\lib\$(configuration);$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86)</LibraryPath>
     <PublicIncludeDirectories>$(ProjectDir)Source</PublicIncludeDirectories>
-    <ExternalIncludePath>$(solutiondir)3rdparty\libconfig\include\libconfig;$(solutiondir)3rdparty\assimp\include;$(VC_IncludePath);$(WindowsSDK_IncludePath);</ExternalIncludePath>
+    <ExternalIncludePath>$(solutiondir)3rdparty\irrklang\include;$(solutiondir)3rdparty\libconfig\include\libconfig;$(solutiondir)3rdparty\assimp\include;$(VC_IncludePath);$(WindowsSDK_IncludePath);</ExternalIncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>$(SolutionDir)Output\$(Configuration)\$(Platform)\</OutDir>
     <IntDir>$(SolutionDir)Output\$(Configuration)\$(Platform)\$(ProjectName)\</IntDir>
     <IncludePath>$(projectdir)Source;$(solutiondir)gamepaths\Source;$(solutiondir)tier0\Source;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
-    <LibraryPath>$(solutiondir)3rdparty\assimp\lib\$(Configuration);$(outdir);$(solutiondir)3rdparty\libconfig\lib\$(configuration);$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86)</LibraryPath>
+    <LibraryPath>$(solutiondir)3rdparty\irrklang;$(solutiondir)3rdparty\assimp\lib\$(Configuration);$(outdir);$(solutiondir)3rdparty\libconfig\lib\$(configuration);$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86)</LibraryPath>
     <PublicIncludeDirectories>$(ProjectDir)Source</PublicIncludeDirectories>
-    <ExternalIncludePath>$(solutiondir)3rdparty\libconfig\include\libconfig;$(solutiondir)3rdparty\assimp\include;$(VC_IncludePath);$(WindowsSDK_IncludePath);</ExternalIncludePath>
+    <ExternalIncludePath>$(solutiondir)3rdparty\irrklang\include;$(solutiondir)3rdparty\libconfig\include\libconfig;$(solutiondir)3rdparty\assimp\include;$(VC_IncludePath);$(WindowsSDK_IncludePath);</ExternalIncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(SolutionDir)Output\$(Configuration)\$(Platform)\</OutDir>
     <IntDir>$(SolutionDir)Output\$(Configuration)\$(Platform)\$(ProjectName)\</IntDir>
     <IncludePath>$(projectdir)Source;$(solutiondir)gamepaths\Source;$(solutiondir)tier0\Source;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
-    <LibraryPath>$(solutiondir)3rdparty\assimp\lib\$(Configuration);$(outdir);$(solutiondir)3rdparty\libconfig\lib\$(configuration);$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)</LibraryPath>
+    <LibraryPath>$(solutiondir)3rdparty\irrklang;$(solutiondir)3rdparty\assimp\lib\$(Configuration);$(outdir);$(solutiondir)3rdparty\libconfig\lib\$(configuration);$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)</LibraryPath>
     <PublicIncludeDirectories>$(ProjectDir)Source</PublicIncludeDirectories>
-    <ExternalIncludePath>$(solutiondir)3rdparty\libconfig\include\libconfig;$(solutiondir)3rdparty\assimp\include;$(VC_IncludePath);$(WindowsSDK_IncludePath);</ExternalIncludePath>
+    <ExternalIncludePath>$(solutiondir)3rdparty\irrklang\include;$(solutiondir)3rdparty\libconfig\include\libconfig;$(solutiondir)3rdparty\assimp\include;$(VC_IncludePath);$(WindowsSDK_IncludePath);</ExternalIncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)Output\$(Configuration)\$(Platform)\</OutDir>
     <IntDir>$(SolutionDir)Output\$(Configuration)\$(Platform)\$(ProjectName)\</IntDir>
     <IncludePath>$(projectdir)Source;$(solutiondir)gamepaths\Source;$(solutiondir)tier0\Source;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
-    <LibraryPath>$(solutiondir)3rdparty\assimp\lib\$(Configuration);$(outdir);$(solutiondir)3rdparty\libconfig\lib\$(configuration);$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)</LibraryPath>
+    <LibraryPath>$(solutiondir)3rdparty\irrklang;$(solutiondir)3rdparty\assimp\lib\$(Configuration);$(outdir);$(solutiondir)3rdparty\libconfig\lib\$(configuration);$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)</LibraryPath>
     <PublicIncludeDirectories>$(ProjectDir)Source</PublicIncludeDirectories>
-    <ExternalIncludePath>$(solutiondir)3rdparty\libconfig\include\libconfig;$(solutiondir)3rdparty\assimp\include;$(VC_IncludePath);$(WindowsSDK_IncludePath);</ExternalIncludePath>
+    <ExternalIncludePath>$(solutiondir)3rdparty\irrklang\include;$(solutiondir)3rdparty\libconfig\include\libconfig;$(solutiondir)3rdparty\assimp\include;$(VC_IncludePath);$(WindowsSDK_IncludePath);</ExternalIncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -121,7 +121,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>dxguid.lib;d3d11.lib;d3dcompiler.lib;gdiplus.lib;mount.lib;tier0_dxerr.lib;libconfig++d.lib;assimp-vc143-mtd.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>irrklang.lib;dxguid.lib;d3d11.lib;d3dcompiler.lib;gdiplus.lib;mount.lib;tier0_dxerr.lib;libconfig++d.lib;assimp-vc143-mtd.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -130,7 +130,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_CRTDBG_MAP_ALLOC;_ENGINE_DLL=1;WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_ENGINE_DLL=1;WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <FloatingPointModel>Fast</FloatingPointModel>
@@ -142,7 +142,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>dxguid.lib;d3d11.lib;d3dcompiler.lib;gdiplus.lib;mount.lib;tier0_dxerr.lib;libconfig++.lib;assimp-vc143-mt.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>irrklang.lib;dxguid.lib;d3d11.lib;d3dcompiler.lib;gdiplus.lib;mount.lib;tier0_dxerr.lib;libconfig++.lib;assimp-vc143-mt.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -160,7 +160,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>dxguid.lib;d3d11.lib;d3dcompiler.lib;gdiplus.lib;mount.lib;tier0_dxerr.lib;libconfig++d.lib;assimp-vc143-mtd.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>irrklang.lib;dxguid.lib;d3d11.lib;d3dcompiler.lib;gdiplus.lib;mount.lib;tier0_dxerr.lib;libconfig++d.lib;assimp-vc143-mtd.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -169,7 +169,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_CRTDBG_MAP_ALLOC;_ENGINE_DLL=1;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_ENGINE_DLL=1;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <FloatingPointModel>Fast</FloatingPointModel>
@@ -181,7 +181,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>dxguid.lib;d3d11.lib;d3dcompiler.lib;gdiplus.lib;mount.lib;tier0_dxerr.lib;libconfig++.lib;assimp-vc143-mt.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>irrklang.lib;dxguid.lib;d3d11.lib;d3dcompiler.lib;gdiplus.lib;mount.lib;tier0_dxerr.lib;libconfig++.lib;assimp-vc143-mt.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -192,11 +192,13 @@
     <ClCompile Include="Source\engine_tier0\GDIPlusManager.cpp" />
     <ClCompile Include="Source\engine_tier0\Startup.cpp" />
     <ClCompile Include="Source\engine_tier1\Camera.cpp" />
+    <ClCompile Include="Source\engine_tier1\dxprim\blender.cpp" />
     <ClCompile Include="Source\engine_tier1\dxprim\draw\BaseDraw.cpp" />
     <ClCompile Include="Source\engine_tier1\dxprim\draw\SolidSphere.cpp" />
     <ClCompile Include="Source\engine_tier1\dxprim\draw\test_plane.cpp" />
     <ClCompile Include="Source\engine_tier1\dxprim\IndexBuffer.cpp" />
     <ClCompile Include="Source\engine_tier1\dxprim\InputLayout.cpp" />
+    <ClCompile Include="Source\engine_tier1\dxprim\rasterize.cpp" />
     <ClCompile Include="Source\engine_tier1\dxprim\Sampler.cpp" />
     <ClCompile Include="Source\engine_tier1\dxprim\Shaders.cpp" />
     <ClCompile Include="Source\engine_tier1\dxprim\Texture.cpp" />
@@ -207,7 +209,8 @@
     <ClCompile Include="Source\engine_tier1\GraphicalOutput.cpp" />
     <ClCompile Include="Source\engine_tier1\LightPoint.cpp" />
     <ClCompile Include="Source\engine_tier1\matrix.cpp" />
-    <ClCompile Include="Source\engine_tier1\Model.cpp" />
+    <ClCompile Include="Source\engine_tier1\render\Model.cpp" />
+    <ClCompile Include="Source\engine_tier1\render\sprite.cpp" />
     <ClCompile Include="Source\engine_tier1\Surface.cpp" />
     <ClCompile Include="Source\engine_tier1\vertex_layout.cpp" />
     <ClCompile Include="Source\engine_ui\console.cpp" />
@@ -232,6 +235,7 @@
     <ClInclude Include="Source\engine_tier0\_Math.h" />
     <ClInclude Include="Source\engine_tier1\BindableCodex.h" />
     <ClInclude Include="Source\engine_tier1\Camera.h" />
+    <ClInclude Include="Source\engine_tier1\dxprim\Blender.h" />
     <ClInclude Include="Source\engine_tier1\dxprim\fwd.h" />
     <ClInclude Include="Source\engine_tier1\dxprim\ConstantBuffer.h" />
     <ClInclude Include="Source\engine_tier1\dxprim\draw\BaseDraw.h" />
@@ -243,6 +247,7 @@
     <ClInclude Include="Source\engine_tier1\dxprim\geometry\Sphere.h" />
     <ClInclude Include="Source\engine_tier1\dxprim\IndexBuffer.h" />
     <ClInclude Include="Source\engine_tier1\dxprim\InputLayout.h" />
+    <ClInclude Include="Source\engine_tier1\dxprim\Rasterizer.h" />
     <ClInclude Include="Source\engine_tier1\dxprim\Sampler.h" />
     <ClInclude Include="Source\engine_tier1\dxprim\Shaders.h" />
     <ClInclude Include="Source\engine_tier1\dxprim\Texture.h" />
@@ -255,6 +260,8 @@
     <ClInclude Include="Source\engine_tier1\LightPoint.h" />
     <ClInclude Include="Source\engine_tier1\matrix.h" />
     <ClInclude Include="Source\engine_tier1\Model.h" />
+    <ClInclude Include="Source\engine_tier1\render\Model.h" />
+    <ClInclude Include="Source\engine_tier1\render\Sprite.h" />
     <ClInclude Include="Source\engine_tier1\Surface.h" />
     <ClInclude Include="Source\engine_tier1\VertexLayout.h" />
     <ClInclude Include="Source\engine_ui\Console.h" />
@@ -269,6 +276,20 @@
     <ClInclude Include="Source\imgui\imstb_truetype.h" />
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="Shader\phong\PhongEverything_PS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">4.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">4.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4.0</ShaderModel>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(solutiondir)mod\resources\hlsl\%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(solutiondir)mod\resources\hlsl\%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(solutiondir)mod\resources\hlsl\%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(solutiondir)mod\resources\hlsl\%(Filename).cso</ObjectFileOutput>
+    </FxCompile>
     <FxCompile Include="Shader\phong\PhongNormalMapOS_PS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">4.0</ShaderModel>

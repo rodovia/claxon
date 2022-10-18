@@ -1,14 +1,22 @@
 ﻿#include "GameScene.h"
 #include <engine_ui/Console.h>
+#include <engine_tier0/_Math.h>
 
 engine::CConVar mdl_name("mdl_name", "resources/model/sponza/sponza.obj");
 
+engine::CConVar r_fov("r_fov", "180");
+engine::CConVar r_drawdist("r_drawdist", "40.0");
+
 void hl2::CScene_Game::Start()
 {
+	ResolutionWH wh = this->GetWindow()->GetSize();
 	engine::MODEL_DESCRIPTOR mdldesc = {0};
-	mdldesc.Scale = 0.5f;
+	mdldesc.Scale = 1.0f;
 	m_Wall.emplace(*GetWindow()->GetGraphicalOutput(), _GetPath(mdl_name.GetString()), mdldesc);
-	GetWindow()->GetGraphicalOutput()->SetProjection(DirectX::XMMatrixPerspectiveLH(1.0f, 3.0f / 4.0f, 0.5f, 400.0f));
+
+	GetWindow()->GetGraphicalOutput()->SetProjection(
+		DirectX::XMMatrixPerspectiveLH(1.0f, 3.0f / 4.0f, 0.5f, r_drawdist)
+	);
 }
 
 void hl2::CScene_Game::End()
@@ -61,7 +69,7 @@ void hl2::CScene_Game::Render(float _Dt)
 		}
 	}
 
-	GetWindow()->GetGraphicalOutput()->SetCamera(m_Cam.GetMatrix());
+	GetWindow()->GetGraphicalOutput()->SetCamera(m_Cam);
 	m_Light.Bind(*GetWindow()->GetGraphicalOutput(), m_Cam.GetMatrix());
 
 	m_Wall->Draw(*wnd->GetGraphicalOutput());

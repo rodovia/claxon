@@ -3,7 +3,7 @@
 #include <engine_tier1/Surface.h>
 #include <engine_tier1/LightPoint.h>
 #include <engine_tier1/Camera.h>
-#include <engine_tier1/Model.h>
+#include <engine_tier1/render/Model.h>
 
 namespace hl2
 {
@@ -18,7 +18,7 @@ public:
 private:
 	engine::CCamera m_Cam;
 	std::optional<engine::CModel> m_Wall;
-	engine::CLightPoint m_Light{GetWindow()->Graphics()};
+	engine::CLightPoint m_Light{*GetWindow()->GetGraphicalOutput()};
 	hl2::CBasicTimer m_Timer;
 	bool m_ShowDemoWindow = true;
 

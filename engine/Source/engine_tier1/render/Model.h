@@ -3,10 +3,12 @@
 #include <engine_tier0/DLL.h>
 #include <engine_tier0/BaseBind.h>
 
+#include <engine_tier1/Camera.h>
+
 #include <optional>
 #include <assimp/material.h>
 #include <assimp/mesh.h>
-#include "dxprim/draw/BaseDraw.h"
+#include <engine_tier1/dxprim/draw/BaseDraw.h>
 #include <variant>
 #include <filesystem>
 
@@ -51,7 +53,7 @@ class CMesh : public CBase_Draw
 public:
 	CMesh(CGraphicalOutput& _Gfx, std::vector<std::shared_ptr<CBase_Bind>> _BindPtrs);
 	void Draw(CGraphicalOutput& _Gfx, DirectX::FXMMATRIX _AccumTransform) noexcept;
-	DirectX::XMMATRIX GetTransformMatrix() const noexcept override;
+	DirectX::XMMATRIX GetTransformMatrix(const CCamera&) const noexcept override;
 
 private:
 	mutable DirectX::XMFLOAT4X4 m_Transform;

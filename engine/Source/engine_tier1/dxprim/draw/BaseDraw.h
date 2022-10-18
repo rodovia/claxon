@@ -10,6 +10,8 @@
 #include <engine_tier1/GraphicalOutput.h>
 #include <DirectXMath.h>
 
+#include <engine_tier1/Camera.h>
+
 namespace engine
 {
 
@@ -23,7 +25,7 @@ public:
 protected:
 	void AddBind(std::shared_ptr<CBase_Bind> _Bind);
 public:
-	virtual DirectX::XMMATRIX GetTransformMatrix() const noexcept = 0;
+	virtual DirectX::XMMATRIX GetTransformMatrix(const CCamera&) const noexcept = 0;
 	virtual ~CBase_Draw() = default;
 private:
 	const CIndexBuffer* m_IndexBuffer = nullptr;

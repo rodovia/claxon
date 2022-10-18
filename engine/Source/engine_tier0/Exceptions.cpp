@@ -1,7 +1,34 @@
+#define _CRT_SECURE_NO_WARNINGS
 #include "Exceptions.h"
 #include <tier0lib/dxerr.h>
 #include <sstream>
 #include <malloc.h>
+
+void engine::FastFail(const char* _Msg, HWND _Wnd) noexcept
+{
+	/* Which one is safer:
+	*    - Copying _Msg or...
+	*    - casting constness away?
+	* Of course it is the second!!
+	*/
+
+	char* constness = const_cast<char*>(_Msg);
+	if (_Msg == nullptr)
+	{
+		constness = (char*)"FastFail was called.";
+	}
+
+	strcat(constness, "\n(Press cancel to debug)");
+	int ch = MessageBoxA(_Wnd, _Msg, "Engine error", MB_ICONERROR | MB_OKCANCEL | MB_TASKMODAL);
+	switch (ch)
+	{
+	case IDOK:
+		exit(0xA);
+	case IDCANCEL:
+		__debugbreak();
+		break;
+	}
+}
 
 engine::CBaseException::CBaseException(int line, const char* file)
 	: m_Line(line),

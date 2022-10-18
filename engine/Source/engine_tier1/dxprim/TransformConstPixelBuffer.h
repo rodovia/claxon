@@ -9,7 +9,7 @@ namespace engine
 class CTransformConstantPixelBuffer : public CTransformConstantBuffer
 {
 public:
-	CTransformConstantPixelBuffer(CGraphicalOutput& _Gfx, const CBase_Draw& _Parent, UINT _VS_Slot = 0u,
+	CTransformConstantPixelBuffer(CGraphicalOutput& _Gfx, const CBase_Draw* _Parent, UINT _VS_Slot = 0u,
 								  UINT _PS_Slot = 0u) noexcept;
 	void Bind(CGraphicalOutput& _Gfx) noexcept override;
 

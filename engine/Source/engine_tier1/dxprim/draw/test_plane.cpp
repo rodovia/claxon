@@ -8,37 +8,36 @@
 
 #include <engine_tier1/Surface.h>
 
-engine::CPlane::CPlane(CGraphicalOutput& _Gfx, float _Size)
+#define __hl2_repeat(_F) ((float*)({(float)_F, (float)_F, (float)_F, (float)_F}))
+
+
+engine::CPlane::CPlane(CGraphicalOutput& _Gfx, float _Size, DirectX::XMFLOAT4 _Color)
 {
+	m_Pmc.Color = _Color;
 	CIndexedTriangleList tl = CPrim_Plane::Make();
-	tl.Transform(DirectX::XMMatrixScaling(_Size, _Size, 1.0f));
+	tl.Transform(DirectX::XMMatrixScaling(_Size, _Size, _Size));
 	const std::string tag = "?plane$" + std::to_string(_Size);
 
 	this->AddBind(CCodex::Query<CVertexBuffer>(_Gfx, tag, tl.m_Vertices));
 	this->AddBind(CCodex::Query<CIndexBuffer>(_Gfx, tl.m_Indices, tag));
 
-	const std::string texBase = "resources/textures/urban_misc/";
-	this->AddBind(
-		CCodex::Query<CTexture>(_Gfx, _GETPATH(texBase + "brickwall.jpg")));
-	this->AddBind(CCodex::Query<CTexture>(
-		_Gfx, _GETPATH(texBase + "brickwall_normal.jpg"), 1u));
-	this->AddBind(CCodex::Query<CPixelShader>(
-		_Gfx, MAKE_SHADER_RESOURCE("PhongNormalMap_PS.cso")));
+	this->AddBind(CCodex::Query<CPixelShader>(_Gfx, MAKE_SHADER_RESOURCE("Texture_PS.cso")));
 
-	std::shared_ptr<CVertexShader> vs = CCodex::Query<CVertexShader>(
-		_Gfx, MAKE_SHADER_RESOURCE("Phong_VS.cso"));
+	std::shared_ptr<CVertexShader> vs = CCodex::Query<CVertexShader>(_Gfx, MAKE_SHADER_RESOURCE("Texture_VS.cso"));
 	ID3DBlob* blob = vs->GetBytecode();
 	this->AddBind(std::move(vs));
 
-	this->AddBind(
-		CCodex::Query<CInputLayout>(_Gfx, tl.m_Vertices.Layout(), blob));
-	auto buf = CCodex::Query<CConstantPixelBuffer<PSConstantBuffer>>(_Gfx, 10u);
+	this->AddBind(CCodex::Query<CInputLayout>(_Gfx, tl.m_Vertices.Layout(), blob));
+	auto buf = CCodex::Query<CConstantPixelBuffer<PSConstantBuffer>>(_Gfx, 1u);
 	buf->Update(_Gfx, m_Pmc);
 	this->AddBind(std::move(buf));
-	this->AddBind(CCodex::Query<CPrim_Topology>(
-		_Gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST));
+	this->AddBind(CCodex::Query<CTexture>(_Gfx, _GETPATH("resources/textures/cat.png")));
 
-	this->AddBind(std::make_shared<CTransformConstantPixelBuffer>(_Gfx, *this, 0u, 2u));
+	this->AddBind(CCodex::Query<CPrim_Topology>(_Gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST));
+	this->AddBind(CCodex::Query<CSampler>(_Gfx));
+	this->AddBind(std::make_shared<CTransformConstantBuffer>(_Gfx, this, 0u));
+	this->AddBind(CCodex::Query<engine::CBlender>(_Gfx, true, std::optional<std::array<float, 4>>({1.0f, 1.0f, 1.0f, 1.0f})));
+	this->AddBind(CCodex::Query<engine::CRasterizer>(_Gfx, true));
 }
 
 void engine::CPlane::SetPos(DirectX::XMFLOAT3 _Pos) noexcept
@@ -51,11 +50,16 @@ void engine::CPlane::SetRotation(DirectX::XMFLOAT3 _NewRot) noexcept
 	m_Rotation = _NewRot;
 }
 
-DirectX::XMMATRIX engine::CPlane::GetTransformMatrix() const noexcept
+DirectX::XMMATRIX engine::CPlane::GetTransformMatrix(const CCamera& _Cam) const noexcept
 {
+/*
 	return DirectX::XMMatrixRotationRollPitchYaw(m_Rotation.x, m_Rotation.y,
 												 m_Rotation.z)
 		   * DirectX::XMMatrixTranslation(m_Pos.x, m_Pos.y, m_Pos.z);
+		   */
+	engine::_Pair pr = _Cam.GetPitchYaw();
+	return DirectX::XMMatrixTranslation(m_Pos.x, m_Pos.y, m_Pos.z) * 
+		DirectX::XMMatrixRotationRollPitchYaw(pr.x, m_Rotation.y, m_Rotation.z);
 }
 
 void engine::CPlane::SpawnTestWindow(CGraphicalOutput& _Gfx) noexcept
@@ -73,14 +77,8 @@ void engine::CPlane::SpawnTestWindow(CGraphicalOutput& _Gfx) noexcept
 		ImGui::SliderAngle("Roll", &m_Rotation.z, -180.0f, 180.0f);
 
 		ImGui::Text("Shading");
-		bool changedInt = ImGui::SliderFloat(
-			"Specular Int.", &m_Pmc.SpecularIntensity, 0.0f, 100.0f);
-		bool changedPower = ImGui::SliderFloat(
-			"Specular Pwr.", &m_Pmc.SpecularPower, 0.0f, 100.0f);
-		bool normaMapState = m_Pmc.EnableNormalMap == TRUE;
-		bool cnd = ImGui::Checkbox("Enable Normal Map", &normaMapState);
-		m_Pmc.EnableNormalMap = normaMapState ? TRUE : FALSE;
-		if (changedInt || changedPower || cnd)
+		bool changedInt = ImGui::ColorEdit4("Color", &m_Pmc.Color.x);
+		if (changedInt)
 		{
 			CCodex::QueryExistent<engine::CConstantPixelBuffer<PSConstantBuffer>>()->Update(_Gfx, m_Pmc);
 		}

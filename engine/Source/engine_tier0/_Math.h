@@ -1,7 +1,3 @@
-// LEMBRETE AO CIDADÃO: O nome deste ficheiro seria "Math.h". Porém, devido a
-// limitações técnicas quanto à insensibilidade do Windows com caminhos de
-// caixa alta e caixa baixa, utilizou-se "_Math.h".
-
 #pragma once
 
 #include <math.h>
@@ -34,9 +30,15 @@ constexpr T Interpolate(const T& _Src, const T& _Dst, float _Alpha)
 	return _Src + (_Dst - _Src) * _Alpha;
 }
 
+// Despite the name, convert degrees to radians;
 template <class T> constexpr T ConvertRadiansToDegrees(T _Deg)
 {
 	return _Deg * PI / (T)180.0;
+}
+
+template <> constexpr float ConvertRadiansToDegrees(float _Deg)
+{
+	return _Deg * PI_f / 180.0f;
 }
 
 template <class _Ty, class _Ty_Ret = _Ty>

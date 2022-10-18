@@ -2,7 +2,7 @@
 #include <typeinfo>
 
 engine::CTransformConstantBuffer::CTransformConstantBuffer(
-	CGraphicalOutput& _Gfx, const CBase_Draw& _Parent, UINT _Slot)
+	CGraphicalOutput& _Gfx, const CBase_Draw* _Parent, UINT _Slot)
 	: m_Parent(_Parent)
 {
 	if (!m_VertBuffer)
@@ -24,7 +24,8 @@ void engine::CTransformConstantBuffer::UpdateBindInner(CGraphicalOutput& _Gfx, c
 
 engine::CTransformConstantBuffer::Transforms engine::CTransformConstantBuffer::GetTransforms(CGraphicalOutput& _Gfx) noexcept
 {
-	const auto modelView = m_Parent.GetTransformMatrix() * _Gfx.GetCamera();
+	const CCamera& cam = _Gfx.GetCamera();
+	const auto modelView = m_Parent->GetTransformMatrix(cam) * cam.GetMatrix();
 
 	return {
 		DirectX::XMMatrixTranspose(modelView),

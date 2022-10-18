@@ -16,6 +16,8 @@
 // Used in CWindow ctor
 #define WINDOW_STYLE WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU
 
+#pragma region CWindow::Class
+
 hl2::CWindow::Class hl2::CWindow::Class::s_WndClass;
 
 hl2::CWindow::Class::Class() noexcept
@@ -36,7 +38,13 @@ hl2::CWindow::Class::Class() noexcept
 	wc.lpszClassName = s_ClassName;
 	wc.lpszMenuName = nullptr;
 	wc.style = CS_OWNDC;
-	RegisterClassEx(&wc);
+	ATOM at;
+	if ((at = RegisterClassEx(&wc)) == 0 &&
+		GetModuleHandleA("renderdoc.dll") != nullptr)
+	{
+		std::string nm = std::to_string(at);
+		MessageBoxA(nullptr, nm.c_str(), "Yayayayayyyya", MB_OK);
+	}
 }
 
 hl2::CWindow::Class::~Class()
@@ -54,7 +62,7 @@ HINSTANCE hl2::CWindow::Class::Instance() noexcept
 	return s_WndClass.m_Instance;
 }
 
-// hl2::CWindow::Class ^^^^
+#pragma endregion
 
 static std::string StringDxFeatLevel(D3D_FEATURE_LEVEL _FeatLevel)
 {
@@ -83,7 +91,7 @@ static std::string StringDxFeatLevel(D3D_FEATURE_LEVEL _FeatLevel)
 	}
 }
 
-// hl2::CWindow vvvv
+#pragma region CWindow
 
 hl2::CWindow::CWindow(int width, int height, const wchar_t* name, ImGuiContext* ctx, bool subwnd) 
 	: m_IsSubwindow(subwnd),
@@ -101,6 +109,11 @@ hl2::CWindow::CWindow(int width, int height, const wchar_t* name, ImGuiContext* 
 	if (AdjustWindowRect(&wr, WINDOW_STYLE, FALSE) == 0)
 	{
 		throw CREATE_WINDOWEXC(GetLastError());
+	}
+	const wchar_t* kls = Class::Name();
+	if (GetModuleHandleA("renderdoc.dll") != nullptr)
+	{
+		kls = nullptr;
 	}
 	m_hWnd = CreateWindow(
 		Class::Name(),
@@ -144,15 +157,6 @@ void hl2::CWindow::SetIcon(HICON icon, HICON iconSm)
 		return;
 	}
 	SendMessage(m_hWnd, WM_SETICON, ICON_SMALL, (LPARAM)icon);
-}
-
-engine::CGraphicalOutput& hl2::CWindow::Graphics()
-{
-	if (!m_Gfx)
-	{
-		throw CREATE_NOGFX_EXC();
-	}
-	return *m_Gfx;
 }
 
 std::shared_ptr<engine::CGraphicalOutput> hl2::CWindow::GetGraphicalOutput() const noexcept
@@ -432,7 +436,14 @@ void hl2::CWindow::FreeCursor()
 	ClipCursor(nullptr);
 }
 
-// hl2::CWindowException vvvvv
+ResolutionWH hl2::CWindow::GetSize() const noexcept
+{
+	return { m_Width, m_Height };
+}
+
+#pragma endregion
+
+#pragma region CWindowException
 
 hl2::CWindowException::CWindowException(int line, const char* file, HRESULT hr)
 	: hl2::CBaseException(line, file),
@@ -482,3 +493,5 @@ std::string hl2::CWindowException::TranslateErrorCode(HRESULT hr) noexcept
 	LocalFree(pMsgBuf);
 	return errorString;
 }
+
+#pragma endregion

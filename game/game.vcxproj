@@ -75,7 +75,7 @@
     <OutDir>$(SolutionDir)Output\$(Configuration)\$(Platform)\</OutDir>
     <IntDir>$(SolutionDir)Output\$(Configuration)\$(Platform)\$(ProjectName)</IntDir>
     <TargetName>hl2</TargetName>
-    <IncludePath>$(SolutionDir)3rdparty\libconfig\include\libconfig;$(solutiondir)gamepaths\Source;$(SolutionDir)3rdparty\libconfig\include;$(SolutionDir)tier0\Source;$(ProjectDir)Resources;$(SolutionDir)client\Source;$(SolutionDir)engine\Source;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
+    <IncludePath>$(solutiondir)3rdparty\irrklang\include;$(SolutionDir)3rdparty\libconfig\include\libconfig;$(solutiondir)gamepaths\Source;$(SolutionDir)3rdparty\libconfig\include;$(SolutionDir)tier0\Source;$(ProjectDir)Resources;$(SolutionDir)client\Source;$(SolutionDir)engine\Source;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
     <LibraryPath>$(solutiondir)3rdparty\assimp\lib\$(Configuration);$(solutiondir)3rdparty\libconfig\lib\$(configuration);$(OutDir);$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86)</LibraryPath>
     <CopyCppRuntimeToOutputDir>false</CopyCppRuntimeToOutputDir>
     <ExternalIncludePath>$(solutiondir)3rdparty\libconfig\include\libconfig;$(solutiondir)3rdparty\assimp\include;$(VC_IncludePath);$(WindowsSDK_IncludePath);</ExternalIncludePath>
@@ -85,7 +85,7 @@
     <OutDir>$(SolutionDir)Output\$(Configuration)\$(Platform)\</OutDir>
     <IntDir>$(SolutionDir)Output\$(Configuration)\$(Platform)\$(ProjectName)</IntDir>
     <TargetName>claxon</TargetName>
-    <IncludePath>$(SolutionDir)3rdparty\libconfig\include\libconfig;$(solutiondir)gamepaths\Source;$(solutiondir)libconfig;$(SolutionDir)tier0\Source;$(ProjectDir)Resources;$(SolutionDir)client\Source;$(SolutionDir)engine\Source;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
+    <IncludePath>$(solutiondir)3rdparty\irrklang\include;$(SolutionDir)3rdparty\libconfig\include\libconfig;$(solutiondir)gamepaths\Source;$(solutiondir)libconfig;$(SolutionDir)tier0\Source;$(ProjectDir)Resources;$(SolutionDir)client\Source;$(SolutionDir)engine\Source;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
     <LibraryPath>$(solutiondir)3rdparty\assimp\lib\$(Configuration);$(solutiondir)3rdparty\libconfig\lib\$(configuration);$(OutDir);$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86)</LibraryPath>
     <CopyCppRuntimeToOutputDir>true</CopyCppRuntimeToOutputDir>
     <ExternalIncludePath>$(solutiondir)3rdparty\libconfig\include\libconfig;$(solutiondir)3rdparty\assimp\include;$(VC_IncludePath);$(WindowsSDK_IncludePath);</ExternalIncludePath>
@@ -95,7 +95,7 @@
     <OutDir>$(SolutionDir)Output\$(Configuration)\$(Platform)\</OutDir>
     <IntDir>$(SolutionDir)Output\$(Configuration)\$(Platform)\$(ProjectName)</IntDir>
     <TargetName>hl2</TargetName>
-    <IncludePath>$(SolutionDir)3rdparty\libconfig\include\libconfig;$(solutiondir)gamepaths\Source;$(SolutionDir)3rdparty\libconfig\include;$(SolutionDir)tier0\Source;$(ProjectDir)Resources;$(SolutionDir)client\Source;$(SolutionDir)engine\Source;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
+    <IncludePath>$(solutiondir)3rdparty\irrklang\include;$(SolutionDir)3rdparty\libconfig\include\libconfig;$(solutiondir)gamepaths\Source;$(SolutionDir)3rdparty\libconfig\include;$(SolutionDir)tier0\Source;$(ProjectDir)Resources;$(SolutionDir)client\Source;$(SolutionDir)engine\Source;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
     <LibraryPath>$(solutiondir)3rdparty\assimp\lib\$(Configuration);$(solutiondir)3rdparty\libconfig\lib\$(configuration);$(OutDir);$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)</LibraryPath>
     <CopyCppRuntimeToOutputDir>false</CopyCppRuntimeToOutputDir>
     <ExternalIncludePath>$(solutiondir)3rdparty\libconfig\include\libconfig;$(solutiondir)3rdparty\assimp\include;$(VC_IncludePath);$(WindowsSDK_IncludePath);</ExternalIncludePath>
@@ -105,7 +105,7 @@
     <OutDir>$(SolutionDir)Output\$(Configuration)\$(Platform)\</OutDir>
     <IntDir>$(SolutionDir)Output\$(Configuration)\$(Platform)\$(ProjectName)</IntDir>
     <TargetName>claxon</TargetName>
-    <IncludePath>$(SolutionDir)3rdparty\libconfig\include\libconfig;$(solutiondir)gamepaths\Source;$(solutiondir)libconfig;$(SolutionDir)tier0\Source;$(ProjectDir)Resources;$(SolutionDir)client\Source;$(SolutionDir)engine\Source;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
+    <IncludePath>$(solutiondir)3rdparty\irrklang\include;$(SolutionDir)3rdparty\libconfig\include\libconfig;$(solutiondir)gamepaths\Source;$(solutiondir)libconfig;$(SolutionDir)tier0\Source;$(ProjectDir)Resources;$(SolutionDir)client\Source;$(SolutionDir)engine\Source;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
     <LibraryPath>$(solutiondir)3rdparty\assimp\lib\$(Configuration);$(solutiondir)3rdparty\libconfig\lib\$(configuration);$(OutDir);$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)</LibraryPath>
     <CopyCppRuntimeToOutputDir>true</CopyCppRuntimeToOutputDir>
     <ExternalIncludePath>$(solutiondir)3rdparty\libconfig\include\libconfig;$(solutiondir)3rdparty\assimp\include;$(VC_IncludePath);$(WindowsSDK_IncludePath);</ExternalIncludePath>

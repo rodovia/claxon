@@ -16,6 +16,11 @@
 
 #define CREATE_WINDOWEXC(R) hl2::CWindowException(__LINE__, __FILE__, (R))
 
+struct ResolutionWH
+{
+	int Width, Height;
+};
+
 namespace hl2
 {
 
@@ -63,8 +68,9 @@ public:
 	CWindow& operator=(const CWindow&) = delete;
 	void SetTitle(std::wstring _NewTitle);
 	void SetIcon(HICON icon, HICON iconSm = nullptr);
-	[[deprecated]] [[nodiscard]] engine::CGraphicalOutput& Graphics();
 	[[nodiscard]] std::shared_ptr<engine::CGraphicalOutput> GetGraphicalOutput() const noexcept;
+	
+	[[nodiscard]] ResolutionWH GetSize() const noexcept;
 
 	static std::optional<WPARAM> ProcessMessage();
 	void ToggleCursorDisplay(bool _AlsoConfine = true);
