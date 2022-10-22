@@ -23,7 +23,7 @@ engine::CPlane::CPlane(CGraphicalOutput& _Gfx, float _Size, DirectX::XMFLOAT4 _C
 
 	this->AddBind(CCodex::Query<CPixelShader>(_Gfx, MAKE_SHADER_RESOURCE("Texture_PS.cso")));
 
-	std::shared_ptr<CVertexShader> vs = CCodex::Query<CVertexShader>(_Gfx, MAKE_SHADER_RESOURCE("Texture_VS.cso"));
+	std::shared_ptr<CVertexShader> vs = CCodex::Query<CVertexShader>(_Gfx, MAKE_SHADER_RESOURCE("Sprite_VS.cso"));
 	ID3DBlob* blob = vs->GetBytecode();
 	this->AddBind(std::move(vs));
 
@@ -59,7 +59,7 @@ DirectX::XMMATRIX engine::CPlane::GetTransformMatrix(const CCamera& _Cam) const 
 		   */
 	engine::_Pair pr = _Cam.GetPitchYaw();
 	return DirectX::XMMatrixTranslation(m_Pos.x, m_Pos.y, m_Pos.z) * 
-		DirectX::XMMatrixRotationRollPitchYaw(pr.x, m_Rotation.y, m_Rotation.z);
+		DirectX::XMMatrixRotationRollPitchYaw(pr.x, pr.y, m_Rotation.z);
 }
 
 void engine::CPlane::SpawnTestWindow(CGraphicalOutput& _Gfx) noexcept

@@ -38,13 +38,7 @@ hl2::CWindow::Class::Class() noexcept
 	wc.lpszClassName = s_ClassName;
 	wc.lpszMenuName = nullptr;
 	wc.style = CS_OWNDC;
-	ATOM at;
-	if ((at = RegisterClassEx(&wc)) == 0 &&
-		GetModuleHandleA("renderdoc.dll") != nullptr)
-	{
-		std::string nm = std::to_string(at);
-		MessageBoxA(nullptr, nm.c_str(), "Yayayayayyyya", MB_OK);
-	}
+	RegisterClassEx(&wc);
 }
 
 hl2::CWindow::Class::~Class()
@@ -111,10 +105,6 @@ hl2::CWindow::CWindow(int width, int height, const wchar_t* name, ImGuiContext* 
 		throw CREATE_WINDOWEXC(GetLastError());
 	}
 	const wchar_t* kls = Class::Name();
-	if (GetModuleHandleA("renderdoc.dll") != nullptr)
-	{
-		kls = nullptr;
-	}
 	m_hWnd = CreateWindow(
 		Class::Name(),
 		name,

@@ -1,9 +1,9 @@
 #pragma once
 
 #include <engine_tier0/DLL.h>
-#include <engine_tier1/dxprim/draw/SolidSphere.h>
 #include "dxprim/ConstantBuffer.h"
 #include "GraphicalOutput.h"
+#include <engine_tier1/render/Sprite.h>
 
 namespace engine
 {
@@ -27,7 +27,7 @@ private:
 	};
 
 	CBLightPoint m_ConstBufferData;
-	mutable engine::CSolidSphere m_Mesh;
+	mutable engine::CSprite m_Sprite;
 	mutable CConstantPixelBuffer<CBLightPoint> m_Buf;
 };
 

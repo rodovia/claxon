@@ -3,6 +3,7 @@
 #include "FrogScene.h"
 #include <engine_ui/Console.h>
 #include <tier1/Window.hh>
+#include <engine_tier1/render/Sprite.h>
 
 extern engine::CConVar r_drawdist;
 
@@ -17,10 +18,11 @@ void hl2::CFrogScene::Start()
 	);
 	engine::SPRITE_DESCRIPTOR dc;
 	dc.InitialPos = { 0.0f, 0.0f, 0.0f };
+
+	m_Light.emplace(*ptr2);
+
 	m_Spr.emplace(*ptr2, _GETPATH("resources/textures/jumpin.png"), dc);
 	m_Mdl.emplace(*ptr2, _GETPATH("resources/model/city/city_triangulated.obj"));
-	m_Sph.emplace(*ptr2.get(), 1.0f, DirectX::XMFLOAT4(0.3f, 0.3f, 1.0f, 1.0f));
-	m_Sph->SetPos(DirectX::XMFLOAT3(0,0,0));
 }
 
 void hl2::CFrogScene::Render(float _Dt)
@@ -69,8 +71,11 @@ void hl2::CFrogScene::Render(float _Dt)
 		wnd->m_Mouse.ToggleRawCapture();
 	}
 
+	m_Light->Bind(*wnd->GetGraphicalOutput(), m_Cam.GetMatrix());
+
 	m_Mdl->Draw(*wnd->GetGraphicalOutput());
-	m_Sph->Draw(*wnd->GetGraphicalOutput());
-	m_Sph->SpawnTestWindow(*wnd->GetGraphicalOutput());
+	m_Spr->Draw(*wnd->GetGraphicalOutput());
+	m_Light->Draw(*wnd->GetGraphicalOutput());
+	m_Light->SpawnControlWindow();
 	m_Cam.SpawnControlWindow();
 }

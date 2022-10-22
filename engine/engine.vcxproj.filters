@@ -1,20 +1,21 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <FxCompile Include="Shader\phong\PhongNormalMapOS_PS.hlsl" />
-    <FxCompile Include="Shader\phong\PhongNormalMap_PS.hlsl" />
-    <FxCompile Include="Shader\phong\PhongNormalMap_VS.hlsl" />
-    <FxCompile Include="Shader\phong\Phong_PS.hlsl" />
-    <FxCompile Include="Shader\phong\Phong_VS.hlsl" />
-    <FxCompile Include="Shader\SolidTexture_PS.hlsl" />
-    <FxCompile Include="Shader\Solid_PS.hlsl" />
-    <FxCompile Include="Shader\Solid_VS.hlsl" />
-    <FxCompile Include="Shader\phong\PhongSpecular_PS.hlsl" />
-    <FxCompile Include="Shader\Texture_PS.hlsl" />
-    <FxCompile Include="Shader\Texture_VS.hlsl" />
-    <FxCompile Include="Shader\SolidTexture_VS.hlsl" />
-    <FxCompile Include="Shader\phong\PhongSpecular_SolidColor_PS.hlsl" />
-    <FxCompile Include="Shader\phong\PhongEverything_PS.hlsl" />
+    <FxCompile Include="Source\shadersystem\phong\PhongNormalMapOS_PS.hlsl" />
+    <FxCompile Include="Source\shadersystem\phong\PhongNormalMap_PS.hlsl" />
+    <FxCompile Include="Source\shadersystem\phong\PhongNormalMap_VS.hlsl" />
+    <FxCompile Include="Source\shadersystem\phong\Phong_PS.hlsl" />
+    <FxCompile Include="Source\shadersystem\phong\Phong_VS.hlsl" />
+    <FxCompile Include="Source\shadersystem\SolidTexture_PS.hlsl" />
+    <FxCompile Include="Source\shadersystem\Solid_VS.hlsl" />
+    <FxCompile Include="Source\shadersystem\phong\PhongSpecular_PS.hlsl" />
+    <FxCompile Include="Source\shadersystem\Texture_PS.hlsl" />
+    <FxCompile Include="Source\shadersystem\Texture_VS.hlsl" />
+    <FxCompile Include="Source\shadersystem\SolidTexture_VS.hlsl" />
+    <FxCompile Include="Source\shadersystem\phong\PhongSpecular_SolidColor_PS.hlsl" />
+    <FxCompile Include="Source\shadersystem\phong\PhongEverything_PS.hlsl" />
+    <FxCompile Include="Source\shadersystem\Sprite_VS.hlsl" />
+    <FxCompile Include="Source\shadersystem\Solid_PS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\engine_audio\sound_outp.cpp" />
@@ -109,6 +110,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include=".clang-format" />
-    <None Include="Shader\phong\PhongBase.hlsli" />
+    <None Include="Source\shadersystem\phong\PhongBase.hlsli" />
   </ItemGroup>
 </Project>

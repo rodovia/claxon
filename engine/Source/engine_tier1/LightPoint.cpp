@@ -2,7 +2,7 @@
 #include <engine_tier1/Surface.h>
 
 engine::CLightPoint::CLightPoint(engine::CGraphicalOutput& _Gfx, float _Radius)
-	: m_Mesh(_Gfx, _Radius),
+	: m_Sprite(_Gfx, _GETPATH("resources/textures/light.png"), {}),
 	  m_Buf(_Gfx)
 {
 	this->Reset();
@@ -51,8 +51,8 @@ void engine::CLightPoint::Reset() noexcept
 
 void engine::CLightPoint::Draw(CGraphicalOutput& _Gfx) noexcept
 {
-	m_Mesh.SetPos(m_ConstBufferData.Position);
-	m_Mesh.Draw(_Gfx);
+	m_Sprite.SetPos(m_ConstBufferData.Position);
+	m_Sprite.Draw(_Gfx);
 }
 
 void engine::CLightPoint::Bind(CGraphicalOutput& _Gfx, DirectX::FXMMATRIX _View) noexcept

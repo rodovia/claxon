@@ -7,6 +7,7 @@
 #include <tier0/Timer.h>
 #include <engine_tier1/Camera.h>
 #include <MountedPaths.h>
+#include <engine_tier1/LightPoint.h>
 #include <optional>
 
 namespace hl2
@@ -24,7 +25,7 @@ private:
 	std::optional<engine::CModel> m_Mdl;
 	engine::CCamera m_Cam;
 	hl2::CBasicTimer m_Timer;
-	std::optional<engine::CPlane> m_Sph;
+	std::optional<engine::CLightPoint> m_Light;
 
 protected:
 	void Render(float _Dt) override;

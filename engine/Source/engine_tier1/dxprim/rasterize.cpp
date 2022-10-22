@@ -23,7 +23,8 @@ std::string engine::CRasterizer::GenerateDiscriminator() noexcept
 	return this->Discriminate(m_RenderBack);
 }
 
-std::string engine::CRasterizer::Discriminate(bool) noexcept
+std::string engine::CRasterizer::Discriminate(bool _RenderBack) noexcept
 {
-	return typeid(engine::CRasterizer).name();
+	std::string fmt = typeid(engine::CRasterizer).name();
+	return fmt + (_RenderBack ? "_R" : "_");
 }

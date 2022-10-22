@@ -2,6 +2,8 @@
 // Sprite.h -- A 2D texture inside a 3D world.
 // =============
 
+#pragma once
+
 #include <string>
 
 #include <engine_tier0/DLL.h>
@@ -26,6 +28,9 @@ public:
 
 	DirectX::XMMATRIX GetTransformMatrix(const CCamera&) const noexcept override;
 	void SpawnControlWindow() noexcept;
+	void SetPos(DirectX::XMFLOAT3) noexcept;
+	void SetRotation(DirectX::XMFLOAT3) noexcept;
+
 private:
 	struct
 	{
