@@ -78,7 +78,7 @@
     <IncludePath>$(solutiondir)3rdparty\irrklang\include;$(SolutionDir)3rdparty\libconfig\include\libconfig;$(solutiondir)gamepaths\Source;$(SolutionDir)3rdparty\libconfig\include;$(SolutionDir)tier0\Source;$(ProjectDir)Resources;$(SolutionDir)client\Source;$(SolutionDir)engine\Source;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
     <LibraryPath>$(solutiondir)3rdparty\assimp\lib\$(Configuration);$(solutiondir)3rdparty\libconfig\lib\$(configuration);$(OutDir);$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86)</LibraryPath>
     <CopyCppRuntimeToOutputDir>false</CopyCppRuntimeToOutputDir>
-    <ExternalIncludePath>$(solutiondir)3rdparty\libconfig\include\libconfig;$(solutiondir)3rdparty\assimp\include;$(VC_IncludePath);$(WindowsSDK_IncludePath);</ExternalIncludePath>
+    <ExternalIncludePath>$(solutiondir)3rdparty\stb;$(solutiondir)3rdparty\libconfig\include\libconfig;$(solutiondir)3rdparty\assimp\include;$(VC_IncludePath);$(WindowsSDK_IncludePath);</ExternalIncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -88,7 +88,7 @@
     <IncludePath>$(solutiondir)3rdparty\irrklang\include;$(SolutionDir)3rdparty\libconfig\include\libconfig;$(solutiondir)gamepaths\Source;$(solutiondir)libconfig;$(SolutionDir)tier0\Source;$(ProjectDir)Resources;$(SolutionDir)client\Source;$(SolutionDir)engine\Source;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
     <LibraryPath>$(solutiondir)3rdparty\assimp\lib\$(Configuration);$(solutiondir)3rdparty\libconfig\lib\$(configuration);$(OutDir);$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86)</LibraryPath>
     <CopyCppRuntimeToOutputDir>true</CopyCppRuntimeToOutputDir>
-    <ExternalIncludePath>$(solutiondir)3rdparty\libconfig\include\libconfig;$(solutiondir)3rdparty\assimp\include;$(VC_IncludePath);$(WindowsSDK_IncludePath);</ExternalIncludePath>
+    <ExternalIncludePath>$(solutiondir)3rdparty\stb;$(solutiondir)3rdparty\libconfig\include\libconfig;$(solutiondir)3rdparty\assimp\include;$(VC_IncludePath);$(WindowsSDK_IncludePath);</ExternalIncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
@@ -98,7 +98,7 @@
     <IncludePath>$(solutiondir)3rdparty\irrklang\include;$(SolutionDir)3rdparty\libconfig\include\libconfig;$(solutiondir)gamepaths\Source;$(SolutionDir)3rdparty\libconfig\include;$(SolutionDir)tier0\Source;$(ProjectDir)Resources;$(SolutionDir)client\Source;$(SolutionDir)engine\Source;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
     <LibraryPath>$(solutiondir)3rdparty\assimp\lib\$(Configuration);$(solutiondir)3rdparty\libconfig\lib\$(configuration);$(OutDir);$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)</LibraryPath>
     <CopyCppRuntimeToOutputDir>false</CopyCppRuntimeToOutputDir>
-    <ExternalIncludePath>$(solutiondir)3rdparty\libconfig\include\libconfig;$(solutiondir)3rdparty\assimp\include;$(VC_IncludePath);$(WindowsSDK_IncludePath);</ExternalIncludePath>
+    <ExternalIncludePath>$(solutiondir)3rdparty\stb;$(solutiondir)3rdparty\libconfig\include\libconfig;$(solutiondir)3rdparty\assimp\include;$(VC_IncludePath);$(WindowsSDK_IncludePath);</ExternalIncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
@@ -108,7 +108,7 @@
     <IncludePath>$(solutiondir)3rdparty\irrklang\include;$(SolutionDir)3rdparty\libconfig\include\libconfig;$(solutiondir)gamepaths\Source;$(solutiondir)libconfig;$(SolutionDir)tier0\Source;$(ProjectDir)Resources;$(SolutionDir)client\Source;$(SolutionDir)engine\Source;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
     <LibraryPath>$(solutiondir)3rdparty\assimp\lib\$(Configuration);$(solutiondir)3rdparty\libconfig\lib\$(configuration);$(OutDir);$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)</LibraryPath>
     <CopyCppRuntimeToOutputDir>true</CopyCppRuntimeToOutputDir>
-    <ExternalIncludePath>$(solutiondir)3rdparty\libconfig\include\libconfig;$(solutiondir)3rdparty\assimp\include;$(VC_IncludePath);$(WindowsSDK_IncludePath);</ExternalIncludePath>
+    <ExternalIncludePath>$(solutiondir)3rdparty\stb;$(solutiondir)3rdparty\libconfig\include\libconfig;$(solutiondir)3rdparty\assimp\include;$(VC_IncludePath);$(WindowsSDK_IncludePath);</ExternalIncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

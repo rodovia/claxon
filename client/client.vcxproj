@@ -75,36 +75,40 @@
     <TargetName>client</TargetName>
     <OutDir>$(SolutionDir)Output\$(Configuration)\$(Platform)\</OutDir>
     <IntDir>$(SolutionDir)Output\$(Configuration)\$(Platform)\$(ProjectName)\</IntDir>
-    <IncludePath>$(solutiondir)3rdparty\irrklang\include;$(solutiondir)3rdparty\assimp\include;$(solutiondir)3rdparty\libconfig\include\libconfig;$(solutiondir)tier0\Source;$(solutiondir)gamepaths\Source;$(ProjectDir)Resource;$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)tier0\Source;$(SolutionDir)engine\Source;$(ProjectDir)Source</IncludePath>
+    <IncludePath>$(solutiondir)3rdparty\libpng;$(solutiondir)3rdparty\tga;$(solutiondir)3rdparty\irrklang\include;$(solutiondir)3rdparty\assimp\include;$(solutiondir)3rdparty\libconfig\include\libconfig;$(solutiondir)tier0\Source;$(solutiondir)gamepaths\Source;$(ProjectDir)Resource;$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)tier0\Source;$(SolutionDir)engine\Source;$(ProjectDir)Source</IncludePath>
     <PublicIncludeDirectories>$(ProjectDir)Source</PublicIncludeDirectories>
     <LibraryPath>$(solutiondir)3rdparty\assimp\lib\$(Configuration);$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);$(OutDir)</LibraryPath>
+    <ExternalIncludePath>$(solutiondir)3rdparty\stb;$(VC_IncludePath);$(WindowsSDK_IncludePath);</ExternalIncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <TargetName>client</TargetName>
     <OutDir>$(SolutionDir)Output\$(Configuration)\$(Platform)\</OutDir>
     <IntDir>$(SolutionDir)Output\$(Configuration)\$(Platform)\$(ProjectName)\</IntDir>
-    <IncludePath>$(solutiondir)3rdparty\irrklang\include;$(solutiondir)3rdparty\assimp\include;$(solutiondir)3rdparty\libconfig\include\libconfig;$(solutiondir)tier0\Source;$(solutiondir)gamepaths\Source;$(ProjectDir)Resource;$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)tier0\Source;$(SolutionDir)engine\Source;$(ProjectDir)Source</IncludePath>
+    <IncludePath>$(solutiondir)3rdparty\libpng;$(solutiondir)3rdparty\tga;$(solutiondir)3rdparty\irrklang\include;$(solutiondir)3rdparty\assimp\include;$(solutiondir)3rdparty\libconfig\include\libconfig;$(solutiondir)tier0\Source;$(solutiondir)gamepaths\Source;$(ProjectDir)Resource;$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)tier0\Source;$(SolutionDir)engine\Source;$(ProjectDir)Source</IncludePath>
     <PublicIncludeDirectories>$(ProjectDir)Source</PublicIncludeDirectories>
     <LibraryPath>$(solutiondir)3rdparty\assimp\lib\$(Configuration);$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);$(OutDir)</LibraryPath>
+    <ExternalIncludePath>$(solutiondir)3rdparty\stb;$(VC_IncludePath);$(WindowsSDK_IncludePath);</ExternalIncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <TargetName>client</TargetName>
     <OutDir>$(SolutionDir)Output\$(Configuration)\$(Platform)\</OutDir>
     <IntDir>$(SolutionDir)Output\$(Configuration)\$(Platform)\$(ProjectName)\</IntDir>
-    <IncludePath>$(solutiondir)3rdparty\irrklang\include;$(solutiondir)3rdparty\assimp\include;$(solutiondir)3rdparty\libconfig\include\libconfig;$(solutiondir)tier0\Source;$(solutiondir)gamepaths\Source;$(ProjectDir)Resource;$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)tier0\Source;$(SolutionDir)engine\Source;$(ProjectDir)Source</IncludePath>
+    <IncludePath>$(solutiondir)3rdparty\libpng;$(solutiondir)3rdparty\tga;$(solutiondir)3rdparty\irrklang\include;$(solutiondir)3rdparty\assimp\include;$(solutiondir)3rdparty\libconfig\include\libconfig;$(solutiondir)tier0\Source;$(solutiondir)gamepaths\Source;$(ProjectDir)Resource;$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)tier0\Source;$(SolutionDir)engine\Source;$(ProjectDir)Source</IncludePath>
     <PublicIncludeDirectories>$(ProjectDir)Source</PublicIncludeDirectories>
     <LibraryPath>$(solutiondir)3rdparty\assimp\lib\$(Configuration);$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(OutDir)</LibraryPath>
+    <ExternalIncludePath>$(solutiondir)3rdparty\stb;$(VC_IncludePath);$(WindowsSDK_IncludePath);</ExternalIncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <TargetName>client</TargetName>
     <OutDir>$(SolutionDir)Output\$(Configuration)\$(Platform)\</OutDir>
     <IntDir>$(SolutionDir)Output\$(Configuration)\$(Platform)\$(ProjectName)\</IntDir>
-    <IncludePath>$(solutiondir)3rdparty\irrklang\include;$(solutiondir)3rdparty\assimp\include;$(solutiondir)3rdparty\libconfig\include\libconfig;$(solutiondir)tier0\Source;$(solutiondir)gamepaths\Source;$(ProjectDir)Resource;$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)tier0\Source;$(SolutionDir)engine\Source;$(ProjectDir)Source</IncludePath>
+    <IncludePath>$(solutiondir)3rdparty\libpng;$(solutiondir)3rdparty\tga;$(solutiondir)3rdparty\irrklang\include;$(solutiondir)3rdparty\assimp\include;$(solutiondir)3rdparty\libconfig\include\libconfig;$(solutiondir)tier0\Source;$(solutiondir)gamepaths\Source;$(ProjectDir)Resource;$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)tier0\Source;$(SolutionDir)engine\Source;$(ProjectDir)Source</IncludePath>
     <PublicIncludeDirectories>$(ProjectDir)Source</PublicIncludeDirectories>
     <LibraryPath>$(solutiondir)3rdparty\assimp\lib\$(Configuration);$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(OutDir)</LibraryPath>
+    <ExternalIncludePath>$(solutiondir)3rdparty\stb;$(VC_IncludePath);$(WindowsSDK_IncludePath);</ExternalIncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

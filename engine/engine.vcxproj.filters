@@ -55,6 +55,10 @@
     <ClCompile Include="Source\engine_tier1\render\Model.cpp" />
     <ClCompile Include="Source\engine_tier1\render\sprite.cpp" />
     <ClCompile Include="Source\engine_tier1\dxprim\rasterize.cpp" />
+    <ClCompile Include="Source\engine_tier1\path.cpp" />
+    <ClCompile Include="Source\engine_tier1\imgld\png_impl.cpp" />
+    <ClCompile Include="Source\engine_tier1\imgld\load.cpp" />
+    <ClCompile Include="Source\engine_tier1\imgld\tga_impl.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\engine_audio\SoundOutput.h" />
@@ -107,6 +111,9 @@
     <ClInclude Include="Source\engine_tier1\render\Model.h" />
     <ClInclude Include="Source\engine_tier1\render\Sprite.h" />
     <ClInclude Include="Source\engine_tier1\dxprim\Rasterizer.h" />
+    <ClInclude Include="Source\engine_tier1\Path.h" />
+    <ClInclude Include="Source\engine_tier1\imgld\Image.h" />
+    <ClInclude Include="Source\engine_tier1\imgld\Color.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".clang-format" />

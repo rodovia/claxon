@@ -78,39 +78,39 @@
     <OutDir>$(SolutionDir)Output\$(Configuration)\$(Platform)\</OutDir>
     <IntDir>$(SolutionDir)Output\$(Configuration)\$(Platform)\$(ProjectName)\</IntDir>
     <IncludePath>$(projectdir)Source;$(solutiondir)gamepaths\Source;$(solutiondir)tier0\Source;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
-    <LibraryPath>$(solutiondir)3rdparty\irrklang;$(solutiondir)3rdparty\assimp\lib\$(Configuration);$(outdir);$(solutiondir)3rdparty\libconfig\lib\$(configuration);$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86)</LibraryPath>
+    <LibraryPath>$(solutiondir)3rdparty\tga;$(solutiondir)3rdparty\spng;$(solutiondir)3rdparty\irrklang;$(solutiondir)3rdparty\assimp\lib\$(Configuration);$(outdir);$(solutiondir)3rdparty\libconfig\lib\$(configuration);$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86)</LibraryPath>
     <PublicIncludeDirectories>$(ProjectDir)Source</PublicIncludeDirectories>
-    <ExternalIncludePath>$(solutiondir)3rdparty\irrklang\include;$(solutiondir)3rdparty\libconfig\include\libconfig;$(solutiondir)3rdparty\assimp\include;$(VC_IncludePath);$(WindowsSDK_IncludePath);</ExternalIncludePath>
+    <ExternalIncludePath>$(solutiondir)3rdparty\stb;$(solutiondir)3rdparty\tga;$(solutiondir)3rdparty\spng;$(solutiondir)3rdparty\irrklang\include;$(solutiondir)3rdparty\libconfig\include\libconfig;$(solutiondir)3rdparty\assimp\include;$(VC_IncludePath);$(WindowsSDK_IncludePath)</ExternalIncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>$(SolutionDir)Output\$(Configuration)\$(Platform)\</OutDir>
     <IntDir>$(SolutionDir)Output\$(Configuration)\$(Platform)\$(ProjectName)\</IntDir>
     <IncludePath>$(projectdir)Source;$(solutiondir)gamepaths\Source;$(solutiondir)tier0\Source;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
-    <LibraryPath>$(solutiondir)3rdparty\irrklang;$(solutiondir)3rdparty\assimp\lib\$(Configuration);$(outdir);$(solutiondir)3rdparty\libconfig\lib\$(configuration);$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86)</LibraryPath>
+    <LibraryPath>$(solutiondir)3rdparty\tga;$(solutiondir)3rdparty\spng;$(solutiondir)3rdparty\irrklang;$(solutiondir)3rdparty\assimp\lib\$(Configuration);$(outdir);$(solutiondir)3rdparty\libconfig\lib\$(configuration);$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86)</LibraryPath>
     <PublicIncludeDirectories>$(ProjectDir)Source</PublicIncludeDirectories>
-    <ExternalIncludePath>$(solutiondir)3rdparty\irrklang\include;$(solutiondir)3rdparty\libconfig\include\libconfig;$(solutiondir)3rdparty\assimp\include;$(VC_IncludePath);$(WindowsSDK_IncludePath);</ExternalIncludePath>
+    <ExternalIncludePath>$(solutiondir)3rdparty\stb;$(solutiondir)3rdparty\tga;$(solutiondir)3rdparty\spng;$(solutiondir)3rdparty\irrklang\include;$(solutiondir)3rdparty\libconfig\include\libconfig;$(solutiondir)3rdparty\assimp\include;$(VC_IncludePath);$(WindowsSDK_IncludePath)</ExternalIncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(SolutionDir)Output\$(Configuration)\$(Platform)\</OutDir>
     <IntDir>$(SolutionDir)Output\$(Configuration)\$(Platform)\$(ProjectName)\</IntDir>
     <IncludePath>$(projectdir)Source;$(solutiondir)gamepaths\Source;$(solutiondir)tier0\Source;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
-    <LibraryPath>$(solutiondir)3rdparty\irrklang;$(solutiondir)3rdparty\assimp\lib\$(Configuration);$(outdir);$(solutiondir)3rdparty\libconfig\lib\$(configuration);$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)</LibraryPath>
+    <LibraryPath>$(solutiondir)3rdparty\tga;$(solutiondir)3rdparty\spng;$(solutiondir)3rdparty\irrklang;$(solutiondir)3rdparty\assimp\lib\$(Configuration);$(outdir);$(solutiondir)3rdparty\libconfig\lib\$(configuration);$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)</LibraryPath>
     <PublicIncludeDirectories>$(ProjectDir)Source</PublicIncludeDirectories>
-    <ExternalIncludePath>$(solutiondir)3rdparty\irrklang\include;$(solutiondir)3rdparty\libconfig\include\libconfig;$(solutiondir)3rdparty\assimp\include;$(VC_IncludePath);$(WindowsSDK_IncludePath);</ExternalIncludePath>
+    <ExternalIncludePath>$(solutiondir)3rdparty\stb;$(solutiondir)3rdparty\tga;$(solutiondir)3rdparty\spng;$(solutiondir)3rdparty\irrklang\include;$(solutiondir)3rdparty\libconfig\include\libconfig;$(solutiondir)3rdparty\assimp\include;$(VC_IncludePath);$(WindowsSDK_IncludePath)</ExternalIncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)Output\$(Configuration)\$(Platform)\</OutDir>
     <IntDir>$(SolutionDir)Output\$(Configuration)\$(Platform)\$(ProjectName)\</IntDir>
     <IncludePath>$(projectdir)Source;$(solutiondir)gamepaths\Source;$(solutiondir)tier0\Source;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
-    <LibraryPath>$(solutiondir)3rdparty\irrklang;$(solutiondir)3rdparty\assimp\lib\$(Configuration);$(outdir);$(solutiondir)3rdparty\libconfig\lib\$(configuration);$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)</LibraryPath>
+    <LibraryPath>$(solutiondir)3rdparty\tga;$(solutiondir)3rdparty\spng;$(solutiondir)3rdparty\irrklang;$(solutiondir)3rdparty\assimp\lib\$(Configuration);$(outdir);$(solutiondir)3rdparty\libconfig\lib\$(configuration);$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)</LibraryPath>
     <PublicIncludeDirectories>$(ProjectDir)Source</PublicIncludeDirectories>
-    <ExternalIncludePath>$(solutiondir)3rdparty\irrklang\include;$(solutiondir)3rdparty\libconfig\include\libconfig;$(solutiondir)3rdparty\assimp\include;$(VC_IncludePath);$(WindowsSDK_IncludePath);</ExternalIncludePath>
+    <ExternalIncludePath>$(solutiondir)3rdparty\stb;$(solutiondir)3rdparty\tga;$(solutiondir)3rdparty\spng;$(solutiondir)3rdparty\irrklang\include;$(solutiondir)3rdparty\libconfig\include\libconfig;$(solutiondir)3rdparty\assimp\include;$(VC_IncludePath);$(WindowsSDK_IncludePath)</ExternalIncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_ENGINE_DLL=1;WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>SPNG_STATIC;_ENGINE_DLL=1;WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <FloatingPointModel>Fast</FloatingPointModel>
@@ -121,7 +121,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>irrklang.lib;dxguid.lib;d3d11.lib;d3dcompiler.lib;gdiplus.lib;mount.lib;tier0_dxerr.lib;libconfig++d.lib;assimp-vc143-mtd.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>zlibstatic.lib;tga-lib.lib;spng_static.lib;irrklang.lib;dxguid.lib;d3d11.lib;d3dcompiler.lib;gdiplus.lib;mount.lib;tier0_dxerr.lib;libconfig++d.lib;assimp-vc143-mtd.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -130,7 +130,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_ENGINE_DLL=1;WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>SPNG_STATIC;_ENGINE_DLL=1;WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <FloatingPointModel>Fast</FloatingPointModel>
@@ -142,14 +142,14 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>irrklang.lib;dxguid.lib;d3d11.lib;d3dcompiler.lib;gdiplus.lib;mount.lib;tier0_dxerr.lib;libconfig++.lib;assimp-vc143-mt.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>zlibstatic.lib;tga-lib.lib;spng_static.lib;irrklang.lib;dxguid.lib;d3d11.lib;d3dcompiler.lib;gdiplus.lib;mount.lib;tier0_dxerr.lib;libconfig++.lib;assimp-vc143-mt.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_ENGINE_DLL=1;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>SPNG_STATIC;_ENGINE_DLL=1;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <FloatingPointModel>Fast</FloatingPointModel>
@@ -160,7 +160,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>irrklang.lib;dxguid.lib;d3d11.lib;d3dcompiler.lib;gdiplus.lib;mount.lib;tier0_dxerr.lib;libconfig++d.lib;assimp-vc143-mtd.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>zlibstatic.lib;tga-lib.lib;spng_static.lib;irrklang.lib;dxguid.lib;d3d11.lib;d3dcompiler.lib;gdiplus.lib;mount.lib;tier0_dxerr.lib;libconfig++d.lib;assimp-vc143-mtd.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -169,7 +169,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_ENGINE_DLL=1;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>SPNG_STATIC;_ENGINE_DLL=1;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <FloatingPointModel>Fast</FloatingPointModel>
@@ -181,7 +181,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>irrklang.lib;dxguid.lib;d3d11.lib;d3dcompiler.lib;gdiplus.lib;mount.lib;tier0_dxerr.lib;libconfig++.lib;assimp-vc143-mt.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>zlibstatic.lib;tga-lib.lib;spng_static.lib;irrklang.lib;dxguid.lib;d3d11.lib;d3dcompiler.lib;gdiplus.lib;mount.lib;tier0_dxerr.lib;libconfig++.lib;assimp-vc143-mt.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -207,8 +207,12 @@
     <ClCompile Include="Source\engine_tier1\dxprim\trans_const_pbuffer.cpp" />
     <ClCompile Include="Source\engine_tier1\dxprim\VertexBuffer.cpp" />
     <ClCompile Include="Source\engine_tier1\GraphicalOutput.cpp" />
+    <ClCompile Include="Source\engine_tier1\imgld\load.cpp" />
+    <ClCompile Include="Source\engine_tier1\imgld\png_impl.cpp" />
+    <ClCompile Include="Source\engine_tier1\imgld\tga_impl.cpp" />
     <ClCompile Include="Source\engine_tier1\LightPoint.cpp" />
     <ClCompile Include="Source\engine_tier1\matrix.cpp" />
+    <ClCompile Include="Source\engine_tier1\path.cpp" />
     <ClCompile Include="Source\engine_tier1\render\Model.cpp" />
     <ClCompile Include="Source\engine_tier1\render\sprite.cpp" />
     <ClCompile Include="Source\engine_tier1\Surface.cpp" />
@@ -257,9 +261,12 @@
     <ClInclude Include="Source\engine_tier1\dxprim\VertexBuffer.h" />
     <ClInclude Include="Source\engine_tier1\dxprim\Viewport.h" />
     <ClInclude Include="Source\engine_tier1\GraphicalOutput.h" />
+    <ClInclude Include="Source\engine_tier1\imgld\Color.h" />
+    <ClInclude Include="Source\engine_tier1\imgld\Image.h" />
     <ClInclude Include="Source\engine_tier1\LightPoint.h" />
     <ClInclude Include="Source\engine_tier1\matrix.h" />
     <ClInclude Include="Source\engine_tier1\Model.h" />
+    <ClInclude Include="Source\engine_tier1\Path.h" />
     <ClInclude Include="Source\engine_tier1\render\Model.h" />
     <ClInclude Include="Source\engine_tier1\render\Sprite.h" />
     <ClInclude Include="Source\engine_tier1\Surface.h" />

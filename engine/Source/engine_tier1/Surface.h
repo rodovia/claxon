@@ -1,33 +1,43 @@
-/* -*- c++ -*- */
 #pragma once
 
 #include <memory>
 #include <string>
-
 #include <engine_tier0/DLL.h>
 #include <MountedPaths.h>
 
 // Create a CSurface from a mounted path
-#define MAKE_SURFACE_MOUNT(P) engine::CSurface::FromFile(_GETPATH( (P) ))
+#define MAKE_SURFACE_MOUNT(P) engine::CSurface::FromFile(_GETPATH((P)))
 #define MAKE_SHADER_RESOURCE(P) _GETPATH(std::string("resources/hlsl/") + P)
 
 namespace engine
 {
-
-class CColor
+// IMPORTANT: Dword is packed as RGBA
+struct CColor
 {
-public:
 	unsigned int m_Dword;
-public:
-	constexpr CColor() noexcept : m_Dword() {}
-	constexpr CColor(const CColor& _OldInst) noexcept : m_Dword(_OldInst.m_Dword) {}
-	constexpr CColor(unsigned int _Dw) noexcept : m_Dword(_Dw)	{}
+	constexpr CColor() noexcept
+		: m_Dword()
+	{
+	}
+	constexpr CColor(const CColor& _OldInst) noexcept
+		: m_Dword(_OldInst.m_Dword)
+	{
+	}
+	constexpr CColor(unsigned int _Dw) noexcept
+		: m_Dword(_Dw)
+	{
+	}
 	constexpr CColor(unsigned char _X, unsigned char _R, unsigned char _G, unsigned char _B) noexcept
-		: m_Dword((_X << 24u) | (_R << 16u) | (_G << 8u) | _B) {}
+		: m_Dword((_X << 24u) | (_R << 16u) | (_G << 8u) | _B)
+	{
+	}
 	constexpr CColor(unsigned char _R, unsigned char _G, unsigned char _B) noexcept
-		: m_Dword((_R << 16u) | (_G << 8u) | _B) {}
+		: m_Dword((_R << 16u) | (_G << 8u) | _B)
+	{
+	}
 	constexpr CColor(CColor _C, unsigned char _X) noexcept
-		{}
+	{
+	}
 	CColor& operator=(CColor _C) noexcept
 	{
 		m_Dword = _C.m_Dword;
@@ -96,7 +106,7 @@ public:
 	~CSurface();
 
 	void Clear(CColor _FillValue) noexcept;
-	void PutPixel(unsigned int _X, unsigned int _Y, CColor _C) const noexcept;
+	void PutPixel(unsigned int _X, unsigned int _Y, CColor _C) noexcept;
 	CColor GetPixel(unsigned int _X, unsigned int _Y) const noexcept;
 	unsigned int GetWidth() const noexcept;
 	unsigned int GetHeight() const noexcept;
@@ -108,18 +118,17 @@ public:
 
 	static CSurface FromFile(const std::wstring& _Filename);
 	void WriteToFile(std::wstring_view _Filename) const;
-	void Copy(const CSurface& _Src) noexcept;
+private:
+	CSurface(engine::CColor* _Buffer, size_t _BufferSize,
+			 const wchar_t* _Filename, int _Width, int _Height,
+		bool _HasAlpha) noexcept;
 
 private:
-	CSurface(unsigned int _Width, unsigned int _Height, 
-		std::unique_ptr<CColor[]> _BufferPtr, const wchar_t* _Filename, bool _HasAlpha) noexcept;
-
-private:
-	const wchar_t* m_Filename = nullptr;
-	std::unique_ptr<CColor[]> m_Buffer;
-	unsigned int m_Width;
-	unsigned int m_Height;
-	bool m_Alpha;
+	engine::CColor* m_Buffer;
+	size_t m_BufferSize;
+	const wchar_t* m_Filename;
+	int m_Width, m_Height;
+	bool m_HasAlpha;
 };
 
-}
+} // namespace engine

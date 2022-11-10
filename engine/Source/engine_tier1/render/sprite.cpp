@@ -1,4 +1,7 @@
-﻿#include "Sprite.h"
+﻿#define FULL_WINTARD
+#include <tier0lib/Win32.h>
+
+#include "Sprite.h"
 
 #include <engine_tier1/dxprim/fwd.h>
 #include <engine_tier1/dxprim/geometry/Plane.h>
