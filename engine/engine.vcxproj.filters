@@ -22,7 +22,6 @@
     <ClCompile Include="Source\engine_tier0\BaseBind.cpp" />
     <ClCompile Include="Source\engine_tier0\DXGIInfoManager.cpp" />
     <ClCompile Include="Source\engine_tier0\Exceptions.cpp" />
-    <ClCompile Include="Source\engine_tier0\GDIPlusManager.cpp" />
     <ClCompile Include="Source\engine_tier0\Startup.cpp" />
     <ClCompile Include="Source\engine_tier1\Camera.cpp" />
     <ClCompile Include="Source\engine_tier1\dxprim\draw\BaseDraw.cpp" />
@@ -56,9 +55,6 @@
     <ClCompile Include="Source\engine_tier1\render\sprite.cpp" />
     <ClCompile Include="Source\engine_tier1\dxprim\rasterize.cpp" />
     <ClCompile Include="Source\engine_tier1\path.cpp" />
-    <ClCompile Include="Source\engine_tier1\imgld\png_impl.cpp" />
-    <ClCompile Include="Source\engine_tier1\imgld\load.cpp" />
-    <ClCompile Include="Source\engine_tier1\imgld\tga_impl.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\engine_audio\SoundOutput.h" />
@@ -68,7 +64,6 @@
     <ClInclude Include="Source\engine_tier0\DLL.h" />
     <ClInclude Include="Source\engine_tier0\DXGIInfoManager.h" />
     <ClInclude Include="Source\engine_tier0\Exceptions.h" />
-    <ClInclude Include="Source\engine_tier0\GDIPlusManager.h" />
     <ClInclude Include="Source\engine_tier0\_Math.h" />
     <ClInclude Include="Source\engine_tier1\BindableCodex.h" />
     <ClInclude Include="Source\engine_tier1\Camera.h" />
@@ -112,8 +107,7 @@
     <ClInclude Include="Source\engine_tier1\render\Sprite.h" />
     <ClInclude Include="Source\engine_tier1\dxprim\Rasterizer.h" />
     <ClInclude Include="Source\engine_tier1\Path.h" />
-    <ClInclude Include="Source\engine_tier1\imgld\Image.h" />
-    <ClInclude Include="Source\engine_tier1\imgld\Color.h" />
+    <ClInclude Include="Source\engine_tier1\Frustum.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".clang-format" />

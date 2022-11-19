@@ -1,9 +1,6 @@
 #include "ApplicationEntry.h"
 #include <InfoParser.h>
 #include <imguihlp.h>
-
-#include <engine_tier0/GDIPlusManager.h>
-
 #include <scene/current/MainMenuScene.h>
 #include <engine_tier1/VertexLayout.h>
 
@@ -13,8 +10,6 @@
 
 #define GETPATH(P) gamepaths::CMountedPaths::GetInstance().GetPath((P))
 #define MAKEICON(I, R, X, Y) static_cast<HICON>(LoadImage((I), MAKEINTRESOURCE(R), IMAGE_ICON, (X), (Y), 0))
-
-engine::CGDIPlusManager gdi;
 
 hl2::CApplication::CApplication()
 {

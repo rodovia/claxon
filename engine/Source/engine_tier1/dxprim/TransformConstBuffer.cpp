@@ -22,10 +22,11 @@ void engine::CTransformConstantBuffer::UpdateBindInner(CGraphicalOutput& _Gfx, c
 	m_VertBuffer->Bind(_Gfx);
 }
 
-engine::CTransformConstantBuffer::Transforms engine::CTransformConstantBuffer::GetTransforms(CGraphicalOutput& _Gfx) noexcept
+engine::CTransformConstantBuffer::Transforms engine::CTransformConstantBuffer::GetTransforms(CGraphicalOutput& _Gfx) const noexcept
 {
 	const CCamera& cam = _Gfx.GetCamera();
-	const auto modelView = m_Parent->GetTransformMatrix(cam) * cam.GetMatrix();
+	DirectX::XMMATRIX mdlmatr = m_Parent->GetTransformMatrix(cam);
+	const auto modelView = mdlmatr * cam.GetMatrix();
 
 	return {
 		DirectX::XMMatrixTranspose(modelView),

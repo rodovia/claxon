@@ -9,6 +9,8 @@
 namespace engine
 {
 
+class CBase_Draw;
+
 class CTransformConstantBuffer : public CBase_Bind
 {
 public:
@@ -22,9 +24,10 @@ public:
 		DirectX::XMMATRIX ModelView;
 	};
 
+	Transforms GetTransforms(CGraphicalOutput& _Gfx) const noexcept;
+
 protected:
 	void UpdateBindInner(CGraphicalOutput& _Gfx, const Transforms& _Tf) noexcept;
-	Transforms GetTransforms(CGraphicalOutput& _Gfx) noexcept;
 
 private:
 	static std::unique_ptr<CConstantVertexBuffer<Transforms>> m_VertBuffer;
