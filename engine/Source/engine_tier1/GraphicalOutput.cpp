@@ -1,8 +1,10 @@
+#include <engine_ui/Console.h>
 #include "GraphicalOutput.h"
 #include <DirectXMath.h>
 #include <forward_list> // std::size
 #include <tier0lib/dxerr.h>
 
+#include <d2d1.h>
 #include <imguihlp.h>
 #include <imgui/imgui_impl_dx11.h>
 #include <imgui/imgui_impl_win32.h>
@@ -44,6 +46,7 @@ engine::CGraphicalOutput::CGraphicalOutput(HWND hWnd, ImGuiContext* _Ctx)
 	sd.OutputWindow = hWnd;
 	sd.Windowed = TRUE;
 	sd.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
+	//sd.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
 	sd.Flags = 0;
 
 	UINT swapCreateFlags = 0;
@@ -112,7 +115,6 @@ engine::CGraphicalOutput::CGraphicalOutput(HWND hWnd, ImGuiContext* _Ctx)
 	m_Context->OMSetRenderTargets(1u, m_Target.GetAddressOf(), m_DepthStencil.Get());
 
 	D3D11_VIEWPORT vp;
-	// TODO: trocar as resoluções hardcoded
 	vp.Width = (float)width;
 	vp.Height = (float)height;
 	vp.MinDepth = 0.0f;
@@ -127,6 +129,18 @@ engine::CGraphicalOutput::CGraphicalOutput(HWND hWnd, ImGuiContext* _Ctx)
 engine::CGraphicalOutput::~CGraphicalOutput()
 {
 	ImGui_ImplDX11_Shutdown();
+}
+
+void engine::CGraphicalOutput::SetViewport(int _Width, int _Height) noexcept
+{
+	D3D11_VIEWPORT vp;
+	vp.TopLeftX = 0.0f;
+	vp.TopLeftY = 0.0f;
+	vp.Height = _Height;
+	vp.Width = _Width;
+	vp.MinDepth = 0.0f;
+	vp.MaxDepth = 1.0f;
+	m_Context->RSSetViewports(1u, &vp);
 }
 
 void engine::CGraphicalOutput::ToggleImGui() noexcept
@@ -182,6 +196,41 @@ void engine::CGraphicalOutput::EndFrame()
 			throw _ENGINE_CREATE_DEVC(m_Device->GetDeviceRemovedReason());
 		}
 	}
+}
+
+bool engine::CGraphicalOutput::IsFullScreen()
+{
+	BOOL ifd;
+	m_Swap->GetFullscreenState(&ifd, nullptr);
+	return ifd;
+}
+
+void engine::CGraphicalOutput::SetFullScreen(bool _State)
+{
+	if (_State == this->IsFullScreen())
+	{
+		return;
+	}
+
+	HRESULT hrr = m_Swap->SetFullscreenState(_State ? TRUE : FALSE, nullptr);
+	if (hrr == DXGI_ERROR_NOT_CURRENTLY_AVAILABLE)
+	{
+		Log("CGraphicalOutput::SetFullscreen(TRUE): Not currently available.");
+		return;
+	}
+	m_Context->OMSetRenderTargets(0, nullptr, nullptr);
+	m_Target->Release();
+
+	// Calling ClearState will also clear the DepthStencil texture
+	// which I'm currently not in the mood for that.
+	// m_Context->ClearState();
+	m_Swap->ResizeBuffers(2u, 0u, 0u, DXGI_FORMAT_UNKNOWN, 0u);
+
+	// Recreate the backbuffer
+	ID3D11Resource* backbuffer;
+	m_Swap->GetBuffer(0, __uuidof(ID3D11Resource), (void**)&backbuffer);
+	m_Device->CreateRenderTargetView(backbuffer, nullptr, &m_Target);
+	m_Context->OMSetRenderTargets(1, m_Target.GetAddressOf(), m_DepthStencil.Get());	
 }
 
 void engine::CGraphicalOutput::DrawIndexed(UINT _Count)

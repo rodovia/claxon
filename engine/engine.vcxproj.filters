@@ -55,6 +55,7 @@
     <ClCompile Include="Source\engine_tier1\render\sprite.cpp" />
     <ClCompile Include="Source\engine_tier1\dxprim\rasterize.cpp" />
     <ClCompile Include="Source\engine_tier1\path.cpp" />
+    <ClCompile Include="Source\engine_tier1\dxprim\dynamic_constant.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\engine_audio\SoundOutput.h" />
@@ -108,9 +109,11 @@
     <ClInclude Include="Source\engine_tier1\dxprim\Rasterizer.h" />
     <ClInclude Include="Source\engine_tier1\Path.h" />
     <ClInclude Include="Source\engine_tier1\Frustum.h" />
+    <ClInclude Include="Source\engine_tier1\dxprim\DynamicConstantBuffer.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".clang-format" />
     <None Include="Source\shadersystem\phong\PhongBase.hlsli" />
+    <None Include="cpp.hint" />
   </ItemGroup>
 </Project>

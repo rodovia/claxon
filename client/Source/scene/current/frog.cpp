@@ -32,6 +32,11 @@ void hl2::CFrogScene::Render(float _Dt)
 	std::shared_ptr<CWindow> wnd = this->GetWindow();
 	wnd->GetGraphicalOutput()->SetCamera(m_Cam);
 
+	if (wnd->m_Keyboard.IsKeyPressed(VK_F11))
+	{
+		wnd->SetFullScreen(!wnd->GetGraphicalOutput()->IsFullScreen());
+	}
+
 	if (!wnd->CursorEnabled())
 	{
 		if (wnd->m_Keyboard.IsKeyPressed('W'))

@@ -68,6 +68,7 @@ public:
 	CWindow& operator=(const CWindow&) = delete;
 	void SetTitle(std::wstring _NewTitle);
 	void SetIcon(HICON icon, HICON iconSm = nullptr);
+	void SetFullScreen(bool _State) noexcept;
 	[[nodiscard]] std::shared_ptr<engine::CGraphicalOutput> GetGraphicalOutput() const noexcept;
 	
 	[[nodiscard]] ResolutionWH GetSize() const noexcept;
@@ -81,7 +82,7 @@ public:
 private:
 	void HideCursor();
 	void ShowCursor();
-
+	void ResizeWindow(int _Nwidth, int _Nheight);
 	void ConfineCursor();
 	void FreeCursor();
 

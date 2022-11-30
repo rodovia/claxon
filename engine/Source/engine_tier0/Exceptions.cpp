@@ -6,19 +6,15 @@
 
 void engine::FastFail(const char* _Msg, HWND _Wnd) noexcept
 {
-	/* Which one is safer:
-	*    - Copying _Msg or...
-	*    - casting constness away?
-	* Of course it is the second!!
-	*/
-
-	char* constness = const_cast<char*>(_Msg);
+	static const char* cnclmsg = "\n(Press cancel to debug)";
+	char* cpy = new char[std::strlen(_Msg) + std::strlen(cnclmsg)];
+	memcpy(cpy, _Msg, std::strlen(_Msg));
 	if (_Msg == nullptr)
 	{
-		constness = (char*)"FastFail was called.";
+		cpy = (char*)"FastFail was called.";
 	}
 
-	strcat(constness, "\n(Press cancel to debug)");
+	strcat(cpy, cnclmsg);
 	int ch = MessageBoxA(_Wnd, _Msg, "Engine error", MB_ICONERROR | MB_OKCANCEL | MB_TASKMODAL);
 	switch (ch)
 	{
@@ -28,6 +24,7 @@ void engine::FastFail(const char* _Msg, HWND _Wnd) noexcept
 		__debugbreak();
 		break;
 	}
+	delete[] cpy;
 }
 
 engine::CBaseException::CBaseException(int line, const char* file)

@@ -195,6 +195,7 @@
     <ClCompile Include="Source\engine_tier1\dxprim\draw\BaseDraw.cpp" />
     <ClCompile Include="Source\engine_tier1\dxprim\draw\SolidSphere.cpp" />
     <ClCompile Include="Source\engine_tier1\dxprim\draw\test_plane.cpp" />
+    <ClCompile Include="Source\engine_tier1\dxprim\dynamic_constant.cpp" />
     <ClCompile Include="Source\engine_tier1\dxprim\IndexBuffer.cpp" />
     <ClCompile Include="Source\engine_tier1\dxprim\InputLayout.cpp" />
     <ClCompile Include="Source\engine_tier1\dxprim\rasterize.cpp" />
@@ -235,6 +236,7 @@
     <ClInclude Include="Source\engine_tier1\BindableCodex.h" />
     <ClInclude Include="Source\engine_tier1\Camera.h" />
     <ClInclude Include="Source\engine_tier1\dxprim\Blender.h" />
+    <ClInclude Include="Source\engine_tier1\dxprim\DynamicConstantBuffer.h" />
     <ClInclude Include="Source\engine_tier1\dxprim\fwd.h" />
     <ClInclude Include="Source\engine_tier1\dxprim\ConstantBuffer.h" />
     <ClInclude Include="Source\engine_tier1\dxprim\draw\BaseDraw.h" />
@@ -478,6 +480,7 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4.0</ShaderModel>
     </FxCompile>
+    <None Include="cpp.hint" />
     <None Include="Source\shadersystem\phong\PhongBase.hlsli" />
     <FxCompile Include="Source\shadersystem\Solid_PS.hlsl">
       <FileType>Document</FileType>

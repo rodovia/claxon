@@ -33,14 +33,19 @@ public:
 	void BeginFrame(float _R, float _G, float _B);
 	void BeginFrameNorm(unsigned char _R, unsigned char _G, unsigned char _B);
 	void EndFrame();
-
+	
+	void SetViewport(int _Width, int _Height) noexcept;
 	void DrawIndexed(UINT _Count);
+
+	void SetFullScreen(bool _State);
+	bool IsFullScreen();
 
 	DirectX::XMMATRIX GetProjection() const noexcept;
 	void SetProjection(DirectX::FXMMATRIX _Proj) noexcept;
 	CCamera& GetCamera() noexcept;
 	void SetCamera(engine::CCamera _Cam) noexcept;
 	D3D_FEATURE_LEVEL GetFeatureLevel() const noexcept;
+
 private:
 	bool m_HasImGui = true;
 	bool m_PendingEndFrameCall = false;

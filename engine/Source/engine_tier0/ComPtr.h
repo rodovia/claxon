@@ -34,12 +34,7 @@ public:
 	{
 		return m_Ptr;
 	}
-/*
-	const _Ty* Get() const noexcept
-	{
-		return m_Ptr;
-	}
-*/
+
 	_Ty** GetAddressOf() noexcept
 	{
 		return &m_Ptr;

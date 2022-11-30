@@ -177,6 +177,18 @@ hl2::CWindow::~CWindow()
 	DestroyWindow(m_hWnd);
 }
 
+void hl2::CWindow::SetFullScreen(bool _State) noexcept
+{
+	m_Gfx->SetFullScreen(_State);
+}
+
+void hl2::CWindow::ResizeWindow(int _Nw, int _Nh)
+{
+	m_Width = _Nw;
+	m_Height = _Nh;
+	SetWindowPos(m_hWnd, HWND_TOP, 0, 0, _Nw, _Nh, SWP_NOMOVE);
+}
+
 LRESULT CALLBACK hl2::CWindow::HandleMessageSetup(HWND hWnd, UINT msg, WPARAM wParam, 
 												LPARAM lParam)
 {
@@ -242,6 +254,21 @@ LRESULT hl2::CWindow::HandleMessage(HWND hWnd, UINT msg, WPARAM wParam,
 			}
 		}
 	}
+
+	case WM_SIZE:
+	{
+		/*
+		if (lParam == 0)
+		{
+			break;
+		}
+		UINT nwidth = LOWORD(lParam);
+		UINT nheight = HIWORD(lParam);
+		this->ResizeWindow(nwidth, nheight);
+		break;
+		*/
+	}
+		
 
 	// vvvv KEYBOARD MESSAGES vvvv
 	case WM_KEYDOWN:
