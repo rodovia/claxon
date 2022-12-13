@@ -236,7 +236,7 @@
     <ClInclude Include="Source\engine_tier1\BindableCodex.h" />
     <ClInclude Include="Source\engine_tier1\Camera.h" />
     <ClInclude Include="Source\engine_tier1\dxprim\Blender.h" />
-    <ClInclude Include="Source\engine_tier1\dxprim\DynamicConstantBuffer.h" />
+    <ClInclude Include="Source\engine_tier1\dxprim\dynamic_constant.h" />
     <ClInclude Include="Source\engine_tier1\dxprim\fwd.h" />
     <ClInclude Include="Source\engine_tier1\dxprim\ConstantBuffer.h" />
     <ClInclude Include="Source\engine_tier1\dxprim\draw\BaseDraw.h" />
