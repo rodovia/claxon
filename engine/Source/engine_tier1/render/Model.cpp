@@ -22,6 +22,7 @@
 #include <assimp/postprocess.h>
 
 #include <filesystem>
+#include <bitset>
 #include <type_traits>
 #include <unordered_map>
 
@@ -345,238 +346,80 @@ std::unique_ptr<engine::CMesh> engine::CModel::ParseMesh(CGraphicalOutput& _Gfx,
 	// std::shared_ptr<engine::CBlender> bl = CCodex::Query<engine::CBlender>(_Gfx, true);
 	// bindablePtrs.push_back(std::move(bl));
 
-	bool hasSpec = false;
-	bool hasDiffuse = false;
-	bool hasNormals = false;
-	bool hasAlphaGloss = false;
-	bool hasColorDiffuse = false;
-	bool hasAlphaDiffuse = false;
+	MESH_LOAD_RESULT result;
 	float shininess = 2.0f;
-	DirectX::XMFLOAT4 specularColor = {0.18f, 0.18f, 0.18f, 1.0f};
-	DirectX::XMFLOAT4 diffuseColor = {0.45f, 0.45f, 0.85f, 1.0f};
 	if (_Mesh.mMaterialIndex >= 0)
 	{
-		using namespace std::string_literals;
-		auto& mat = *_Materials[_Mesh.mMaterialIndex];
-		const std::string base = _Path.parent_path().string() + "\\";
-
-		aiString texFilename;
-		if (mat.GetTexture(aiTextureType_DIFFUSE, 0, &texFilename) == aiReturn_SUCCESS)
-		{
-			std::shared_ptr<CTexture> tex = CCodex::Query<engine::CTexture>(_Gfx, _GETPATH(base + texFilename.C_Str()), 0u);
-			hasAlphaDiffuse = tex->HasAlpha();
-			bindablePtrs.push_back(std::move(tex));
-			hasDiffuse = true;
-		}
-		else
-		{
-			if (!mdl_missing50_when_missing_diffuse.GetBool()
-				&& mat.Get(AI_MATKEY_COLOR_DIFFUSE,
-						   reinterpret_cast<aiColor3D&>(diffuseColor))
-					   == aiReturn_SUCCESS)
-			{
-				hasColorDiffuse = true;
-			}
-		}
-
-		if (mat.GetTexture(aiTextureType_SPECULAR, 0, &texFilename) == aiReturn_SUCCESS)
-		{
-			std::shared_ptr<CTexture> tex = CCodex::Query<engine::CTexture>(_Gfx, _GETPATH(base + texFilename.C_Str()), 1u);
-			hasAlphaGloss = tex->HasAlpha();
-			bindablePtrs.push_back(std::move(tex));
-			hasSpec = true;
-		}
-		else
-		{
-			mat.Get(AI_MATKEY_COLOR_SPECULAR, reinterpret_cast<aiColor3D&>(specularColor));
-		}
-
-		if (!hasAlphaGloss)
-		{
-			mat.Get(AI_MATKEY_SHININESS, shininess);
-		}
-
-		if (mat.GetTexture(aiTextureType_NORMALS, 0, &texFilename) == aiReturn_SUCCESS)
-		{
-			std::shared_ptr<CTexture> tex = CCodex::Query<engine::CTexture>(_Gfx, _GETPATH(base + texFilename.C_Str()), 2u);
-			hasAlphaGloss = tex->HasAlpha();
-			bindablePtrs.push_back(std::move(tex));
-			hasNormals = true;
-		}
-
+		result = this->MaterialCheck(_Gfx, *_Materials[_Mesh.mMaterialIndex], bindablePtrs, _Path);
 		bindablePtrs.push_back(CCodex::Query<engine::CSampler>(_Gfx));
 	}
 
-	if (!hasDiffuse && !hasColorDiffuse)
+	if (result.State.test(hl2_RESULT_DIFFUSE))
 	{
 		Msg("Mesh '%s' has no DIFFUSE textures! Falling back to missing50", _Mesh.mName.C_Str());
 		bindablePtrs.push_back(CCodex::Query<engine::CTexture>(_Gfx, _GETPATH("resources/textures/missing50.png"), 0u));
-		hasDiffuse = true;
 	}
 
 	std::shared_ptr<CVertexShader> vs{};
-	if (!m_Desc.AffectedByLight || mat_fullbright.GetBool())
+	// There is no PhongSpecular_VS.hlsl
+	// TODO: make shaders names more uniform (e.g. add a PhongSpecular_VS.hlsl or
+	// remove PhongNormalMap_VS.hlsl)
+	auto ly = layout::CVertexLayout{}
+		.Append(layout::Position3D)
+		.Append(layout::Normal)
+		.Append(layout::Texture2D);
+	if (result.RequiredShader == "PhongSpecular")
 	{
-		layout::CVertexBuffer vbuf(
-			std::move(layout::CVertexLayout{}
-						  .Append(layout::Position3D)
-						  .Append(layout::Texture2D)));
+		vs = CCodex::Query<engine::CVertexShader>(_Gfx, MAKE_SHADER_RESOURCE("Phong_VS.cso"));
+		layout::CVertexBuffer vbuf(ly);
 
 		for (unsigned int i = 0; i < _Mesh.mNumVertices; i++)
 		{
-			aiVector3D vert = _Mesh.mVertices[i];
+			// TODO: reimplement scale
+			DirectX::XMFLOAT3 xmf = *reinterpret_cast<DirectX::XMFLOAT3*>(&_Mesh.mVertices[i]);
 			vbuf.EmplaceBack(
-				DirectX::XMFLOAT3{vert.x * m_Desc.Scale, vert.y * m_Desc.Scale, vert.z * m_Desc.Scale},
-				*reinterpret_cast<DirectX::XMFLOAT2*>(&_Mesh.mTextureCoords[0][i]));
+				xmf,
+				*reinterpret_cast<DirectX::XMFLOAT3*>(&_Mesh.mNormals[i]),
+				*reinterpret_cast<DirectX::XMFLOAT3*>(&_Mesh.mTextureCoords[0][i])
+			);
 		}
+	}
+	else
+	{
+		ly
+			.Append(layout::Tangent)
+			.Append(layout::Bitangent);
+		vs = CCodex::Query<engine::CVertexShader>(_Gfx, MAKE_SHADER_RESOURCE(result.RequiredShader + "_VS.cso"));
+		layout::CVertexBuffer vbuf(ly);
 
-		bindablePtrs.push_back(CCodex::Query<engine::CPixelShader>(_Gfx, MAKE_SHADER_RESOURCE("Texture_PS.cso")));
-		vs = CCodex::Query<engine::CVertexShader>(_Gfx, MAKE_SHADER_RESOURCE("Texture_VS.cso"));
-		ID3DBlob* blob = vs->GetBytecode();
-		bindablePtrs.push_back(std::move(vs));
-
-		bindablePtrs.push_back(CCodex::Query<engine::CVertexBuffer>(_Gfx, std::string(_Mesh.mName.C_Str()), vbuf));
-		bindablePtrs.push_back(CCodex::Query<engine::CInputLayout>(_Gfx, vbuf.Layout(), blob));
-
-		// So the below checks won't be ran.
-		hasDiffuse = false;
-		hasSpec = false;
-		hasNormals = false;
+		for (unsigned int i = 0; i < _Mesh.mNumVertices; i++)
+		{
+			// TODO: reimplement scale
+			DirectX::XMFLOAT3 xmf = *reinterpret_cast<DirectX::XMFLOAT3*>(&_Mesh.mVertices[i]);
+			vbuf.EmplaceBack(
+				xmf,
+				*reinterpret_cast<DirectX::XMFLOAT3*>(&_Mesh.mNormals[i]),
+				*reinterpret_cast<DirectX::XMFLOAT3*>(&_Mesh.mTextureCoords[0][i]),
+				*reinterpret_cast<DirectX::XMFLOAT3*>(&_Mesh.mTangents[i]),
+				*reinterpret_cast<DirectX::XMFLOAT3*>(&_Mesh.mBitangents[i])
+			);
+		}
 	}
 
-	if (!mat_fullbright)
-	{
-		if (hasDiffuse && hasSpec && hasNormals)
-		{
-			layout::CVertexBuffer vbuf(std::move(
-				layout::CVertexLayout{}
-					.Append(layout::Position3D)
-					.Append(layout::Normal)
-					.Append(layout::Tangent)
-					.Append(layout::Bitangent)
-					.Append(layout::Texture2D)));
+	buffer::CLayoutView vw(result.Layout);
+	buffer::CBuffer buffer(vw);
+	/*
+			rl.Add(buffer::Float, "SpecularPower");
+		rl.Add(buffer::Float3, "SpecularColor");
+		rl.Add(buffer::Float, "SpecularMapWeight");
+		rl.Add(buffer::Bool, "EnableNormalMap");
+		rl.Add(buffer::Bool, "EnableSpecularMap");
+		rl.Add(buffer::Bool, "HasGloss");
+		rl.Add(buffer::Float, "SpecularIntensity");*/
+	buffer["SpecularPower"].SetExists(12);
 
-			for (unsigned int i = 0; i < _Mesh.mNumVertices; i++)
-			{
-				aiVector3D vert = _Mesh.mVertices[i];
-				vbuf.EmplaceBack(
-					DirectX::XMFLOAT3{vert.x * m_Desc.Scale, vert.y * m_Desc.Scale, vert.z * m_Desc.Scale},
-					*reinterpret_cast<DirectX::XMFLOAT3*>(&_Mesh.mNormals[i]),
-					*reinterpret_cast<DirectX::XMFLOAT3*>(&_Mesh.mTangents[i]),
-					*reinterpret_cast<DirectX::XMFLOAT3*>(&_Mesh.mBitangents[i]),
-					*reinterpret_cast<DirectX::XMFLOAT2*>(&_Mesh.mTextureCoords[0][i]));
-			}
-
-			std::string fs = hasAlphaDiffuse ? "PhongEverything_PS.cso" : "PhongNormalMap_PS.cso";
-			if (m_Desc.NormalMapSpace == MODEL_DESCRIPTOR::NORMSPC_OBJECT)
-			{
-				if (hasAlphaDiffuse)
-				{
-					Msg("Alpha diffuse ignored since NORMSPC_OBJECT was specified!");
-				}
-				fs = "PhongNormalMapOS_PS.cso";
-			}
-
-			std::wstring filename = MAKE_SHADER_RESOURCE(fs);
-			bindablePtrs.push_back(CCodex::Query<CPixelShader>(_Gfx, filename));
-			PSMaterialConstant pmc;
-			pmc.SpecularPower = shininess;
-
-			pmc.HasGloss = hasAlphaGloss ? TRUE : FALSE;
-			auto ptr = CCodex::Query<CConstantPixelBuffer<PSMaterialConstant>>(_Gfx, 10u);
-			ptr->Update(_Gfx, pmc);
-			bindablePtrs.push_back(std::move(ptr));
-
-			vs = CCodex::Query<CVertexShader>(_Gfx, MAKE_SHADER_RESOURCE("PhongNormalMap_VS.cso"));
-			ID3DBlob* pvsbc = vs->GetBytecode();
-			bindablePtrs.push_back(std::move(vs));
-
-			bindablePtrs.push_back(CCodex::Query<engine::CVertexBuffer>(_Gfx, std::string(_Mesh.mName.C_Str()), vbuf));
-			bindablePtrs.push_back(CCodex::Query<engine::CInputLayout>(_Gfx, vbuf.Layout(), pvsbc));
-		}
-		else if (hasColorDiffuse)
-		{
-			layout::CVertexBuffer vbuf(std::move(
-				layout::CVertexLayout{}
-					.Append(layout::Position3D)
-					.Append(layout::Normal)
-					.Append(layout::Texture2D)));
-
-			for (unsigned int i = 0; i < _Mesh.mNumVertices; i++)
-			{
-				aiVector3D vert = _Mesh.mVertices[i];
-				vbuf.EmplaceBack(
-					DirectX::XMFLOAT3{vert.x * m_Desc.Scale, vert.y * m_Desc.Scale, vert.z * m_Desc.Scale},
-					*reinterpret_cast<DirectX::XMFLOAT3*>(&_Mesh.mNormals[i]),
-					*reinterpret_cast<DirectX::XMFLOAT2*>(&_Mesh.mTextureCoords[0][i]));
-			}
-
-			std::wstring filename = MAKE_SHADER_RESOURCE("PhongSpecular_SolidColor_PS.cso");
-			bindablePtrs.push_back(CCodex::Query<CPixelShader>(_Gfx, filename));
-
-			PSSolidColorConstant pmc;
-			pmc.SpecularPowerConst = shininess;
-			pmc.SpecularColor = DirectX::XMFLOAT4A{specularColor.x, specularColor.y, specularColor.z, specularColor.w};
-			pmc.MaterialColor = DirectX::XMFLOAT4A{diffuseColor.x, diffuseColor.y, diffuseColor.z, diffuseColor.w};
-			pmc.HasGloss = hasAlphaGloss ? TRUE : FALSE;
-
-			auto ptr = CCodex::Query<CConstantPixelBuffer<PSSolidColorConstant>>(_Gfx, 10u);
-			ptr->Update(_Gfx, pmc);
-			bindablePtrs.push_back(std::move(ptr));
-
-			vs = CCodex::Query<CVertexShader>(_Gfx, MAKE_SHADER_RESOURCE("Phong_VS.cso"));
-			ID3DBlob* pvsbc = vs->GetBytecode();
-			bindablePtrs.push_back(std::move(vs));
-
-			bindablePtrs.push_back(CCodex::Query<engine::CVertexBuffer>(_Gfx, std::string(_Mesh.mName.C_Str()), vbuf));
-			bindablePtrs.push_back(CCodex::Query<engine::CInputLayout>(_Gfx, vbuf.Layout(), pvsbc));
-		}
-		else if (hasDiffuse)
-		{
-			layout::CVertexBuffer vbuf(std::move(
-				layout::CVertexLayout{}
-					.Append(layout::Position3D)
-					.Append(layout::Normal)
-					.Append(layout::Texture2D)));
-
-			for (unsigned int i = 0; i < _Mesh.mNumVertices; i++)
-			{
-				aiVector3D vert = _Mesh.mVertices[i];
-				vbuf.EmplaceBack(
-					DirectX::XMFLOAT3{vert.x * m_Desc.Scale, vert.y * m_Desc.Scale, vert.z * m_Desc.Scale},
-					*reinterpret_cast<DirectX::XMFLOAT3*>(&_Mesh.mNormals[i]),
-					*reinterpret_cast<DirectX::XMFLOAT2*>(&_Mesh.mTextureCoords[0][i]));
-			}
-
-			std::wstring filename = MAKE_SHADER_RESOURCE("PhongSpecular_PS.cso");
-			bindablePtrs.push_back(CCodex::Query<CPixelShader>(_Gfx, filename));
-			struct __declspec(align(16)) PSMaterialConstant_Inner
-			{
-				BOOL EnableSpecular = TRUE;
-				BOOL HasGloss;
-				float SpecularPowerConst;
-				float SpecularIntensity = 0.0f;
-				float SpecularPower = 0.0f;
-				float padd;
-			} pmc;
-
-			pmc.SpecularPowerConst = shininess;
-			pmc.HasGloss = hasAlphaGloss ? TRUE : FALSE;
-
-			auto ptr = CCodex::Query<CConstantPixelBuffer<PSMaterialConstant_Inner>>(_Gfx, 10u);
-			ptr->Update(_Gfx, pmc);
-			bindablePtrs.push_back(std::move(ptr));
-
-			vs = CCodex::Query<CVertexShader>(_Gfx, MAKE_SHADER_RESOURCE("Phong_VS.cso"));
-			ID3DBlob* pvsbc = vs->GetBytecode();
-			bindablePtrs.push_back(std::move(vs));
-
-			bindablePtrs.push_back(CCodex::Query<engine::CVertexBuffer>(_Gfx, std::string(_Mesh.mName.C_Str()), vbuf));
-			bindablePtrs.push_back(CCodex::Query<engine::CInputLayout>(_Gfx, vbuf.Layout(), pvsbc));
-		}
-	} // if (!mat_fullbright)
-
-	bindablePtrs.push_back(CCodex::Query<engine::CRasterizer>(_Gfx, hasAlphaDiffuse));
+	bindablePtrs.push_back(CCodex::Query<engine::CPixelShader>(_Gfx, MAKE_SHADER_RESOURCE(result.RequiredShader + "_PS.cso")));
+	bindablePtrs.push_back(CCodex::Query<engine::CRasterizer>(_Gfx, result.State.test(hl2_RESULT_DIFFUSE_ALPHA)));
 	bindablePtrs.push_back(CCodex::Query<engine::CIndexBuffer>(_Gfx, indices, std::string(_Mesh.mName.C_Str())));
 	return std::make_unique<CMesh>(_Gfx, std::move(bindablePtrs));
 }
@@ -601,6 +444,75 @@ std::unique_ptr<engine::CNode> engine::CModel::ParseNode(int& _Id, const aiNode&
 	}
 
 	return node;
+}
+
+engine::MESH_LOAD_RESULT
+engine::CModel::MaterialCheck(CGraphicalOutput& _Gfx,
+							  const aiMaterial& mat,
+							  std::vector<std::shared_ptr<CBase_Bind>>& binds,
+							  std::filesystem::path path) noexcept
+{
+	buffer::CRawLayout rl;
+	const std::string base = path.parent_path().string() + "\\";
+	std::string requiredShader;
+	std::bitset<8> ret;
+
+	aiString texFilename;
+	if (mat.GetTexture(aiTextureType_DIFFUSE, 0, &texFilename) == aiReturn_SUCCESS)
+	{
+		std::shared_ptr<CTexture> tex = CCodex::Query<engine::CTexture>(_Gfx, _GETPATH(base + texFilename.C_Str()), 0u);
+		if (tex->HasAlpha())
+		{
+			ret.set(hl2_RESULT_DIFFUSE_ALPHA);
+		}
+		binds.push_back(std::move(tex));
+		ret.set(hl2_RESULT_DIFFUSE);
+	}
+
+	if (mat.GetTexture(aiTextureType_SPECULAR, 0, &texFilename) == aiReturn_SUCCESS)
+	{
+		std::shared_ptr<CTexture> tex = CCodex::Query<engine::CTexture>(_Gfx, _GETPATH(base + texFilename.C_Str()), 1u);
+		if (tex->HasAlpha())
+		{
+			ret.set(hl2_RESULT_SPECULAR_ALPHA);
+		}
+
+		binds.push_back(std::move(tex));
+		ret.set(hl2_RESULT_SPECULAR);
+	}
+
+	if (mat.GetTexture(aiTextureType_NORMALS, 0, &texFilename) == aiReturn_SUCCESS)
+	{
+		std::shared_ptr<CTexture> tex = CCodex::Query<engine::CTexture>(_Gfx, _GETPATH(base + texFilename.C_Str()), 2u);
+		if (tex->HasAlpha())
+		{
+			ret.set(hl2_RESULT_NORMALMAP_ALPHA);
+		}
+		binds.push_back(std::move(tex));
+		ret.set(hl2_RESULT_NORMALMAP);
+	}
+
+	if (ret.test(hl2_RESULT_NORMALMAP))
+	{
+		requiredShader = "PhongNormalMap";
+		rl.Add(buffer::Float, "SpecularPower");
+		rl.Add(buffer::Float3, "SpecularColor");
+		rl.Add(buffer::Float, "SpecularMapWeight");
+		rl.Add(buffer::Bool, "EnableNormalMap");
+		rl.Add(buffer::Bool, "EnableSpecularMap");
+		rl.Add(buffer::Bool, "HasGloss");
+		rl.Add(buffer::Float, "SpecularIntensity");
+	}
+
+	if ((ret.test(hl2_RESULT_SPECULAR) || ret.test(hl2_RESULT_DIFFUSE)) && !ret.test(hl2_RESULT_NORMALMAP))
+	{
+		requiredShader = "PhongSpecular";
+		rl.Add(buffer::Bool, "EnableSpecular");
+		rl.Add(buffer::Bool, "HasGloss");
+		rl.Add(buffer::Float, "SpecularPowerConst");
+	}
+
+	return { ret, rl, requiredShader };
 }
 
 engine::CModel::~CModel() noexcept

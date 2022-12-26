@@ -1,34 +1,37 @@
-/* -*- c++ -*- */
+// |=============================================================|
+// |ConstantBuffer.h - Transmit simple data from CPU code to GPU |
+// |=============================================================|
 #pragma once
 
 #include <engine_tier1/GraphicalOutput.h>
+#include "dynamic_constant.h"
 #include <engine_tier0/Exceptions.h>
 #include <typeinfo>
 
 namespace engine
 {
 
-template<class T>
 class CBasicConstantBuffer : public CBase_Bind
 {
 public:
-	CBasicConstantBuffer(CGraphicalOutput& _Gfx, const T& _Constants, UINT _Slot = 0)
-		: m_Slot(_Slot)
+	CBasicConstantBuffer(CGraphicalOutput& _Gfx, const buffer::CBuffer& _Constants, UINT _Slot = 0)
+		: m_Slot(_Slot),
+		  m_Signature(_Constants.GetLayoutElement().GetSignature())
 	{
 		D3D11_BUFFER_DESC bfd;
 		bfd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 		bfd.Usage = D3D11_USAGE_DYNAMIC;
 		bfd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 		bfd.MiscFlags = 0u;
-		bfd.ByteWidth = sizeof(_Constants);
+		bfd.ByteWidth = _Constants.SizeOf();
 		bfd.StructureByteStride = 0u;
-
+		
 		D3D11_SUBRESOURCE_DATA csd = {};
-		csd.pSysMem = &m_ConstBuffer;
+		csd.pSysMem = _Constants.GetData();
 		GetDevice(_Gfx)->CreateBuffer(&bfd, &csd, &m_ConstBuffer);
 	}
 
-	CBasicConstantBuffer(CGraphicalOutput& _Gfx, UINT _Slot = 0)
+	CBasicConstantBuffer(CGraphicalOutput& _Gfx, const buffer::CLayoutView& ly, UINT _Slot = 0)
 		: m_Slot(_Slot)
 	{
 		D3D11_BUFFER_DESC bfd;
@@ -36,14 +39,14 @@ public:
 		bfd.Usage = D3D11_USAGE_DYNAMIC;
 		bfd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 		bfd.MiscFlags = 0u;
-		bfd.ByteWidth = sizeof(T);
+		bfd.ByteWidth = ly.GetSizeBytes();
 		bfd.StructureByteStride = 0u;
 		ID3D11Device* devc = GetDevice(_Gfx);
 		HRESULT hr;
 		_ENGINE_MAYTHROW_GRAPHICS(devc->CreateBuffer(&bfd, nullptr, &m_ConstBuffer));
 	}
 
-	void Update(CGraphicalOutput& _Gfx, const T& _Constants)
+	void Update(CGraphicalOutput& _Gfx, const buffer::CBuffer& _Constants)
 	{
 		D3D11_MAPPED_SUBRESOURCE msr;
 		GetContext(_Gfx)->Map(
@@ -51,7 +54,7 @@ public:
 			D3D11_MAP_WRITE_DISCARD, 0u,
 			&msr
 		);
-		memcpy(msr.pData, &_Constants, sizeof(_Constants));
+		memcpy(msr.pData, _Constants.GetData(), _Constants.SizeOf());
 		GetContext(_Gfx)->Unmap(m_ConstBuffer, 0u);
 	}
 
@@ -61,28 +64,31 @@ public:
 	}
 protected:
 	UINT m_Slot;
+	std::string m_Signature;
 	ID3D11Buffer* m_ConstBuffer;
 };
 
-template<class T>
-class CConstantVertexBuffer : public CBasicConstantBuffer<T>
+class CConstantVertexBuffer : public CBasicConstantBuffer
 {
 	using CBase_Bind::GetContext;
-	using CBasicConstantBuffer<T>::m_ConstBuffer;
-	using CBasicConstantBuffer<T>::m_Slot;
+	using CBasicConstantBuffer::m_ConstBuffer;
+	using CBasicConstantBuffer::m_Slot;
 public:
-	using CBasicConstantBuffer<T>::CBasicConstantBuffer;
+	using CBasicConstantBuffer::CBasicConstantBuffer;
 	void Bind(CGraphicalOutput& _Gfx) override
 	{
 		GetContext(_Gfx)->VSSetConstantBuffers(m_Slot, 1u, &m_ConstBuffer);
 	}
 
+	// LITTLE WARNING: Even though constant buffer classes have these
+	// discrimination functions, THEY ARE NOT meant to be called anymore,
+	// due to the advent of dynamic constant subsystem.
 	static std::string Discriminate() noexcept
 	{
 		return typeid(CConstantVertexBuffer).name();
 	}
 
-	static std::string Discriminate(const T& _Ignored, UINT _Ignored2 = 0) noexcept
+	static std::string Discriminate(const buffer::CBuffer&, UINT _1 = 0) noexcept
 	{
 		return Discriminate();
 	}
@@ -93,14 +99,13 @@ public:
 	}
 };
 
-template<class T>
-class CConstantPixelBuffer : public CBasicConstantBuffer<T>
+class CConstantPixelBuffer : public CBasicConstantBuffer
 {
-	using CBasicConstantBuffer<T>::m_ConstBuffer;
-	using CBasicConstantBuffer<T>::m_Slot;
+	using CBasicConstantBuffer::m_ConstBuffer;
+	using CBasicConstantBuffer::m_Slot;
 	using CBase_Bind::GetContext;
 public:
-	using CBasicConstantBuffer<T>::CBasicConstantBuffer;
+	using CBasicConstantBuffer::CBasicConstantBuffer;
 	void Bind(CGraphicalOutput& _Gfx) override
 	{
 		GetContext(_Gfx)->PSSetConstantBuffers(m_Slot, 1u, &m_ConstBuffer);
@@ -111,7 +116,7 @@ public:
 		return typeid(CConstantPixelBuffer).name();
 	}
 
-	static std::string Discriminate(const T& _Ignored, UINT _Ignored2 = 0u) noexcept
+	static std::string Discriminate(const buffer::CBuffer&, UINT _1 = 0) noexcept
 	{
 		return Discriminate();
 	}

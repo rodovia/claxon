@@ -11,6 +11,25 @@
 #include <engine_tier1/dxprim/draw/BaseDraw.h>
 #include <variant>
 #include <filesystem>
+#include <bitset>
+
+	// Bit 0 - Alpha
+// Bit 1 - Normal Map
+// Bit 2 - Bump Map (unused; reserved)
+// Bit 3 - Diffuse Map
+// Bit 4 - Specular Map
+// Bit 5 - Alpha Specular
+// Bit 6 - Alpha Diffuse
+// Bit 7 - Alpha Normal
+
+#define hl2_RESULT_ALPHA 0
+#define hl2_RESULT_NORMALMAP 1
+#define hl2_RESULT_BUMPMAP 2
+#define hl2_RESULT_DIFFUSE 3
+#define hl2_RESULT_SPECULAR 4
+#define hl2_RESULT_SPECULAR_ALPHA 5
+#define hl2_RESULT_DIFFUSE_ALPHA 6
+#define hl2_RESULT_NORMALMAP_ALPHA 7
 
 namespace engine
 {
@@ -46,6 +65,13 @@ struct MODEL_DESCRIPTOR
 		NORMSPC_TANGENT = 0x100,
 		NORMSPC_OBJECT
 	} NormalMapSpace = NORMSPC_TANGENT; // TODO: implement
+};
+
+struct MESH_LOAD_RESULT
+{
+	std::bitset<8> State;
+	buffer::CRawLayout Layout;
+	std::string RequiredShader;
 };
 
 class CMesh : public CBase_Draw
@@ -106,7 +132,10 @@ private:
 	std::unique_ptr<CMesh> ParseMesh(CGraphicalOutput& _Gfx, const aiMesh& _Mesh,
 									 const aiMaterial* const* _Materials, const std::filesystem::path& _Path);
 	std::unique_ptr<CNode> ParseNode(int& _NextId, const aiNode& _Node);
-
+	MESH_LOAD_RESULT MaterialCheck(CGraphicalOutput&,
+								   const aiMaterial&,
+								   std::vector<std::shared_ptr<CBase_Bind>>&,
+								   std::filesystem::path) noexcept;
 	std::unique_ptr<CNode> m_Root;
 	MODEL_DESCRIPTOR m_Desc;
 	std::vector<std::unique_ptr<CMesh>> m_MeshPtrs;

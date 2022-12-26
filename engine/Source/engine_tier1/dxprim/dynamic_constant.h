@@ -11,6 +11,7 @@
 #include <optional>
 #include <memory>
 #include <typeinfo>
+#include <vector>
 #include <DirectXMath.h>
 
 #ifndef NDEBUG
@@ -173,6 +174,7 @@ public:
 		__hl2_LEAF_ELEMENT_TYPES default : assert("Tried to resolve non-leaf element" && false);
 		return 0u;
 	}
+#undef K
 
 private:
 	bool ValidateSymbol(const std::string& _Name) noexcept;
@@ -234,6 +236,7 @@ class CLayoutView : public CLayout
 
 public:
 	CLayoutView(std::shared_ptr<CLayoutElement> _Root) noexcept;
+	CLayoutView(CRawLayout ly) noexcept;
 	const CLayoutElement& operator[](const std::string& _Key) const noexcept;
 	std::shared_ptr<CLayoutElement> ShareRoot() const noexcept;
 

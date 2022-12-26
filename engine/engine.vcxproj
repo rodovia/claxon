@@ -251,6 +251,7 @@
     <ClInclude Include="Source\engine_tier1\dxprim\Rasterizer.h" />
     <ClInclude Include="Source\engine_tier1\dxprim\Sampler.h" />
     <ClInclude Include="Source\engine_tier1\dxprim\Shaders.h" />
+    <ClInclude Include="Source\engine_tier1\dxprim\Stencil.h" />
     <ClInclude Include="Source\engine_tier1\dxprim\Texture.h" />
     <ClInclude Include="Source\engine_tier1\dxprim\Topology.h" />
     <ClInclude Include="Source\engine_tier1\dxprim\TransformConstBuffer.h" />
@@ -263,6 +264,7 @@
     <ClInclude Include="Source\engine_tier1\matrix.h" />
     <ClInclude Include="Source\engine_tier1\Model.h" />
     <ClInclude Include="Source\engine_tier1\Path.h" />
+    <ClInclude Include="Source\engine_tier1\render\Material.h" />
     <ClInclude Include="Source\engine_tier1\render\Model.h" />
     <ClInclude Include="Source\engine_tier1\render\Sprite.h" />
     <ClInclude Include="Source\engine_tier1\Surface.h" />

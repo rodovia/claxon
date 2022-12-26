@@ -177,6 +177,16 @@ buffer::CLayoutElement& buffer::CLayoutElement::Set(LeafType _Type, size_t _Inde
 	return *this;
 }
 
+size_t buffer::CLayoutElement::AdvanceIfCrossesBoundary(size_t offset, size_t index) noexcept
+{
+	if (this->CrossesBoundary(offset, index))
+	{
+		return this->AdvanceToBoundary(offset);
+	}
+
+	return 0u;
+}
+
 size_t buffer::CLayoutElement::Finalize(size_t _Offset) noexcept
 {
 	switch (m_Type)
@@ -225,6 +235,11 @@ size_t buffer::CLayoutElement::FinalizeArray(size_t offset) noexcept
 size_t buffer::CLayoutElement::AdvanceToBoundary(size_t offset) noexcept
 {
 	return offset + (16u - offset % 16u) % 16u;
+}
+
+bool buffer::CLayoutElement::Exists() const noexcept
+{
+	return m_Type != Empty;
 }
 
 bool buffer::CLayoutElement::CrossesBoundary(size_t offset, size_t size) noexcept
@@ -291,7 +306,7 @@ std::string buffer::CLayout::GetSignature() const noexcept
 
 #pragma region CRawLayout
 
-buffer::CRawLayout::CRawLayout()
+buffer::CRawLayout::CRawLayout() noexcept
 	: CLayout(std::shared_ptr<CLayoutElement>(new CLayoutElement(Struct)))
 {
 }
@@ -318,8 +333,13 @@ void buffer::CRawLayout::ClearRoot() noexcept
 
 #pragma region CLayoutView
 
-buffer::CLayoutView::CLayoutView(std::shared_ptr<CLayoutElement> root)
+buffer::CLayoutView::CLayoutView(std::shared_ptr<CLayoutElement> root) noexcept
 	: CLayout(std::move(root))
+{
+}
+
+buffer::CLayoutView::CLayoutView(CRawLayout root) noexcept
+	: CLayout(root.DeliverRoot())
 {
 }
 
@@ -357,7 +377,7 @@ buffer::CPtrView::CPtrView(CElementRefView* ref) noexcept
 
 #pragma region CElementRef
 
-buffer::CElementRef::operator CElementRefView() const noexcept
+buffer::CElementRef::operator buffer::CElementRefView() const noexcept
 {
 	return {m_Layout, m_Bytes, m_Offset};
 }
@@ -383,7 +403,7 @@ buffer::CPtr buffer::CElementRef::operator&() const noexcept
 	return CPtr{const_cast<CElementRef*>(this)};
 }
 
-buffer::CElementRef::CElementRef(const CLayoutElement* layout, char* bytes, size_t offset)
+buffer::CElementRef::CElementRef(const CLayoutElement* layout, char* bytes, size_t offset) noexcept
 	: m_Layout(layout),
 	  m_Bytes(bytes),
 	  m_Offset(offset)
@@ -412,10 +432,10 @@ buffer::CElementRefView buffer::CElementRefView::operator[](size_t index) const 
 
 buffer::CPtrView buffer::CElementRefView::operator&() const noexcept
 {
-	return CPtrView{ this };
+	return CPtrView{ const_cast<buffer::CElementRefView*>(this) };
 }
 
-buffer::CElementRefView::CElementRefView(const CLayoutElement* layout, const char* bytes, size_t offset)
+buffer::CElementRefView::CElementRefView(const CLayoutElement* layout, const char* bytes, size_t offset) noexcept
 	: m_Layout(layout),
 	  m_Bytes(bytes),
 	  m_Offset(offset)

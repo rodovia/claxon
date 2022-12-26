@@ -110,6 +110,8 @@
     <ClInclude Include="Source\engine_tier1\Path.h" />
     <ClInclude Include="Source\engine_tier1\Frustum.h" />
     <ClInclude Include="Source\engine_tier1\dxprim\dynamic_constant.h" />
+    <ClInclude Include="Source\engine_tier1\render\Material.h" />
+    <ClInclude Include="Source\engine_tier1\dxprim\Stencil.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".clang-format" />
